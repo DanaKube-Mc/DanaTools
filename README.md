@@ -1,6 +1,6 @@
 # DanaTools 🛠️
 
-Un plugin Minecraft d'apprentissage pour la version **1.21.1** (Paper API).
+Un plugin Minecraft pour la version **1.21.11** (Paper API).
 
 > [!IMPORTANT]
 > Ce plugin nécessite **Java 21** au minimum pour fonctionner correctement sur votre serveur Minecraft.
@@ -9,7 +9,7 @@ Un plugin Minecraft d'apprentissage pour la version **1.21.1** (Paper API).
 
 - **Java 21+**
 - **Maven**
-- Un serveur **Paper 1.21.1**
+- Un serveur **Paper 1.21.11**
 
 ## 💻 Compilation
 
@@ -75,7 +75,7 @@ blocks:
 
 ## Structure des Niveaux (Évolution)
 
-Le plugin utilise maintenant un système de paliers configurables. Chaque niveau peut modifier l'item physiquement.
+Un système de paliers configurables. Chaque niveau peut modifier l'item physiquement.
 
 ```yaml
 max_level: 10
@@ -143,9 +143,8 @@ use_tools: "" # Laisser vide pour que tout le monde ait /tools
 
 ---
 
-## 🚀 Prochaines fonctionnalités (Idées)
+## 🚀 Prochaines fonctionnalités 
 
-- **Effets de Potion** : Ajouter des effets passifs (Vitesse, Force) quand l'outil est tenu.
 - **Attributs Natifs** : Bonus de vitesse d'attaque ou de PV via les attributs vanilla.
 - **Arbre de compétences** : Plusieurs branches d'évolution possibles pour un même outil.
 - **Cumul de bonus** : Permettre d'additionner plusieurs bonus d'XP au lieu de prendre le poids le plus fort.
