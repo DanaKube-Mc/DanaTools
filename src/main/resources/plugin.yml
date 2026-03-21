@@ -1,0 +1,12 @@
+main: com.babydev.danatools.DanaTools
+name: DanaTools
+version: "${project.version}"
+api-version: "1.21"
+description: "Un plugin d'apprentissage pour Minecraft 1.21.11"
+authors: ["BaByDev"]
+softdepend: [Vault]
+
+commands:
+  tools:
+    description: Commande principale pour gérer les outils évolutifs.
+    usage: /tools

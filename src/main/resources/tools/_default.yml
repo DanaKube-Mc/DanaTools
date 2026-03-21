@@ -1,0 +1,160 @@
+# ======================================================
+# EXEMPLE DE CONFIGURATION D'OUTIL (_default.yml)
+# ======================================================
+# Ce fichier sert de documentation exhaustive.
+# Les fichiers commençant par "_" sont ignorés par le plugin.
+
+material: DIAMOND_SWORD # Type d'item Bukkit (Matériau)
+name: "<gradient:gold:yellow>Épée Légendaire</gradient>" # Nom MiniMessage (supporte les dégradés)
+slot: 13 # Slot dans le menu /tools (0-26)
+max_level: 20 # Niveau maximum atteignable
+hide_enchants: true # Cache la liste des enchantements vanilla dans le lore
+
+# Lore de l'item (S'affiche dans le menu et sur l'item)
+# Placeholders: %level%, %xp%, %max_xp%, %progress_bar%, %bonus%, %toolid_level%
+lore:
+  - "<gray>Niveau: <white>%level% / %max_level%"
+  - "<gray>Progression: %progress_bar% <white>%xp%<gray>/<white>%max_xp%"
+  - "<aqua>Bonus actif: <white>%bonus%"
+  - ""
+  - "<yellow>▶ Cliquez pour récupérer cet outil !"
+
+# ------------------------------------------------------
+# CONFIGURATION DU GAIN D'EXPÉRIENCE
+# ------------------------------------------------------
+xp:
+  # Mode Équation (true): L'XP requis augmente dynamiquement
+  # Formule: required_base + (level * required_multiplier)
+  use_equation_xp: true
+  required_base: 100
+  required_multiplier: 50
+
+  # Gains de base (généraux)
+  on_kill: 5 # XP par entité tuée (si non spécifié dans mobs)
+  on_block_break: 1 # XP par bloc cassé (si non spécifié dans blocks)
+  on_catch: 10 # XP en pêchant (si non spécifié dans catch)
+  on_till: 2 # XP en labourant (si non spécifié dans till)
+  on_strip: 2 # XP en écorçant du bois (si non spécifié dans strip)
+
+  # Gains spécifiques avec conditions (Requirements)
+  mobs:
+    WITHER_SKELETON: 50 # Format simple (l'xp est ajouté directement)
+    CREEPER: #Format etendu
+      xp: 20
+      requirements:
+        level: 2 # Nécessite le niveau 2 de l'outil
+        permission: "danatools.expert" # Nécessite une permission
+
+  blocks:
+    DIAMOND_ORE:
+      xp: 100
+      requirements:
+        permission: "danatools.miner"
+
+  catch:
+    COD: 2
+
+  till:
+    DIRT: 2
+
+  strip:
+    OAK_LOG: 2
+
+  # ------------------------------------------------------
+  # SYSTÈME DE BONUS / MALUS
+  # ------------------------------------------------------
+  # Si plusieurs bonus sont valides, seul celui avec le plus gros WEIGHT est appliqué.
+  bonus:
+    vip_bonus:
+      porcentage: 50 # +50% d'XP
+      weight: 10 # Priorité forte
+      requirements:
+        permission: "danatools.vip"
+    malus_debutant:
+      porcentage: -20 # -20% d'XP
+      weight: 1 # Priorité faible
+      requirements:
+        level: 0
+
+# ------------------------------------------------------
+# CONFIGURATION DES NIVEAUX (ÉVOLUTION)
+# ------------------------------------------------------
+levels:
+  0: # Niveau initial (débloqué via /tools give ou permission)
+    #Permissions nécessaires pour que le joueur puisse obtenir l'item (/tools give passe a travers cette permission) [Optionnel]
+    permissions:
+      - "danatools.vip"
+    unbreakable: true
+    glow: false
+
+  5: # Propriétés appliquées au niveau 5 et supérieurs
+    material: IRON_SWORD
+    custom_model_data: 1
+    name: "<gradient:red:gold>Épée de Feu</gradient>"
+    lore:
+      - "<gray>Niveau: <white>%level% / %max_level%"
+      - "<gray>Progression: %progress_bar% <white>%xp%<gray>/<white>%max_xp%"
+      - "<aqua>Bonus actif: <white>%bonus%"
+    glow: true
+    unbreakable: false
+    enchantments:
+      enchantment0:
+        enchantment: "FIRE_ASPECT"
+        level: 1
+    effects:
+      effect0:
+        effect: "speed"
+        level: 1
+
+    #Si use_equation_xp: false, alors c'est cette valeur qui est prise en compte pour passer au niveau supérieur
+    xp_required: 1000
+    #Permissions nécessaires pour que l'item passe au niveau supérieur (4 -> 5) [Optionnel]
+    permissions:
+      - "danatools.vip"
+
+    # Récompenses lors du PASSAGE au niveau 5
+    rewards:
+      messages:
+        - "<gold>Bravo ! Votre épée s'enflamme !"
+      commands:
+        - "eco give %player% 500" # Exécuté par la console
+      repair: true # Répare l'item au passage de niveau
+      skills_points: 2 # Donne des points pour améliorer les compétences (Skills)
+
+  10:
+    custom_model_data: 1001 # Pour les Resource Packs
+    enchantments:
+      sharpness:
+        enchantment: "SHARPNESS"
+        level: 10
+
+# ------------------------------------------------------
+# SYSTÈME DE SKILLS (COMPÉTENCES)
+# ------------------------------------------------------
+# Permet au joueur de dépenser ses "Skill Points" pour améliorer l'outil à la carte.
+use_skills: true
+
+skills:
+  skill0: # Identifiant interne
+    item: ENCHANTED_BOOK # Icône dans le menu
+    name: "Tranchant Supérieur" # Nom affiché
+    max_upgrade: 5 # Niveau maximum du skill
+    use_additional_increase: true # true: coût +X par niveau | false: coût *X% par niveau
+
+    # Enchantements cumulés (niveau_base + (niveau_acheté-1) * level_up)
+    enchantments:
+      enchantment0:
+        enchantment: "SHARPNESS"
+        level: 1 # Niveau au rang 1 du skill
+        level_up: 1 # Gain par rang supplémentaire
+
+    requirements:
+      money: 1000 # Nécessite Vault
+      level: 5 # Niveau d'outil requis pour débloquer
+      permission: "danatools.skills.sharpness" # Optionnel
+
+    prise: # Coût pour CHAQUE upgrade (augmentation via 'increase')
+      money: 1000 # Nécessite Vault
+      expererince: 5 # Niveaux d'XP Minecraft
+      skills_points: 1 # Points de skill de l'outil
+      increase: 50 # % d'augmentation du prix par niveau

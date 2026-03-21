@@ -1,0 +1,6 @@
+# Configuration des permissions modifiables
+admin: "danatools.admin"
+reload: "danatools.reload"
+help: "danatools.help"
+use_tools: "" # Laisser vide pour que tout le monde puisse utiliser /tools
+
