@@ -1,0 +1,37 @@
+# ==========================================
+# Fichier de Langue (Francais) - DanaTools
+# ==========================================
+
+prefix: "<green><b>[DanaTools]</b></green>"
+
+no_permission: "<red>Vous n'avez pas la permission d'effectuer cette action.</red>"
+reload_success: "{prefix} <green>Configurations et messages recharges avec succes !</green>"
+invalid_amount: "<red>Veuillez entrer un nombre valide.</red>"
+player_not_found: "<red>Joueur introuvable : {player}</red>"
+specify_player: "<red>Veuillez specifier un joueur dans la commande.</red>"
+
+# Commandes d'administration
+help:
+  header: "<gold>=== <b>Aide DanaTools</b> ===</gold>"
+  give: "<yellow>/danatools give <tool_id> [player] <gray>- Donne un outil specifique"
+  givemodifier: "<yellow>/danatools givemodifier <modifier_id> [player] <gray>- Donne les ingredients de forge d'un modificateur"
+  addxp: "<yellow>/danatools addxp <amount> [player] <gray>- Ajoute de l'XP a l'outil en main"
+  setlevel: "<yellow>/danatools setlevel <level> [player] <gray>- Definit le niveau de l'outil"
+  reload: "<yellow>/danatools reload <gray>- Recharge la configuration et la langue"
+
+give:
+  tool_not_found: "<red>Outil inconnu : {tool}</red>"
+  success: "{prefix} L'outil <gold>{tool}</gold> a ete donne a <yellow>{player}</yellow>."
+
+givemodifier:
+  modifier_not_found: "<red>Modificateur inconnu : {modifier}</red>"
+  success: "{prefix} Les elements de forge du modificateur <gold>{modifier}</gold> ont ete donnes a <yellow>{player}</yellow>."
+
+xp:
+  no_tool: "<red>Le joueur {player} ne tient pas un outil DanaTools evolutif valide.</red>"
+  success: "{prefix} Ajoute de <gold>{amount} XP</gold> a l'outil de <yellow>{player}</yellow>."
+  level_up: "{prefix} <green>Votre outil a evolue au niveau <gold>{level}</gold> !</green>"
+
+level:
+  invalid_range: "<red>Le niveau doit etre compris entre 1 et {max_level}.</red>"
+  success: "{prefix} Niveau de l'outil defini a <gold>{level}</gold> pour <yellow>{player}</yellow>."

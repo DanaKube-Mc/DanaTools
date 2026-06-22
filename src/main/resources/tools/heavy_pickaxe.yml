@@ -1,0 +1,68 @@
+# =========================================================================
+# Configuration d'Outil : Pioche Lourde de Depart (heavy_pickaxe)
+# =========================================================================
+
+# Identifiant unique de l'outil (doit correspondre au nom du fichier sans le .yml)
+id: "heavy_pickaxe"
+
+# Materiel Minecraft sous-jacent (doit correspondre a un Materiel Spigot valide)
+material: "DIAMOND_PICKAXE"
+
+# CustomModelData utilise pour changer la texture/modele 3D (ex: ItemsAdder / Resource Pack)
+# Mettre a 0 pour desactiver.
+custom-model-data: 10025
+
+# Nom d'affichage de l'item. Supporte MiniMessage (gradients, tags) et les anciens codes couleurs (&)
+display-name: "<gradient:#ff5555:#ffaacc>Pioche Lourde de Depart</gradient>"
+
+# Description/Lore de l'outil.
+# Placeholders supportes :
+#   {level}         - Niveau actuel de l'outil
+#   {xp}            - XP actuelle
+#   {max_xp}        - XP requise pour le prochain niveau
+#   {slots_used}    - Nombre de slots de modificateurs occupes
+#   {slots_total}   - Nombre total de slots de modificateurs debloques
+#   {modifiers_list} - Remplacer par la liste des modificateurs actifs
+lore:
+  - "&7Une pioche qui s'adapte a son porteur."
+  - ""
+  - "&eProgression :"
+  - "&d - Niveau : &f{level}"
+  - "&d - XP : &f{xp}/{max_xp}"
+  - ""
+  - "&eModificateurs ({slots_used}/{slots_total}) :"
+  - "{modifiers_list}"
+
+# Formule de courbe d'experience necessaire pour passer de niveau.
+# Formule : XP_requise = base * (niveau_actuel ^ multiplier)
+xp-curve:
+  base: 100
+  multiplier: 1.5
+
+# Gain d'XP accorde a l'outil pour chaque type de bloc detruit.
+# Format: MATERIEL_MINECRAFT: quantite_xp
+xp-gain:
+  COAL_ORE: 2
+  DEEPSLATE_COAL_ORE: 2
+  IRON_ORE: 3
+  DEEPSLATE_IRON_ORE: 3
+  DIAMOND_ORE: 10
+  DEEPSLATE_DIAMOND_ORE: 10
+  STONE: 1
+  DEEPSLATE: 1
+
+# Progression de l'outil
+progression:
+  # Niveau maximum que l'outil peut atteindre
+  max-level: 20
+  
+  # Slots de modificateurs debloques aux niveaux specifiques.
+  # Format : niveau: total_slots
+  slots:
+    5: 1   # Au niveau 5, debloque 1 slot total
+    10: 2  # Au niveau 10, debloque 2 slots total
+    15: 3  # Au niveau 15, debloque 3 slots total
+    20: 4  # Au niveau 20, debloque 4 slots total
+    
+  # Nombre maximum de slots de modificateurs autorise pour cet outil
+  max-slots: 4

@@ -1,0 +1,47 @@
+# =========================================================================
+# Configuration de Modificateur : Forage 3x3 (trench_3x3)
+# =========================================================================
+
+# Identifiant unique du modificateur (doit correspondre au nom du fichier sans le .yml)
+id: "trench_3x3"
+
+# Nom d'affichage du modificateur dans le lore de l'outil
+display-name: "&bModificateur : Forage 3x3"
+
+# Description affichee sur le patron/template de forge
+lore:
+  - "&7Permet de miner en zone de 3x3."
+  - "&dSlots requis : &f2"
+  - "&dOutil minimum : &fNiveau 10"
+
+# Description de la plaque de forge (Template) requise en slot 0 de la Table de Forgeron
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5002
+  display-name: "&bPlacard de Forge : Forage 3x3"
+
+# Description du noyau/ingredient requis en slot 2 de la Table de Forgeron
+ingredient-item:
+  material: "CLAY_BALL"
+  custom-model-data: 12002
+  display-name: "&bNoyau de Tempete"
+
+# Conditions d'application sur la Table de Forgeron
+conditions:
+  # Niveau minimum de l'outil pour appliquer ce modificateur
+  min-tool-level: 10
+  
+  # Cout en slots de modificateurs sur l'outil
+  slot-cost: 2
+  
+  # Liste des outils configurables compatibles (IDs des outils)
+  compatible-tools:
+    - "heavy_pickaxe"
+    
+  # Modificateurs incompatibles (bloque l'application si l'un d'eux est deja present)
+  incompatible-modifiers:
+    - "vein_miner"
+
+# Comportement associe dans le code Java
+behavior:
+  type: "TRENCH_3X3"

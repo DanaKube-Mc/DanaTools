@@ -1,0 +1,7 @@
+# ==========================================
+# Config Generale - DanaTools
+# ==========================================
+
+# Langue utilisee par le plugin.
+# Doit correspondre a un fichier present dans le dossier lang/. (Exemple: fr.yml)
+lang: "fr"

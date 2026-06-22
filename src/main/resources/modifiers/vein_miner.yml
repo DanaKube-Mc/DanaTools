@@ -1,0 +1,49 @@
+# =========================================================================
+# Configuration de Modificateur : Minage en Veine (vein_miner)
+# =========================================================================
+
+# Identifiant unique du modificateur (doit correspondre au nom du fichier sans le .yml)
+id: "vein_miner"
+
+# Nom d'affichage du modificateur dans le lore de l'outil
+display-name: "&6Modificateur : Minage en Veine"
+
+# Description affichee sur le patron/template de forge
+lore:
+  - "&7Permet de miner toute une veine de minerai d'un coup."
+  - "&dSlots requis : &f1"
+  - "&dOutil minimum : &fNiveau 5"
+
+# Description de la plaque de forge (Template) requise en slot 0 de la Table de Forgeron
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5001
+  display-name: "&6Placard de Forge : Minage en Veine"
+
+# Description du noyau/ingredient requis en slot 2 de la Table de Forgeron
+ingredient-item:
+  material: "CLAY_BALL"
+  custom-model-data: 12001
+  display-name: "&eNoyau de Terre"
+
+# Conditions d'application sur la Table de Forgeron
+conditions:
+  # Niveau minimum de l'outil pour appliquer ce modificateur
+  min-tool-level: 5
+  
+  # Cout en slots de modificateurs sur l'outil
+  slot-cost: 1
+  
+  # Liste des outils configurables compatibles (IDs des outils)
+  compatible-tools:
+    - "heavy_pickaxe"
+    
+  # Modificateurs incompatibles (bloque l'application si l'un d'eux est deja present)
+  incompatible-modifiers:
+    - "trench_3x3"
+
+# Comportement associe dans le code Java
+behavior:
+  type: "VEIN_MINER"
+  # Nombre maximal de blocs brises lors du minage en veine (limite anti-lag)
+  max-blocks: 64
