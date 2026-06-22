@@ -5,6 +5,7 @@ import com.danakube.danatools.config.ConfigManager;
 import com.danakube.danatools.config.LangManager;
 import com.danakube.danatools.config.ModifierConfigManager;
 import com.danakube.danatools.config.ToolConfigManager;
+import com.danakube.danatools.forge.ForgeRecipeRegistry;
 import com.danakube.danatools.forge.SmithingListener;
 import com.danakube.danatools.modifier.ModifierRegistry;
 import com.danakube.danatools.progression.BlockBreakXPListener;
@@ -21,6 +22,7 @@ public final class DanaTools extends JavaPlugin {
     private LangManager langManager;
     private ToolConfigManager toolConfigManager;
     private ModifierConfigManager modifierConfigManager;
+    private ForgeRecipeRegistry forgeRecipeRegistry;
     private ModifierRegistry modifierRegistry;
     private XPManager xpManager;
 
@@ -42,6 +44,10 @@ public final class DanaTools extends JavaPlugin {
         this.modifierConfigManager = new ModifierConfigManager(this);
         this.modifierConfigManager.loadModifiers();
 
+        // Enregistrer les recettes de forge natives
+        this.forgeRecipeRegistry = new ForgeRecipeRegistry(this);
+        this.forgeRecipeRegistry.registerRecipes();
+
         this.xpManager = new XPManager(this);
 
         this.modifierRegistry = new ModifierRegistry(this);
@@ -59,6 +65,9 @@ public final class DanaTools extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (this.forgeRecipeRegistry != null) {
+            this.forgeRecipeRegistry.unregisterRecipes();
+        }
         getLogger().info("DanaTools desactive !");
     }
 
@@ -97,6 +106,9 @@ public final class DanaTools extends JavaPlugin {
             this.langManager.loadLang();
             this.toolConfigManager.loadTools();
             this.modifierConfigManager.loadModifiers();
+            if (this.forgeRecipeRegistry != null) {
+                this.forgeRecipeRegistry.registerRecipes();
+            }
             getLogger().info("Configuration de DanaTools rechargee avec succes !");
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, "Erreur lors du rechargement de la configuration", e);

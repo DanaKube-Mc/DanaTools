@@ -107,8 +107,9 @@ public class ToolDataStorage {
     }
 
     public static void initToolData(ItemStack item, String toolId, int slotsTotal) {
-        if (item == null || !item.hasItemMeta()) return;
+        if (item == null || item.getType().isAir()) return;
         ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(KEY_ID, PersistentDataType.STRING, toolId);
         pdc.set(KEY_XP, PersistentDataType.INTEGER, 0);

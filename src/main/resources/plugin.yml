@@ -1,5 +1,5 @@
 name: DanaTools
-version: $${project.version}
+version: ${project.version}
 main: com.danakube.danatools.DanaTools
 api-version: '1.21'
 author: BaByCrash & DanaKube
