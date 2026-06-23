@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -96,6 +97,11 @@ public class VeinMinerModifier extends DanaModifier {
                                 if (!virtualEvent.isCancelled()) {
                                     neighbor.breakNaturally(toolItem);
                                     brokenCount++;
+
+                                    int exp = virtualEvent.getExpToDrop();
+                                    if (exp > 0) {
+                                        neighbor.getWorld().spawn(neighbor.getLocation().add(0.5, 0.5, 0.5), ExperienceOrb.class).setExperience(exp);
+                                    }
 
                                     applyDurabilityDamage(player, toolItem);
 

@@ -11,12 +11,6 @@ public class XPManager {
         this.plugin = plugin;
     }
 
-    /**
-     * Calcule l'XP requise pour passer du niveau actuel au niveau suivant.
-     * @param tool outil concerné
-     * @param currentLevel niveau actuel de l'outil
-     * @return montant d'xp requis pour monter d'un niveau
-     */
     public int getXpRequiredFor(CustomTool tool, int currentLevel) {
         int base = tool.getXpCurveBase();
         double multiplier = tool.getXpCurveMultiplier();

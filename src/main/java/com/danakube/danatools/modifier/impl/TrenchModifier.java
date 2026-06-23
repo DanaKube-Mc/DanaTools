@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
@@ -120,6 +121,11 @@ public class TrenchModifier extends DanaModifier {
 
                     if (!virtualEvent.isCancelled()) {
                         targetBlock.breakNaturally(toolItem);
+
+                        int exp = virtualEvent.getExpToDrop();
+                        if (exp > 0) {
+                            targetBlock.getWorld().spawn(targetBlock.getLocation().add(0.5, 0.5, 0.5), ExperienceOrb.class).setExperience(exp);
+                        }
 
                         applyDurabilityDamage(player, toolItem);
 

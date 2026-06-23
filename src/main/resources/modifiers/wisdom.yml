@@ -1,0 +1,45 @@
+id: "wisdom"
+incompatible-modifiers: []
+
+# Recette de forge
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5002
+  display-name: "&6Placard de Forge : Sagesse"
+
+ingredient-item:
+  material: "EXPERIENCE_BOTTLE"
+  display-name: "&bEssence d'Expérience"
+
+# Progression des niveaux
+levels:
+  1:
+    display-name: "&bModificateur : Sagesse I"
+    lore:
+      - "&7Augmente l'XP du joueur de 15%."
+      - "&dSlots requis : &f1"
+    slot-cost: 1
+    min-tool-level: 5
+    behavior:
+      type: "WISDOM"
+      xp-boost: 0.15
+  2:
+    display-name: "&bModificateur : Sagesse II"
+    lore:
+      - "&7Augmente l'XP du joueur de 30%."
+      - "&dSlots requis : &f2"
+    slot-cost: 2
+    min-tool-level: 10
+    behavior:
+      type: "WISDOM"
+      xp-boost: 0.30
+  3:
+    display-name: "&bModificateur : Sagesse III"
+    lore:
+      - "&7Augmente l'XP du joueur de 50%."
+      - "&dSlots requis : &f4"
+    slot-cost: 4
+    min-tool-level: 15
+    behavior:
+      type: "WISDOM"
+      xp-boost: 0.50

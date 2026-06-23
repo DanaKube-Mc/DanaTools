@@ -1,8 +1,10 @@
 package com.danakube.danatools.modifier;
 
 import com.danakube.danatools.DanaTools;
+import com.danakube.danatools.modifier.impl.LearningModifier;
 import com.danakube.danatools.modifier.impl.TrenchModifier;
 import com.danakube.danatools.modifier.impl.VeinMinerModifier;
+import com.danakube.danatools.modifier.impl.WisdomModifier;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
@@ -19,6 +21,8 @@ public class ModifierRegistry {
     public void registerDefaultModifiers() {
         register(new VeinMinerModifier());
         register(new TrenchModifier());
+        register(new WisdomModifier());
+        register(new LearningModifier());
     }
 
     private void register(DanaModifier modifier) {
