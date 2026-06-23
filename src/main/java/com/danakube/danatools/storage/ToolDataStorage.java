@@ -19,6 +19,7 @@ public class ToolDataStorage {
     private static final NamespacedKey KEY_SLOTS_TOTAL = new NamespacedKey(DanaTools.getInstance(), "slots_total");
     private static final NamespacedKey KEY_SLOTS_USED = new NamespacedKey(DanaTools.getInstance(), "slots_used");
     private static final NamespacedKey KEY_MODIFIERS = new NamespacedKey(DanaTools.getInstance(), "modifiers");
+    private static final NamespacedKey KEY_CUSTOM_NAME = new NamespacedKey(DanaTools.getInstance(), "custom_name");
 
     public static boolean isDanaTool(ItemStack item) {
         if (item == null || !item.hasItemMeta()) {
@@ -162,6 +163,22 @@ public class ToolDataStorage {
         pdc.set(KEY_SLOTS_TOTAL, PersistentDataType.INTEGER, slotsTotal);
         pdc.set(KEY_SLOTS_USED, PersistentDataType.INTEGER, 0);
         pdc.set(KEY_MODIFIERS, PersistentDataType.STRING, "");
+        item.setItemMeta(meta);
+    }
+
+    public static String getCustomName(ItemStack item) {
+        if (!isDanaTool(item)) return null;
+        return item.getItemMeta().getPersistentDataContainer().get(KEY_CUSTOM_NAME, PersistentDataType.STRING);
+    }
+
+    public static void setCustomName(ItemStack item, String customName) {
+        if (!isDanaTool(item)) return;
+        ItemMeta meta = item.getItemMeta();
+        if (customName == null) {
+            meta.getPersistentDataContainer().remove(KEY_CUSTOM_NAME);
+        } else {
+            meta.getPersistentDataContainer().set(KEY_CUSTOM_NAME, PersistentDataType.STRING, customName);
+        }
         item.setItemMeta(meta);
     }
 }

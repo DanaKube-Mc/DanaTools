@@ -66,3 +66,9 @@ progression:
     
   # Nombre maximum de slots de modificateurs autorise pour cet outil
   max-slots: 4
+
+# Limites maximales des enchantements pour cet outil
+enchantment-limits:
+  EFFICIENCY: 10
+  UNBREAKING: 8
+  FORTUNE: 5

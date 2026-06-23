@@ -176,8 +176,13 @@ public class ToolInstance {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        String displayName = config.getDisplayName();
-        meta.displayName(parseColor(displayName));
+        String customName = ToolDataStorage.getCustomName(item);
+        if (customName != null) {
+            meta.displayName(parseColor(customName));
+        } else {
+            String displayName = config.getDisplayName();
+            meta.displayName(parseColor(displayName));
+        }
 
         List<String> rawLore = config.getLore();
         List<Component> formattedLore = new ArrayList<>();

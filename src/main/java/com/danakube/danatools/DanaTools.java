@@ -5,6 +5,7 @@ import com.danakube.danatools.config.ConfigManager;
 import com.danakube.danatools.config.LangManager;
 import com.danakube.danatools.config.ModifierConfigManager;
 import com.danakube.danatools.config.ToolConfigManager;
+import com.danakube.danatools.forge.AnvilListener;
 import com.danakube.danatools.forge.ForgeRecipeRegistry;
 import com.danakube.danatools.forge.SmithingListener;
 import com.danakube.danatools.modifier.ModifierRegistry;
@@ -44,7 +45,6 @@ public final class DanaTools extends JavaPlugin {
         this.modifierConfigManager = new ModifierConfigManager(this);
         this.modifierConfigManager.loadModifiers();
 
-        // Enregistrer les recettes de forge natives
         this.forgeRecipeRegistry = new ForgeRecipeRegistry(this);
         this.forgeRecipeRegistry.registerRecipes();
 
@@ -55,6 +55,7 @@ public final class DanaTools extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new SmithingListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockBreakXPListener(this), this);
+        getServer().getPluginManager().registerEvents(new AnvilListener(this), this);
 
         DanaToolsCommand cmd = new DanaToolsCommand(this);
         getCommand("danatools").setExecutor(cmd);

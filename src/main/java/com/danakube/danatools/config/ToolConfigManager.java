@@ -2,9 +2,14 @@ package com.danakube.danatools.config;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomTool;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 
 import java.io.File;
 import java.util.*;
@@ -80,10 +85,30 @@ public class ToolConfigManager {
                     }
                 }
 
+                Map<Enchantment, Integer> enchantmentLimits = new HashMap<>();
+                ConfigurationSection limitsSection = config.getConfigurationSection("enchantment-limits");
+                if (limitsSection != null) {
+                    for (String key : limitsSection.getKeys(false)) {
+                        Registry<Enchantment> enchantmentRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
+                        Enchantment enchantment = enchantmentRegistry.get(NamespacedKey.minecraft(key.toLowerCase()));
+                        if (enchantment != null) {
+                            enchantmentLimits.put(enchantment, limitsSection.getInt(key));
+                        } else {
+                            @SuppressWarnings("deprecation")
+                            Enchantment legacyEnchant = Enchantment.getByName(key.toUpperCase());
+                            if (legacyEnchant != null) {
+                                enchantmentLimits.put(legacyEnchant, limitsSection.getInt(key));
+                            } else {
+                                plugin.getLogger().warning("Enchantement invalide dans enchantment-limits de l'outil " + id + ": " + key);
+                            }
+                        }
+                    }
+                }
+
                 CustomTool customTool = new CustomTool(
                         id, material, customModelData, displayName, lore,
                         xpCurveBase, xpCurveMultiplier, xpGain,
-                        maxLevel, slotsProgression, maxSlots
+                        maxLevel, slotsProgression, maxSlots, enchantmentLimits
                 );
 
                 tools.put(id, customTool);

@@ -1,6 +1,7 @@
 package com.danakube.danatools.model;
 
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,10 +21,12 @@ public class CustomTool {
     private final int maxLevel;
     private final Map<Integer, Integer> slotsProgression;
     private final int maxSlots;
+    private final Map<Enchantment, Integer> enchantmentLimits;
 
     public CustomTool(String id, Material material, int customModelData, String displayName, List<String> lore,
                       int xpCurveBase, double xpCurveMultiplier, Map<Material, Integer> xpGain,
-                      int maxLevel, Map<Integer, Integer> slotsProgression, int maxSlots) {
+                      int maxLevel, Map<Integer, Integer> slotsProgression, int maxSlots,
+                      Map<Enchantment, Integer> enchantmentLimits) {
         this.id = id;
         this.material = material;
         this.customModelData = customModelData;
@@ -35,6 +38,7 @@ public class CustomTool {
         this.maxLevel = maxLevel;
         this.slotsProgression = slotsProgression != null ? slotsProgression : new HashMap<>();
         this.maxSlots = maxSlots;
+        this.enchantmentLimits = enchantmentLimits != null ? enchantmentLimits : new HashMap<>();
     }
 
     public String getId() {
@@ -96,5 +100,13 @@ public class CustomTool {
 
     public int getMaxSlots() {
         return maxSlots;
+    }
+
+    public Map<Enchantment, Integer> getEnchantmentLimits() {
+        return enchantmentLimits;
+    }
+
+    public int getEnchantmentLimit(Enchantment enchantment) {
+        return enchantmentLimits.getOrDefault(enchantment, enchantment.getMaxLevel());
     }
 }
