@@ -55,15 +55,42 @@ public class ToolConfigManager {
                 int xpCurveBase = config.getInt("xp-curve.base", 100);
                 double xpCurveMultiplier = config.getDouble("xp-curve.multiplier", 1.5);
 
-                Map<Material, Integer> xpGain = new HashMap<>();
-                ConfigurationSection xpSection = config.getConfigurationSection("xp-gain");
-                if (xpSection != null) {
-                    for (String key : xpSection.getKeys(false)) {
+                Map<Material, CustomTool.BlockActivity> blockActivities = new HashMap<>();
+                ConfigurationSection activitiesSection = config.getConfigurationSection("block-activities");
+                if (activitiesSection != null) {
+                    for (String key : activitiesSection.getKeys(false)) {
                         Material oreMaterial = Material.matchMaterial(key);
                         if (oreMaterial != null) {
-                            xpGain.put(oreMaterial, xpSection.getInt(key));
+                            ConfigurationSection activitySec = activitiesSection.getConfigurationSection(key);
+                            if (activitySec != null) {
+                                int xp = activitySec.getInt("xp", 0);
+                                CustomTool.CoreDrop coreDrop = null;
+                                ConfigurationSection dropSec = activitySec.getConfigurationSection("core-drop");
+                                if (dropSec != null) {
+                                    String modifierId = dropSec.getString("modifier-id");
+                                    double chancePercent = dropSec.getDouble("chance-percent", 0.0);
+                                    if (modifierId != null) {
+                                        coreDrop = new CustomTool.CoreDrop(modifierId, chancePercent);
+                                    }
+                                }
+                                blockActivities.put(oreMaterial, new CustomTool.BlockActivity(xp, coreDrop));
+                            }
                         } else {
-                            plugin.getLogger().warning("Materiel invalide dans xp-gain de l'outil " + id + ": " + key);
+                            plugin.getLogger().warning("Materiel invalide dans block-activities de l'outil " + id + ": " + key);
+                        }
+                    }
+                }
+
+                if (blockActivities.isEmpty()) {
+                    ConfigurationSection xpSection = config.getConfigurationSection("xp-gain");
+                    if (xpSection != null) {
+                        for (String key : xpSection.getKeys(false)) {
+                            Material oreMaterial = Material.matchMaterial(key);
+                            if (oreMaterial != null) {
+                                blockActivities.put(oreMaterial, new CustomTool.BlockActivity(xpSection.getInt(key), null));
+                            } else {
+                                plugin.getLogger().warning("Materiel invalide dans xp-gain de l'outil " + id + ": " + key);
+                            }
                         }
                     }
                 }
@@ -109,7 +136,7 @@ public class ToolConfigManager {
 
                 CustomTool customTool = new CustomTool(
                         id, material, customModelData, displayName, lore,
-                        xpCurveBase, xpCurveMultiplier, xpGain,
+                        xpCurveBase, xpCurveMultiplier, blockActivities,
                         maxLevel, slotsProgression, maxSlots, enchantmentLimits,
                         noModifierMessage
                 );

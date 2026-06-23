@@ -40,17 +40,50 @@ xp-curve:
   base: 100
   multiplier: 1.5
 
-# Gain d'XP accorde a l'outil pour chaque type de bloc detruit.
-# Format: MATERIEL_MINECRAFT: quantite_xp
-xp-gain:
-  COAL_ORE: 2
-  DEEPSLATE_COAL_ORE: 2
-  IRON_ORE: 3
-  DEEPSLATE_IRON_ORE: 3
-  DIAMOND_ORE: 10
-  DEEPSLATE_DIAMOND_ORE: 10
-  STONE: 1
-  DEEPSLATE: 1
+# Configuration de l'XP et des drops par bloc cassé (block-activities)
+# Format :
+# block-activities:
+#   MATERIEL_MINECRAFT:
+#     xp: quantite_xp
+#     core-drop:
+#       modifier-id: "modifier_id"
+#       chance-percent: pourcentage_chance
+block-activities:
+  COAL_ORE:
+    xp: 2
+    core-drop:
+      modifier-id: "trench"
+      chance-percent: 0.05
+  DEEPSLATE_COAL_ORE:
+    xp: 2
+    core-drop:
+      modifier-id: "trench"
+      chance-percent: 0.05
+  IRON_ORE:
+    xp: 3
+    core-drop:
+      modifier-id: "trench"
+      chance-percent: 0.1
+  DEEPSLATE_IRON_ORE:
+    xp: 3
+    core-drop:
+      modifier-id: "trench"
+      chance-percent: 0.1
+  DIAMOND_ORE:
+    xp: 10
+    core-drop:
+      modifier-id: "trench"
+      chance-percent: 1.0
+  DEEPSLATE_DIAMOND_ORE:
+    xp: 10
+    core-drop:
+      modifier-id: "trench"
+      chance-percent: 1.0
+  STONE:
+    xp: 1
+  DEEPSLATE:
+    xp: 1
+
 
 # Progression de l'outil
 progression:

@@ -2,9 +2,18 @@ package com.danakube.danatools.config;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
+import com.danakube.danatools.model.ToolInstance;
+
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.Bukkit;
+
 
 import java.io.File;
 import java.util.*;
@@ -123,5 +132,32 @@ public class ModifierConfigManager {
 
     public Collection<CustomModifier> getModifiers() {
         return modifiers.values();
+    }
+
+    public ItemStack buildIngredientItem(CustomModifier modifier) {
+        if (modifier == null) return null;
+        ItemStack ingredient;
+        if (modifier.getIngredientMaterial() == Material.PLAYER_HEAD && modifier.getIngredientTexture() != null && !modifier.getIngredientTexture().isEmpty()) {
+            ingredient = new ItemStack(Material.PLAYER_HEAD);
+            SkullMeta sMeta = (SkullMeta) ingredient.getItemMeta();
+            if (sMeta != null) {
+                PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
+                profile.getProperties().add(new ProfileProperty("textures", modifier.getIngredientTexture()));
+                sMeta.setPlayerProfile(profile);
+                ingredient.setItemMeta(sMeta);
+            }
+        } else {
+            ingredient = new ItemStack(modifier.getIngredientMaterial());
+        }
+
+        ItemMeta iMeta = ingredient.getItemMeta();
+        if (iMeta != null) {
+            iMeta.displayName(ToolInstance.parseColor(modifier.getIngredientDisplayName()));
+            if (modifier.getIngredientCustomModelData() > 0) {
+                iMeta.setCustomModelData(modifier.getIngredientCustomModelData());
+            }
+            ingredient.setItemMeta(iMeta);
+        }
+        return ingredient;
     }
 }

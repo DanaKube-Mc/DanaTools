@@ -16,7 +16,7 @@ public class CustomTool {
     private final int xpCurveBase;
     private final double xpCurveMultiplier;
     
-    private final Map<Material, Integer> xpGain;
+    private final Map<Material, BlockActivity> blockActivities;
     
     private final int maxLevel;
     private final Map<Integer, Integer> slotsProgression;
@@ -25,7 +25,7 @@ public class CustomTool {
     private final String noModifierMessage;
 
     public CustomTool(String id, Material material, int customModelData, String displayName, List<String> lore,
-                      int xpCurveBase, double xpCurveMultiplier, Map<Material, Integer> xpGain,
+                      int xpCurveBase, double xpCurveMultiplier, Map<Material, BlockActivity> blockActivities,
                       int maxLevel, Map<Integer, Integer> slotsProgression, int maxSlots,
                       Map<Enchantment, Integer> enchantmentLimits, String noModifierMessage) {
         this.id = id;
@@ -35,7 +35,7 @@ public class CustomTool {
         this.lore = lore;
         this.xpCurveBase = xpCurveBase;
         this.xpCurveMultiplier = xpCurveMultiplier;
-        this.xpGain = xpGain != null ? xpGain : new HashMap<>();
+        this.blockActivities = blockActivities != null ? blockActivities : new HashMap<>();
         this.maxLevel = maxLevel;
         this.slotsProgression = slotsProgression != null ? slotsProgression : new HashMap<>();
         this.maxSlots = maxSlots;
@@ -72,11 +72,20 @@ public class CustomTool {
     }
 
     public Map<Material, Integer> getXpGain() {
+        Map<Material, Integer> xpGain = new HashMap<>();
+        for (Map.Entry<Material, BlockActivity> entry : blockActivities.entrySet()) {
+            xpGain.put(entry.getKey(), entry.getValue().getXp());
+        }
         return xpGain;
     }
 
     public int getXpForBlock(Material material) {
-        return xpGain.getOrDefault(material, 0);
+        BlockActivity activity = blockActivities.get(material);
+        return activity != null ? activity.getXp() : 0;
+    }
+
+    public BlockActivity getBlockActivity(Material material) {
+        return blockActivities.get(material);
     }
 
     public int getMaxLevel() {
@@ -114,5 +123,45 @@ public class CustomTool {
 
     public String getNoModifierMessage() {
         return noModifierMessage;
+    }
+
+    public static class BlockActivity {
+        private final int xp;
+        private final CoreDrop coreDrop;
+
+        public BlockActivity(int xp, CoreDrop coreDrop) {
+            this.xp = xp;
+            this.coreDrop = coreDrop;
+        }
+
+        public int getXp() {
+            return xp;
+        }
+
+        public CoreDrop getCoreDrop() {
+            return coreDrop;
+        }
+
+        public boolean hasCoreDrop() {
+            return coreDrop != null;
+        }
+    }
+
+    public static class CoreDrop {
+        private final String modifierId;
+        private final double chancePercent;
+
+        public CoreDrop(String modifierId, double chancePercent) {
+            this.modifierId = modifierId;
+            this.chancePercent = chancePercent;
+        }
+
+        public String getModifierId() {
+            return modifierId;
+        }
+
+        public double getChancePercent() {
+            return chancePercent;
+        }
     }
 }

@@ -166,28 +166,7 @@ public class DanaToolsCommand implements CommandExecutor, TabCompleter {
             template.setItemMeta(tMeta);
         }
 
-        ItemStack ingredient;
-        if (modifier.getIngredientMaterial() == Material.PLAYER_HEAD && modifier.getIngredientTexture() != null && !modifier.getIngredientTexture().isEmpty()) {
-            ingredient = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta sMeta = (SkullMeta) ingredient.getItemMeta();
-            if (sMeta != null) {
-                PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
-                profile.getProperties().add(new ProfileProperty("textures", modifier.getIngredientTexture()));
-                sMeta.setPlayerProfile(profile);
-                ingredient.setItemMeta(sMeta);
-            }
-        } else {
-            ingredient = new ItemStack(modifier.getIngredientMaterial());
-        }
-
-        ItemMeta iMeta = ingredient.getItemMeta();
-        if (iMeta != null) {
-            iMeta.displayName(ToolInstance.parseColor(modifier.getIngredientDisplayName()));
-            if (modifier.getIngredientCustomModelData() > 0) {
-                iMeta.setCustomModelData(modifier.getIngredientCustomModelData());
-            }
-            ingredient.setItemMeta(iMeta);
-        }
+        ItemStack ingredient = plugin.getModifierConfigManager().buildIngredientItem(modifier);
 
         target.getInventory().addItem(template, ingredient);
         sender.sendMessage(plugin.getLangManager().getMessage("givemodifier.success", "{modifier}", modId, "{player}", target.getName()));
