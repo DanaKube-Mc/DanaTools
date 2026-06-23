@@ -4,6 +4,7 @@ import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.storage.ToolDataStorage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Sound;
@@ -190,19 +191,24 @@ public class ToolInstance {
 
         List<Component> formattedLore = new ArrayList<>();
 
-        Map<Enchantment, Integer> enchantments = item.getEnchantments();
+        Map<Enchantment, Integer> enchantments = meta.getEnchants();
         if (!enchantments.isEmpty()) {
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+            meta.addItemFlags(ItemFlag.HIDE_STORED_ENCHANTS);
             for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
                 Enchantment ench = entry.getKey();
                 int level = entry.getValue();
                 Component lineComp = Component.translatable(ench)
                         .append(Component.text(" " + toRoman(level)))
-                        .color(ench.isCursed() ? NamedTextColor.RED : NamedTextColor.GRAY);
+                        .color(ench.isCursed() ? NamedTextColor.RED : NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
                 formattedLore.add(lineComp);
             }
         } else {
             meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+            meta.removeItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+            meta.removeItemFlags(ItemFlag.HIDE_STORED_ENCHANTS);
         }
 
         List<String> rawLore = config.getLore();
@@ -221,7 +227,14 @@ public class ToolInstance {
             if (line.contains("{modifiers_list}")) {
                 List<String> activeModifiers = getModifiers();
                 if (activeModifiers.isEmpty()) {
-                    formattedLore.add(parseColor("&7 (Aucun modificateur)"));
+                    String noModMsgStr = config.getNoModifierMessage();
+                    Component noModMsg;
+                    if (noModMsgStr != null) {
+                        noModMsg = parseColor(noModMsgStr);
+                    } else {
+                        noModMsg = DanaTools.getInstance().getLangManager().getMessage("modifiers.none");
+                    }
+                    formattedLore.add(noModMsg);
                 } else {
                     for (String modId : activeModifiers) {
                         CustomModifier modConfig = DanaTools.getInstance().getModifierConfigManager().getModifier(modId);
@@ -231,10 +244,12 @@ public class ToolInstance {
                             if (settings != null) {
                                 formattedLore.add(parseColor(settings.getDisplayName()));
                             } else {
-                                formattedLore.add(parseColor("&7 - " + modId + " (Lvl " + activeLvl + ")"));
+                                Component formatted = DanaTools.getInstance().getLangManager().getMessage("modifiers.format_with_level", "{modifier}", modId, "{level}", activeLvl);
+                                formattedLore.add(formatted);
                             }
                         } else {
-                            formattedLore.add(parseColor("&7 - " + modId));
+                            Component formatted = DanaTools.getInstance().getLangManager().getMessage("modifiers.format_no_level", "{modifier}", modId);
+                            formattedLore.add(formatted);
                         }
                     }
                 }

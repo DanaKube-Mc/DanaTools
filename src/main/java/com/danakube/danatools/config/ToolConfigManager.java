@@ -105,10 +105,13 @@ public class ToolConfigManager {
                     }
                 }
 
+                String noModifierMessage = config.getString("no-modifier-message", null);
+
                 CustomTool customTool = new CustomTool(
                         id, material, customModelData, displayName, lore,
                         xpCurveBase, xpCurveMultiplier, xpGain,
-                        maxLevel, slotsProgression, maxSlots, enchantmentLimits
+                        maxLevel, slotsProgression, maxSlots, enchantmentLimits,
+                        noModifierMessage
                 );
 
                 tools.put(id, customTool);

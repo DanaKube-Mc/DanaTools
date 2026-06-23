@@ -5,6 +5,8 @@ import com.danakube.danatools.model.CustomTool;
 import com.danakube.danatools.model.ToolInstance;
 import com.danakube.danatools.storage.ToolDataStorage;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -12,13 +14,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.inventory.view.AnvilView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AnvilListener implements Listener {
@@ -36,6 +42,11 @@ public class AnvilListener implements Listener {
         ItemStack right = inv.getItem(1);
 
         if (left == null || left.getType().isAir()) {
+            return;
+        }
+
+        if (ToolDataStorage.isDanaTool(left) && (right == null || right.getType().isAir())) {
+            handleToolRename(event, left);
             return;
         }
 
@@ -131,15 +142,17 @@ public class AnvilListener implements Listener {
                 repairable.setRepairCost(0);
             }
 
-            resultMeta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-            resultMeta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
-            java.util.List<Component> bookLore = new java.util.ArrayList<>();
+            resultMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+            resultMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            resultMeta.addItemFlags(ItemFlag.HIDE_STORED_ENCHANTS);
+            List<Component> bookLore = new ArrayList<>();
             for (Map.Entry<Enchantment, Integer> entry : combinedEnchants.entrySet()) {
                 Enchantment ench = entry.getKey();
                 int lvl = entry.getValue();
                 Component line = Component.translatable(ench)
                         .append(Component.text(" " + ToolInstance.toRoman(lvl)))
-                        .color(ench.isCursed() ? net.kyori.adventure.text.format.NamedTextColor.RED : net.kyori.adventure.text.format.NamedTextColor.GRAY);
+                        .color(ench.isCursed() ? NamedTextColor.RED : NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
                 bookLore.add(line);
             }
             resultMeta.lore(bookLore);
@@ -216,13 +229,11 @@ public class AnvilListener implements Listener {
 
         AnvilView anvilView = event.getView() instanceof AnvilView ? (AnvilView) event.getView() : null;
         String renameText = anvilView != null ? anvilView.getRenameText() : null;
-        boolean renamed = false;
-        if (renameText != null && !renameText.trim().isEmpty()) {
-            String currentName = getPlainName(left);
-            if (!renameText.equalsIgnoreCase(currentName)) {
-                renamed = true;
-                xpCost += 1;
-            }
+
+        ItemStack result = left.clone();
+        boolean renamed = handleRenameMeta(result, left, renameText);
+        if (renamed) {
+            xpCost += 1;
         }
 
         if (!changed && !renamed) {
@@ -230,7 +241,6 @@ public class AnvilListener implements Listener {
             return;
         }
 
-        ItemStack result = left.clone();
         ItemMeta resultMeta = result.getItemMeta();
         if (resultMeta != null) {
             for (Enchantment active : result.getEnchantments().keySet()) {
@@ -243,10 +253,6 @@ public class AnvilListener implements Listener {
                 repairable.setRepairCost(0);
             }
             result.setItemMeta(resultMeta);
-        }
-
-        if (renamed) {
-            ToolDataStorage.setCustomName(result, renameText);
         }
 
         ToolInstance tool = ToolInstance.fromItemStack(result);
@@ -326,7 +332,7 @@ public class AnvilListener implements Listener {
 
         boolean durabilityRepaired = false;
         short maxDurability = left.getType().getMaxDurability();
-        if (leftMeta instanceof org.bukkit.inventory.meta.Damageable leftD && rightMeta instanceof org.bukkit.inventory.meta.Damageable rightD) {
+        if (leftMeta instanceof Damageable leftD && rightMeta instanceof Damageable rightD) {
             int leftDamage = leftD.getDamage();
             int rightDamage = rightD.getDamage();
             if (leftDamage > 0) {
@@ -341,13 +347,11 @@ public class AnvilListener implements Listener {
 
         AnvilView anvilView = event.getView() instanceof AnvilView ? (AnvilView) event.getView() : null;
         String renameText = anvilView != null ? anvilView.getRenameText() : null;
-        boolean renamed = false;
-        if (renameText != null && !renameText.trim().isEmpty()) {
-            String currentName = getPlainName(left);
-            if (!renameText.equalsIgnoreCase(currentName)) {
-                renamed = true;
-                xpCost += 1;
-            }
+
+        ItemStack result = left.clone();
+        boolean renamed = handleRenameMeta(result, left, renameText);
+        if (renamed) {
+            xpCost += 1;
         }
 
         if (!changed && !durabilityRepaired && !renamed) {
@@ -355,7 +359,6 @@ public class AnvilListener implements Listener {
             return;
         }
 
-        ItemStack result = left.clone();
         ItemMeta resultMeta = result.getItemMeta();
         if (resultMeta != null) {
             for (Enchantment active : result.getEnchantments().keySet()) {
@@ -365,9 +368,9 @@ public class AnvilListener implements Listener {
                 resultMeta.addEnchant(entry.getKey(), entry.getValue(), true);
             }
 
-            if (durabilityRepaired && resultMeta instanceof org.bukkit.inventory.meta.Damageable resultD) {
-                int leftDamage = ((org.bukkit.inventory.meta.Damageable) leftMeta).getDamage();
-                int rightDamage = ((org.bukkit.inventory.meta.Damageable) rightMeta).getDamage();
+            if (durabilityRepaired && resultMeta instanceof Damageable resultD) {
+                int leftDamage = ((Damageable) leftMeta).getDamage();
+                int rightDamage = ((Damageable) rightMeta).getDamage();
                 int repValue = (maxDurability - leftDamage) + (maxDurability - rightDamage) + (int) (maxDurability * 0.12);
                 resultD.setDamage(Math.max(0, maxDurability - repValue));
             }
@@ -376,10 +379,6 @@ public class AnvilListener implements Listener {
                 repairable.setRepairCost(0);
             }
             result.setItemMeta(resultMeta);
-        }
-
-        if (renamed) {
-            ToolDataStorage.setCustomName(result, renameText);
         }
 
         ToolInstance tool = ToolInstance.fromItemStack(result);
@@ -401,5 +400,57 @@ public class AnvilListener implements Listener {
         Component comp = meta.displayName();
         if (comp == null) return "";
         return PlainTextComponentSerializer.plainText().serialize(comp);
+    }
+
+    private boolean handleRenameMeta(ItemStack result, ItemStack left, String renameText) {
+        if (renameText == null) {
+            return false;
+        }
+
+        String currentPlainName = getPlainName(left);
+        String oldCustomName = ToolDataStorage.getCustomName(left);
+
+        if (renameText.trim().isEmpty()) {
+
+            if (oldCustomName != null) {
+                ToolDataStorage.setCustomName(result, null);
+                return true;
+            }
+            return false;
+        }
+
+        if (!renameText.equalsIgnoreCase(currentPlainName)) {
+            ToolDataStorage.setCustomName(result, renameText);
+            return true;
+        }
+
+        return false;
+    }
+
+    private void handleToolRename(PrepareAnvilEvent event, ItemStack left) {
+        AnvilView anvilView = event.getView() instanceof AnvilView ? (AnvilView) event.getView() : null;
+        String renameText = anvilView != null ? anvilView.getRenameText() : null;
+
+        if (renameText == null) {
+            return;
+        }
+
+        ItemStack result = left.clone();
+        boolean renamed = handleRenameMeta(result, left, renameText);
+
+        if (!renamed) {
+            return;
+        }
+
+        ToolInstance tool = ToolInstance.fromItemStack(result);
+        if (tool != null) {
+            tool.updateLore();
+            result = tool.getItemStack();
+        }
+
+        event.setResult(result);
+        if (anvilView != null) {
+            anvilView.setRepairCost(1);
+        }
     }
 }

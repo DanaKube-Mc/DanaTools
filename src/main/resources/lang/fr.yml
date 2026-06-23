@@ -35,3 +35,8 @@ xp:
 level:
   invalid_range: "<red>Le niveau doit etre compris entre 1 et {max_level}.</red>"
   success: "{prefix} Niveau de l'outil defini a <gold>{level}</gold> pour <yellow>{player}</yellow>."
+
+modifiers:
+  none: "&7 (Aucun modificateur)"
+  format_with_level: "&7 - {modifier} (Lvl {level})"
+  format_no_level: "&7 - {modifier}"

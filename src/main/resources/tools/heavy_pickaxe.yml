@@ -23,6 +23,7 @@ display-name: "<gradient:#ff5555:#ffaacc>Pioche Lourde de Depart</gradient>"
 #   {slots_used}    - Nombre de slots de modificateurs occupes
 #   {slots_total}   - Nombre total de slots de modificateurs debloques
 #   {modifiers_list} - Remplacer par la liste des modificateurs actifs
+no-modifier-message: "&7 (Aucun modificateur)"
 lore:
   - "&7Une pioche qui s'adapte a son porteur."
   - ""
