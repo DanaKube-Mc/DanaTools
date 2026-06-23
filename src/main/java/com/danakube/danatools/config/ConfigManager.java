@@ -28,6 +28,7 @@ public class ConfigManager {
         saveResourceIfNotExists("modifiers/wisdom.yml");
         saveResourceIfNotExists("modifiers/learning.yml");
         saveResourceIfNotExists("modifiers/auto_smelt.yml");
+        saveResourceIfNotExists("modifiers/compactor.yml");
 
         this.toolsFolder = new File(plugin.getDataFolder(), "tools");
         this.modifiersFolder = new File(plugin.getDataFolder(), "modifiers");

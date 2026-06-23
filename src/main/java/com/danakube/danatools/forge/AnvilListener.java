@@ -184,13 +184,13 @@ public class AnvilListener implements Listener {
         int xpCost = 2;
 
         ToolInstance leftTool = ToolInstance.fromItemStack(left);
-        boolean hasAutoSmelt = leftTool != null && leftTool.hasModifier("auto_smelt");
+        boolean hasIncompatibleModifier = leftTool != null && (leftTool.hasModifier("auto_smelt") || leftTool.hasModifier("compactor"));
 
         for (Map.Entry<Enchantment, Integer> entry : rightEnchants.entrySet()) {
             Enchantment ench = entry.getKey();
             int rightLvl = entry.getValue();
 
-            if (hasAutoSmelt && ench.equals(Enchantment.SILK_TOUCH)) {
+            if (hasIncompatibleModifier && ench.equals(Enchantment.SILK_TOUCH)) {
                 continue;
             }
 
@@ -298,13 +298,13 @@ public class AnvilListener implements Listener {
         int xpCost = 2;
 
         ToolInstance leftTool = ToolInstance.fromItemStack(left);
-        boolean hasAutoSmelt = leftTool != null && leftTool.hasModifier("auto_smelt");
+        boolean hasIncompatibleModifier = leftTool != null && (leftTool.hasModifier("auto_smelt") || leftTool.hasModifier("compactor"));
 
         for (Map.Entry<Enchantment, Integer> entry : rightEnchants.entrySet()) {
             Enchantment ench = entry.getKey();
             int rightLvl = entry.getValue();
 
-            if (hasAutoSmelt && ench.equals(Enchantment.SILK_TOUCH)) {
+            if (hasIncompatibleModifier && ench.equals(Enchantment.SILK_TOUCH)) {
                 continue;
             }
 

@@ -5,7 +5,7 @@ import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.ToolInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import com.danakube.danatools.modifier.DropManager;
-import org.bukkit.Material;
+
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Item;

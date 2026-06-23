@@ -1,0 +1,74 @@
+id: "compactor"
+incompatible-modifiers: []
+
+# Recette de forge
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5005
+  display-name: "&6Placard de Forge : Compaction"
+
+ingredient-item:
+  material: "PISTON"
+  display-name: "&eNoyau de Pression"
+
+# Niveau unique et configuration des recettes
+levels:
+  1:
+    display-name: "&aModificateur : Compaction"
+    lore:
+      - "&7Compacte automatiquement vos ressources"
+      - "&7lorsqu'elles sont ramassées."
+      - "&dSlots requis : &f2"
+    slot-cost: 2
+    min-tool-level: 10
+    behavior:
+      type: "COMPACTOR"
+      recipes:
+        DIAMOND_BLOCK:
+          DIAMOND: 9
+        IRON_BLOCK:
+          IRON_INGOT: 9
+        COAL_BLOCK:
+          COAL: 9
+        EMERALD_BLOCK:
+          EMERALD: 9
+        GOLD_BLOCK:
+          GOLD_INGOT: 9
+        REDSTONE_BLOCK:
+          REDSTONE: 9
+        LAPIS_BLOCK:
+          LAPIS_LAZULI: 9
+        BRICKS:
+          BRICK: 4
+        GOLD_INGOT:
+          GOLD_NUGGET: 9
+        IRON_INGOT:
+          IRON_NUGGET: 9
+        NETHERITE_BLOCK:
+          NETHERITE_INGOT: 9
+        COPPER_BLOCK:
+          COPPER_INGOT: 9
+        MELON:
+          MELON_SLICE: 9
+        GLOWSTONE:
+          GLOWSTONE_DUST: 4
+        SNOW_BLOCK:
+          SNOW_BALL: 4
+        SLIME_BLOCK:
+          SLIME_BALL: 9
+        BONE_BLOCK:
+          BONE_MEAL: 9
+        AMETHYST_BLOCK:
+          AMETHYST_SHARD: 4
+        HAY_BLOCK:
+          WHEAT: 9
+        RAW_IRON_BLOCK:
+          RAW_IRON: 9
+        RAW_GOLD_BLOCK:
+          RAW_GOLD: 9
+        RAW_COPPER_BLOCK:
+          RAW_COPPER: 9
+        CLAY:
+          CLAY_BALL: 4
+        QUARTZ_BLOCK:
+          QUARTZ: 4

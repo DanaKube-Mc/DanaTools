@@ -2,6 +2,7 @@ package com.danakube.danatools.modifier;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.modifier.impl.AutoSmeltModifier;
+import com.danakube.danatools.modifier.impl.CompactorModifier;
 import com.danakube.danatools.modifier.impl.LearningModifier;
 import com.danakube.danatools.modifier.impl.TrenchModifier;
 import com.danakube.danatools.modifier.impl.VeinMinerModifier;
@@ -25,6 +26,7 @@ public class ModifierRegistry {
         register(new WisdomModifier());
         register(new LearningModifier());
         register(new AutoSmeltModifier());
+        register(new CompactorModifier());
     }
 
     private void register(DanaModifier modifier) {

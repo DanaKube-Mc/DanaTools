@@ -9,6 +9,7 @@ import com.danakube.danatools.forge.AnvilListener;
 import com.danakube.danatools.forge.ForgeRecipeRegistry;
 import com.danakube.danatools.forge.SmithingListener;
 import com.danakube.danatools.modifier.ModifierRegistry;
+import com.danakube.danatools.modifier.CompactorManager;
 import com.danakube.danatools.progression.BlockBreakXPListener;
 import com.danakube.danatools.progression.XPManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,6 +27,7 @@ public final class DanaTools extends JavaPlugin {
     private ForgeRecipeRegistry forgeRecipeRegistry;
     private ModifierRegistry modifierRegistry;
     private XPManager xpManager;
+    private CompactorManager compactorManager;
 
     @Override
     public void onEnable() {
@@ -49,6 +51,9 @@ public final class DanaTools extends JavaPlugin {
         this.forgeRecipeRegistry.registerRecipes();
 
         this.xpManager = new XPManager(this);
+
+        this.compactorManager = new CompactorManager();
+        this.compactorManager.loadRecipes();
 
         this.modifierRegistry = new ModifierRegistry(this);
         this.modifierRegistry.registerDefaultModifiers();
@@ -100,6 +105,10 @@ public final class DanaTools extends JavaPlugin {
         return xpManager;
     }
 
+    public CompactorManager getCompactorManager() {
+        return compactorManager;
+    }
+
     public void reloadPlugin() {
         try {
             this.configManager.setupConfigs();
@@ -107,6 +116,9 @@ public final class DanaTools extends JavaPlugin {
             this.langManager.loadLang();
             this.toolConfigManager.loadTools();
             this.modifierConfigManager.loadModifiers();
+            if (this.compactorManager != null) {
+                this.compactorManager.loadRecipes();
+            }
             if (this.forgeRecipeRegistry != null) {
                 this.forgeRecipeRegistry.registerRecipes();
             }
