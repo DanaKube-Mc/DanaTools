@@ -4,6 +4,8 @@ import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.ToolInstance;
 import com.danakube.danatools.modifier.DanaModifier;
+import com.danakube.danatools.modifier.DropManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -95,13 +97,8 @@ public class VeinMinerModifier extends DanaModifier {
                                 Bukkit.getPluginManager().callEvent(virtualEvent);
 
                                 if (!virtualEvent.isCancelled()) {
-                                    neighbor.breakNaturally(toolItem);
+                                    DropManager.breakBlock(player, neighbor, toolItem, virtualEvent.getExpToDrop());
                                     brokenCount++;
-
-                                    int exp = virtualEvent.getExpToDrop();
-                                    if (exp > 0) {
-                                        neighbor.getWorld().spawn(neighbor.getLocation().add(0.5, 0.5, 0.5), ExperienceOrb.class).setExperience(exp);
-                                    }
 
                                     applyDurabilityDamage(player, toolItem);
 

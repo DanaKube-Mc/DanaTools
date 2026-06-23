@@ -1,0 +1,56 @@
+id: "auto_smelt"
+incompatible-modifiers: []
+
+# Recette de forge
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5004
+  display-name: "&6Placard de Forge : Auto-Cuisson"
+
+ingredient-item:
+  material: "BLAZE_ROD"
+  display-name: "&eNoyau de Feu"
+
+# Niveau unique
+levels:
+  1:
+    display-name: "&cModificateur : Auto-Cuisson"
+    lore:
+      - "&7Cuit directement vos récoltes."
+      - "&cIncompatible avec Toucher de Soie."
+      - "&dSlots requis : &f2"
+    slot-cost: 2
+    min-tool-level: 8
+    behavior:
+      type: "AUTO_SMELT"
+      recipes:
+        RAW_IRON:
+          result: "IRON_INGOT"
+          xp: 0.7
+        RAW_GOLD:
+          result: "GOLD_INGOT"
+          xp: 1.0
+        RAW_COPPER:
+          result: "COPPER_INGOT"
+          xp: 0.7
+        BEEF:
+          result: "COOKED_BEEF"
+          xp: 0.35
+        PORKCHOP:
+          result: "COOKED_PORKCHOP"
+          xp: 0.35
+        CHICKEN:
+          result: "COOKED_CHICKEN"
+          xp: 0.35
+        MUTTON:
+          result: "COOKED_MUTTON"
+          xp: 0.35
+        RABBIT:
+          result: "COOKED_RABBIT"
+          xp: 0.35
+        COD:
+          result: "COOKED_COD"
+          xp: 0.35
+        SALMON:
+          result: "COOKED_SALMON"
+          xp: 0.35

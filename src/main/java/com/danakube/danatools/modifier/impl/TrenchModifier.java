@@ -4,6 +4,8 @@ import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.ToolInstance;
 import com.danakube.danatools.modifier.DanaModifier;
+import com.danakube.danatools.modifier.DropManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -120,12 +122,7 @@ public class TrenchModifier extends DanaModifier {
                     Bukkit.getPluginManager().callEvent(virtualEvent);
 
                     if (!virtualEvent.isCancelled()) {
-                        targetBlock.breakNaturally(toolItem);
-
-                        int exp = virtualEvent.getExpToDrop();
-                        if (exp > 0) {
-                            targetBlock.getWorld().spawn(targetBlock.getLocation().add(0.5, 0.5, 0.5), ExperienceOrb.class).setExperience(exp);
-                        }
+                        DropManager.breakBlock(player, targetBlock, toolItem, virtualEvent.getExpToDrop());
 
                         applyDurabilityDamage(player, toolItem);
 

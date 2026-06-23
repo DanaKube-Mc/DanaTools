@@ -159,6 +159,12 @@ public class ToolInstance {
             }
         }
 
+        if (modifier.getId().equals("auto_smelt")) {
+            if (item.getEnchantments().containsKey(Enchantment.SILK_TOUCH)) {
+                return false;
+            }
+        }
+
         return true;
     }
 
