@@ -25,7 +25,15 @@ public class ForgeRecipeRegistry {
         unregisterRecipes();
 
         for (CustomModifier modifier : plugin.getModifierConfigManager().getModifiers()) {
-            for (String toolId : modifier.getCompatibleTools()) {
+            java.util.Collection<String> toolIds = modifier.getCompatibleTools();
+            if (toolIds == null || toolIds.isEmpty()) {
+                toolIds = new java.util.ArrayList<>();
+                for (CustomTool t : plugin.getToolConfigManager().getTools()) {
+                    toolIds.add(t.getId());
+                }
+            }
+
+            for (String toolId : toolIds) {
                 CustomTool tool = plugin.getToolConfigManager().getTool(toolId);
                 if (tool == null) continue;
 

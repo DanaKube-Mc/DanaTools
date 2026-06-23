@@ -5,6 +5,8 @@ import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.ToolInstance;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.destroystokyo.paper.profile.PlayerProfile;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -89,7 +91,24 @@ public class SmithingListener implements Listener {
         if (modifier.getTemplateCustomModelData() > 0) {
             if (!item.hasItemMeta()) return false;
             ItemMeta meta = item.getItemMeta();
-            return meta.hasCustomModelData() && meta.getCustomModelData() == modifier.getTemplateCustomModelData();
+            if (!meta.hasCustomModelData() || meta.getCustomModelData() != modifier.getTemplateCustomModelData()) {
+                return false;
+            }
+        }
+        if (modifier.getTemplateDisplayName() != null && !modifier.getTemplateDisplayName().isEmpty()) {
+            if (!item.hasItemMeta()) return false;
+            ItemMeta meta = item.getItemMeta();
+            if (!meta.hasDisplayName()) return false;
+            Component expected = ToolInstance.parseColor(modifier.getTemplateDisplayName());
+            Component actual = meta.displayName();
+            if (actual == null) return false;
+            if (!actual.equals(expected)) {
+                String plainExpected = PlainTextComponentSerializer.plainText().serialize(expected);
+                String plainActual = PlainTextComponentSerializer.plainText().serialize(actual);
+                if (!plainExpected.equalsIgnoreCase(plainActual)) {
+                    return false;
+                }
+            }
         }
         return true;
     }
@@ -116,8 +135,27 @@ public class SmithingListener implements Listener {
         if (modifier.getIngredientCustomModelData() > 0) {
             if (!item.hasItemMeta()) return false;
             ItemMeta meta = item.getItemMeta();
-            return meta.hasCustomModelData() && meta.getCustomModelData() == modifier.getIngredientCustomModelData();
+            if (!meta.hasCustomModelData() || meta.getCustomModelData() != modifier.getIngredientCustomModelData()) {
+                return false;
+            }
         }
+
+        if (modifier.getIngredientDisplayName() != null && !modifier.getIngredientDisplayName().isEmpty()) {
+            if (!item.hasItemMeta()) return false;
+            ItemMeta meta = item.getItemMeta();
+            if (!meta.hasDisplayName()) return false;
+            Component expected = ToolInstance.parseColor(modifier.getIngredientDisplayName());
+            Component actual = meta.displayName();
+            if (actual == null) return false;
+            if (!actual.equals(expected)) {
+                String plainExpected = PlainTextComponentSerializer.plainText().serialize(expected);
+                String plainActual = PlainTextComponentSerializer.plainText().serialize(actual);
+                if (!plainExpected.equalsIgnoreCase(plainActual)) {
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 }

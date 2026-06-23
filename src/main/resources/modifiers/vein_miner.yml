@@ -16,10 +16,9 @@ template-item:
   display-name: "&6Placard de Forge : Minage en Veine"
 
 ingredient-item:
-  material: "PLAYER_HEAD"
-  # Texture Base64 du Noyau de Terre
-  texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjViNTVhM2I0OTlhNDk2YTkyODkyYjRlYTVmZGQ2NThkOWQ1N2UxNjgxMWI1MzVkM2M2M2NhNDhjYjU0YTkifX19"
-  display-name: "&eNoyau de Terre"
+  material: "CLAY_BALL"
+  custom-model-data: 12001
+  display-name: "&eNoyau de Vie"
 
 # Niveaux disponibles et configurations specifiques de progression
 levels:
