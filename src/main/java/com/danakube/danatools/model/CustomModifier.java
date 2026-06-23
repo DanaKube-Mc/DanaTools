@@ -7,8 +7,7 @@ import java.util.Map;
 
 public class CustomModifier {
     private final String id;
-    private final String displayName;
-    private final List<String> lore;
+    private final List<String> incompatibleModifiers;
 
     private final Material templateMaterial;
     private final int templateCustomModelData;
@@ -17,47 +16,36 @@ public class CustomModifier {
     private final Material ingredientMaterial;
     private final int ingredientCustomModelData;
     private final String ingredientDisplayName;
+    private final String ingredientTexture;
 
-    private final int minToolLevel;
-    private final int slotCost;
     private final List<String> compatibleTools;
-    private final List<String> incompatibleModifiers;
 
-    private final String behaviorType;
-    private final Map<String, Object> behaviorSettings;
+    private final Map<Integer, LevelSettings> levels;
 
-    public CustomModifier(String id, String displayName, List<String> lore,
+    public CustomModifier(String id, List<String> incompatibleModifiers,
                           Material templateMaterial, int templateCustomModelData, String templateDisplayName,
                           Material ingredientMaterial, int ingredientCustomModelData, String ingredientDisplayName,
-                          int minToolLevel, int slotCost, List<String> compatibleTools, List<String> incompatibleModifiers,
-                          String behaviorType, Map<String, Object> behaviorSettings) {
+                          String ingredientTexture, List<String> compatibleTools,
+                          Map<Integer, LevelSettings> levels) {
         this.id = id;
-        this.displayName = displayName;
-        this.lore = lore;
+        this.incompatibleModifiers = incompatibleModifiers;
         this.templateMaterial = templateMaterial;
         this.templateCustomModelData = templateCustomModelData;
         this.templateDisplayName = templateDisplayName;
         this.ingredientMaterial = ingredientMaterial;
         this.ingredientCustomModelData = ingredientCustomModelData;
         this.ingredientDisplayName = ingredientDisplayName;
-        this.minToolLevel = minToolLevel;
-        this.slotCost = slotCost;
+        this.ingredientTexture = ingredientTexture;
         this.compatibleTools = compatibleTools;
-        this.incompatibleModifiers = incompatibleModifiers;
-        this.behaviorType = behaviorType;
-        this.behaviorSettings = behaviorSettings != null ? behaviorSettings : new HashMap<>();
+        this.levels = levels != null ? levels : new HashMap<>();
     }
 
     public String getId() {
         return id;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public List<String> getLore() {
-        return lore;
+    public List<String> getIncompatibleModifiers() {
+        return incompatibleModifiers;
     }
 
     public Material getTemplateMaterial() {
@@ -84,35 +72,84 @@ public class CustomModifier {
         return ingredientDisplayName;
     }
 
-    public int getMinToolLevel() {
-        return minToolLevel;
-    }
-
-    public int getSlotCost() {
-        return slotCost;
+    public String getIngredientTexture() {
+        return ingredientTexture;
     }
 
     public List<String> getCompatibleTools() {
         return compatibleTools;
     }
 
-    public List<String> getIncompatibleModifiers() {
-        return incompatibleModifiers;
+    public Map<Integer, LevelSettings> getLevels() {
+        return levels;
     }
 
-    public String getBehaviorType() {
-        return behaviorType;
+    public LevelSettings getLevel(int level) {
+        return levels.get(level);
     }
 
-    public Map<String, Object> getBehaviorSettings() {
-        return behaviorSettings;
+    public boolean hasLevel(int level) {
+        return levels.containsKey(level);
     }
 
-    public int getBehaviorInt(String key, int defaultValue) {
-        Object obj = behaviorSettings.get(key);
-        if (obj instanceof Number) {
-            return ((Number) obj).intValue();
+    public int getMaxLevel() {
+        return levels.keySet().stream().max(Integer::compare).orElse(0);
+    }
+
+    public static class LevelSettings {
+        private final int level;
+        private final String displayName;
+        private final List<String> lore;
+        private final int minToolLevel;
+        private final int slotCost;
+        private final String behaviorType;
+        private final Map<String, Object> behaviorSettings;
+
+        public LevelSettings(int level, String displayName, List<String> lore, int minToolLevel, int slotCost,
+                             String behaviorType, Map<String, Object> behaviorSettings) {
+            this.level = level;
+            this.displayName = displayName;
+            this.lore = lore;
+            this.minToolLevel = minToolLevel;
+            this.slotCost = slotCost;
+            this.behaviorType = behaviorType;
+            this.behaviorSettings = behaviorSettings != null ? behaviorSettings : new HashMap<>();
         }
-        return defaultValue;
+
+        public int getLevel() {
+            return level;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public List<String> getLore() {
+            return lore;
+        }
+
+        public int getMinToolLevel() {
+            return minToolLevel;
+        }
+
+        public int getSlotCost() {
+            return slotCost;
+        }
+
+        public String getBehaviorType() {
+            return behaviorType;
+        }
+
+        public Map<String, Object> getBehaviorSettings() {
+            return behaviorSettings;
+        }
+
+        public int getBehaviorInt(String key, int defaultValue) {
+            Object obj = behaviorSettings.get(key);
+            if (obj instanceof Number) {
+                return ((Number) obj).intValue();
+            }
+            return defaultValue;
+        }
     }
 }

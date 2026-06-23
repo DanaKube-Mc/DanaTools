@@ -1,19 +1,19 @@
 # =========================================================================
-# Configuration de Modificateur : Minage en Veine (vein_miner)
+# Configuration de Modificateur : Excavation (trench)
 # =========================================================================
 
 # Identifiant unique du modificateur (doit correspondre au nom du fichier sans le .yml)
-id: "vein_miner"
+id: "trench"
 
 # Liste des modificateurs incompatibles (bloque l'application initiale)
 incompatible-modifiers:
-  - "trench"
+  - "vein_miner"
 
 # Recette de forge (commune pour tous les niveaux)
 template-item:
   material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
   custom-model-data: 5001
-  display-name: "&6Placard de Forge : Minage en Veine"
+  display-name: "&6Placard de Forge : Excavation"
 
 ingredient-item:
   material: "PLAYER_HEAD"
@@ -24,22 +24,32 @@ ingredient-item:
 # Niveaux disponibles et configurations specifiques de progression
 levels:
   1:
-    display-name: "&6Modificateur : Minage en Veine I"
+    display-name: "&6Modificateur : Excavation I"
     lore:
-      - "&7Permet de miner toute une veine de minerai d'un coup (max 32)."
+      - "&7Mine en zone 3x3."
       - "&dSlots requis : &f1"
     slot-cost: 1
     min-tool-level: 5
     behavior:
-      type: "VEIN_MINER"
-      max-blocks: 32
+      type: "TRENCH"
+      range: 1 # Rayon de 1 bloc autour du bloc casse (3x3)
   2:
-    display-name: "&6Modificateur : Minage en Veine II"
+    display-name: "&6Modificateur : Excavation II"
     lore:
-      - "&7Permet de miner toute une veine de minerai d'un coup (max 64)."
+      - "&7Mine en zone 5x5."
       - "&dSlots requis : &f2"
-    slot-cost: 2
-    min-tool-level: 12
+    slot-cost: 2 # Cout total requis sur l'outil
+    min-tool-level: 10
     behavior:
-      type: "VEIN_MINER"
-      max-blocks: 64
+      type: "TRENCH"
+      range: 2 # Rayon de 2 blocs (5x5)
+  3:
+    display-name: "&6Modificateur : Excavation III"
+    lore:
+      - "&7Mine en zone 7x7."
+      - "&dSlots requis : &f4"
+    slot-cost: 4
+    min-tool-level: 15
+    behavior:
+      type: "TRENCH"
+      range: 3 # Rayon de 3 blocs (7x7)

@@ -3,8 +3,13 @@ package com.danakube.danatools.forge;
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.ToolInstance;
+import com.destroystokyo.paper.profile.ProfileProperty;
+import com.destroystokyo.paper.profile.PlayerProfile;
+
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,6 +18,8 @@ import org.bukkit.event.inventory.SmithItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+
 
 public class SmithingListener implements Listener {
 
@@ -41,11 +48,11 @@ public class SmithingListener implements Listener {
         for (CustomModifier modifier : plugin.getModifierConfigManager().getModifiers()) {
             if (matchesTemplate(template, modifier) && matchesIngredient(addition, modifier)) {
                 
-                if (tool.canApplyModifier(modifier)) {
+                if (tool.canApplyOrUpgradeModifier(modifier)) {
                     ItemStack result = base.clone();
                     ToolInstance resultTool = ToolInstance.fromItemStack(result);
                     if (resultTool != null) {
-                        resultTool.applyModifier(modifier);
+                        resultTool.applyOrUpgradeModifier(modifier);
                         event.setResult(resultTool.getItemStack());
                         return;
                     }
@@ -70,7 +77,7 @@ public class SmithingListener implements Listener {
             
             Block block = event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null;
             if (block != null) {
-                player.spawnParticle(org.bukkit.Particle.LAVA, block.getLocation().add(0.5, 1.0, 0.5), 10, 0.2, 0.2, 0.2, 0.1);
+                player.spawnParticle(Particle.LAVA, block.getLocation().add(0.5, 1.0, 0.5), 10, 0.2, 0.2, 0.2, 0.1);
             }
         }
     }
@@ -91,6 +98,21 @@ public class SmithingListener implements Listener {
         if (item == null || item.getType() != modifier.getIngredientMaterial()) {
             return false;
         }
+
+        if (modifier.getIngredientMaterial() == Material.PLAYER_HEAD && modifier.getIngredientTexture() != null && !modifier.getIngredientTexture().isEmpty()) {
+            if (item.hasItemMeta() && item.getItemMeta() instanceof SkullMeta skullMeta) {
+                PlayerProfile profile = skullMeta.getPlayerProfile();
+                if (profile != null) {
+                    for (ProfileProperty prop : profile.getProperties()) {
+                        if (prop.getName().equals("textures")) {
+                            return prop.getValue().equals(modifier.getIngredientTexture());
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
         if (modifier.getIngredientCustomModelData() > 0) {
             if (!item.hasItemMeta()) return false;
             ItemMeta meta = item.getItemMeta();

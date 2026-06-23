@@ -24,7 +24,7 @@ public class ConfigManager {
         saveResourceIfNotExists("lang/fr.yml");
         saveResourceIfNotExists("tools/heavy_pickaxe.yml");
         saveResourceIfNotExists("modifiers/vein_miner.yml");
-        saveResourceIfNotExists("modifiers/trench_3x3.yml");
+        saveResourceIfNotExists("modifiers/trench.yml");
 
         this.toolsFolder = new File(plugin.getDataFolder(), "tools");
         this.modifiersFolder = new File(plugin.getDataFolder(), "modifiers");

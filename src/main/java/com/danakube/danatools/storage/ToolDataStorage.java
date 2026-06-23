@@ -91,19 +91,64 @@ public class ToolDataStorage {
         if (mods == null || mods.trim().isEmpty()) {
             return new ArrayList<>();
         }
-        return new ArrayList<>(Arrays.asList(mods.split(",")));
+        List<String> ids = new ArrayList<>();
+        for (String pair : mods.split(",")) {
+            String[] split = pair.split(":");
+            if (split.length > 0) {
+                ids.add(split[0]);
+            }
+        }
+        return ids;
+    }
+
+    public static int getModifierLevel(ItemStack item, String modifierId) {
+        if (!isDanaTool(item)) return 0;
+        String mods = item.getItemMeta().getPersistentDataContainer().get(KEY_MODIFIERS, PersistentDataType.STRING);
+        if (mods == null || mods.trim().isEmpty()) {
+            return 0;
+        }
+        for (String pair : mods.split(",")) {
+            String[] split = pair.split(":");
+            if (split.length == 2 && split[0].equals(modifierId)) {
+                try {
+                    return Integer.parseInt(split[1]);
+                } catch (NumberFormatException e) {
+                    return 0;
+                }
+            }
+        }
+        return 0;
+    }
+
+    public static void setModifierLevel(ItemStack item, String modifierId, int level) {
+        if (!isDanaTool(item)) return;
+        ItemMeta meta = item.getItemMeta();
+        String mods = meta.getPersistentDataContainer().get(KEY_MODIFIERS, PersistentDataType.STRING);
+        List<String> list = new ArrayList<>();
+        if (mods != null && !mods.trim().isEmpty()) {
+            list.addAll(Arrays.asList(mods.split(",")));
+        }
+
+        boolean found = false;
+        for (int i = 0; i < list.size(); i++) {
+            String[] split = list.get(i).split(":");
+            if (split.length >= 1 && split[0].equals(modifierId)) {
+                list.set(i, modifierId + ":" + level);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            list.add(modifierId + ":" + level);
+        }
+
+        String joined = String.join(",", list);
+        meta.getPersistentDataContainer().set(KEY_MODIFIERS, PersistentDataType.STRING, joined);
+        item.setItemMeta(meta);
     }
 
     public static void addModifier(ItemStack item, String modifierId) {
-        if (!isDanaTool(item)) return;
-        List<String> modifiers = getModifiers(item);
-        if (!modifiers.contains(modifierId)) {
-            modifiers.add(modifierId);
-            String joined = String.join(",", modifiers);
-            ItemMeta meta = item.getItemMeta();
-            meta.getPersistentDataContainer().set(KEY_MODIFIERS, PersistentDataType.STRING, joined);
-            item.setItemMeta(meta);
-        }
+        setModifierLevel(item, modifierId, 1);
     }
 
     public static void initToolData(ItemStack item, String toolId, int slotsTotal) {

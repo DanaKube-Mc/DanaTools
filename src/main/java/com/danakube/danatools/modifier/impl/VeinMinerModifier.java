@@ -2,16 +2,19 @@ package com.danakube.danatools.modifier.impl;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
+import com.danakube.danatools.model.ToolInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -52,10 +55,16 @@ public class VeinMinerModifier extends DanaModifier {
             return;
         }
 
+        ToolInstance toolInstance = ToolInstance.fromItemStack(toolItem);
+        int currentLvl = toolInstance != null ? toolInstance.getModifierLevel("vein_miner") : 1;
+
         CustomModifier modConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("vein_miner");
         int maxBlocks = 64;
         if (modConfig != null) {
-            maxBlocks = modConfig.getBehaviorInt("max-blocks", 64);
+            CustomModifier.LevelSettings settings = modConfig.getLevel(currentLvl);
+            if (settings != null) {
+                maxBlocks = settings.getBehaviorInt("max-blocks", 64);
+            }
         }
 
         Queue<Block> queue = new LinkedList<>();
@@ -112,8 +121,8 @@ public class VeinMinerModifier extends DanaModifier {
 
     private void applyDurabilityDamage(Player player, ItemStack item) {
         if (item == null || !item.hasItemMeta()) return;
-        if (item.getItemMeta() instanceof org.bukkit.inventory.meta.Damageable damageable) {
-            int unbreakingLevel = item.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.UNBREAKING);
+        if (item.getItemMeta() instanceof Damageable damageable) {
+            int unbreakingLevel = item.getEnchantmentLevel(Enchantment.UNBREAKING);
             if (Math.random() < (1.0 / (unbreakingLevel + 1))) {
                 int newDamage = damageable.getDamage() + 1;
                 if (newDamage >= item.getType().getMaxDurability()) {

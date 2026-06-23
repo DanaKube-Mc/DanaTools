@@ -70,11 +70,6 @@ public class ToolInstance {
         return getModifiers().contains(modifierId);
     }
 
-    /**
-     * Ajoute de l'XP à l'outil.
-     * @param amount montant d'xp à ajouter
-     * @param player joueur tenant l'outil (pour les effets sonores/particules, peut être null)
-     */
     public void addXP(int amount, Player player) {
         int maxLevel = config.getMaxLevel();
         int currentLevel = getLevel();
@@ -118,30 +113,62 @@ public class ToolInstance {
         updateLore();
     }
 
-    public boolean canApplyModifier(CustomModifier modifier) {
-        if (getLevel() < modifier.getMinToolLevel()) {
+    public int getModifierLevel(String modifierId) {
+        return ToolDataStorage.getModifierLevel(item, modifierId);
+    }
+
+    public boolean canApplyOrUpgradeModifier(CustomModifier modifier) {
+        int currentLvl = getModifierLevel(modifier.getId());
+        int targetLvl = currentLvl + 1;
+
+        if (!modifier.hasLevel(targetLvl)) {
             return false;
         }
+
+        CustomModifier.LevelSettings settings = modifier.getLevel(targetLvl);
+
+        if (getLevel() < settings.getMinToolLevel()) {
+            return false;
+        }
+
+        int currentCost = currentLvl > 0 ? modifier.getLevel(currentLvl).getSlotCost() : 0;
+        int targetCost = settings.getSlotCost();
+        int diffCost = targetCost - currentCost;
+
         int freeSlots = getSlotsTotal() - getSlotsUsed();
-        if (freeSlots < modifier.getSlotCost()) {
+        if (freeSlots < diffCost) {
             return false;
         }
-        if (!modifier.getCompatibleTools().contains(getToolId())) {
-            return false;
-        }
-        for (String modId : getModifiers()) {
-            if (modifier.getIncompatibleModifiers().contains(modId)) {
+
+        if (modifier.getCompatibleTools() != null && !modifier.getCompatibleTools().isEmpty()) {
+            if (!modifier.getCompatibleTools().contains(getToolId())) {
                 return false;
             }
         }
+
+        if (currentLvl == 0) {
+            for (String activeModId : getModifiers()) {
+                if (modifier.getIncompatibleModifiers().contains(activeModId)) {
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 
-    public void applyModifier(CustomModifier modifier) {
-        if (!canApplyModifier(modifier)) return;
+    public void applyOrUpgradeModifier(CustomModifier modifier) {
+        if (!canApplyOrUpgradeModifier(modifier)) return;
 
-        ToolDataStorage.addModifier(item, modifier.getId());
-        ToolDataStorage.setSlotsUsed(item, getSlotsUsed() + modifier.getSlotCost());
+        int currentLvl = getModifierLevel(modifier.getId());
+        int targetLvl = currentLvl + 1;
+
+        CustomModifier.LevelSettings targetSettings = modifier.getLevel(targetLvl);
+        int currentCost = currentLvl > 0 ? modifier.getLevel(currentLvl).getSlotCost() : 0;
+        int diffCost = targetSettings.getSlotCost() - currentCost;
+
+        ToolDataStorage.setModifierLevel(item, modifier.getId(), targetLvl);
+        ToolDataStorage.setSlotsUsed(item, getSlotsUsed() + diffCost);
         updateLore();
     }
 
@@ -174,7 +201,13 @@ public class ToolInstance {
                     for (String modId : activeModifiers) {
                         CustomModifier modConfig = DanaTools.getInstance().getModifierConfigManager().getModifier(modId);
                         if (modConfig != null) {
-                            formattedLore.add(parseColor(modConfig.getDisplayName()));
+                            int activeLvl = getModifierLevel(modId);
+                            CustomModifier.LevelSettings settings = modConfig.getLevel(activeLvl);
+                            if (settings != null) {
+                                formattedLore.add(parseColor(settings.getDisplayName()));
+                            } else {
+                                formattedLore.add(parseColor("&7 - " + modId + " (Lvl " + activeLvl + ")"));
+                            }
                         } else {
                             formattedLore.add(parseColor("&7 - " + modId));
                         }

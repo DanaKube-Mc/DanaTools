@@ -1,5 +1,8 @@
 package com.danakube.danatools.modifier.impl;
 
+import com.danakube.danatools.DanaTools;
+import com.danakube.danatools.model.CustomModifier;
+import com.danakube.danatools.model.ToolInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -7,6 +10,7 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
@@ -14,17 +18,19 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Trench3x3Modifier extends DanaModifier {
+public class TrenchModifier extends DanaModifier {
 
     private final Map<UUID, BlockFace> playerLastBlockFace = new HashMap<>();
 
-    public Trench3x3Modifier() {
-        super("trench_3x3");
+    public TrenchModifier() {
+        super("trench");
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -63,6 +69,18 @@ public class Trench3x3Modifier extends DanaModifier {
     private void triggerTrenchMining(Player player, Block startBlock, BlockFace face, ItemStack toolItem) {
         processingCustomBreak.set(true);
 
+        ToolInstance toolInstance = ToolInstance.fromItemStack(toolItem);
+        int currentLvl = toolInstance != null ? toolInstance.getModifierLevel("trench") : 1;
+
+        CustomModifier modConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("trench");
+        int range = 1;
+        if (modConfig != null) {
+            CustomModifier.LevelSettings settings = modConfig.getLevel(currentLvl);
+            if (settings != null) {
+                range = settings.getBehaviorInt("range", 1);
+            }
+        }
+
         try {
             int startX = startBlock.getX();
             int startY = startBlock.getY();
@@ -82,8 +100,8 @@ public class Trench3x3Modifier extends DanaModifier {
                 dx2 = 0; dy2 = 1;
             }
 
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
+            for (int i = -range; i <= range; i++) {
+                for (int j = -range; j <= range; j++) {
                     if (i == 0 && j == 0) continue;
 
                     int targetX = startX + (i * dx1) + (j * dx2);
@@ -118,8 +136,8 @@ public class Trench3x3Modifier extends DanaModifier {
 
     private void applyDurabilityDamage(Player player, ItemStack item) {
         if (item == null || !item.hasItemMeta()) return;
-        if (item.getItemMeta() instanceof org.bukkit.inventory.meta.Damageable damageable) {
-            int unbreakingLevel = item.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.UNBREAKING);
+        if (item.getItemMeta() instanceof Damageable damageable) {
+            int unbreakingLevel = item.getEnchantmentLevel(Enchantment.UNBREAKING);
             if (Math.random() < (1.0 / (unbreakingLevel + 1))) {
                 int newDamage = damageable.getDamage() + 1;
                 if (newDamage >= item.getType().getMaxDurability()) {

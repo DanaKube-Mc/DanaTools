@@ -5,8 +5,11 @@ import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.CustomTool;
 import com.danakube.danatools.model.ToolInstance;
 import com.danakube.danatools.storage.ToolDataStorage;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,8 +17,10 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -151,14 +156,30 @@ public class DanaToolsCommand implements CommandExecutor, TabCompleter {
                 tMeta.setCustomModelData(modifier.getTemplateCustomModelData());
             }
             List<Component> tLore = new ArrayList<>();
-            for (String l : modifier.getLore()) {
-                tLore.add(ToolInstance.parseColor(l));
+            CustomModifier.LevelSettings lvl1 = modifier.getLevel(1);
+            if (lvl1 != null) {
+                for (String l : lvl1.getLore()) {
+                    tLore.add(ToolInstance.parseColor(l));
+                }
             }
             tMeta.lore(tLore);
             template.setItemMeta(tMeta);
         }
 
-        ItemStack ingredient = new ItemStack(modifier.getIngredientMaterial());
+        ItemStack ingredient;
+        if (modifier.getIngredientMaterial() == Material.PLAYER_HEAD && modifier.getIngredientTexture() != null && !modifier.getIngredientTexture().isEmpty()) {
+            ingredient = new ItemStack(Material.PLAYER_HEAD);
+            SkullMeta sMeta = (SkullMeta) ingredient.getItemMeta();
+            if (sMeta != null) {
+                PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
+                profile.getProperties().add(new ProfileProperty("textures", modifier.getIngredientTexture()));
+                sMeta.setPlayerProfile(profile);
+                ingredient.setItemMeta(sMeta);
+            }
+        } else {
+            ingredient = new ItemStack(modifier.getIngredientMaterial());
+        }
+
         ItemMeta iMeta = ingredient.getItemMeta();
         if (iMeta != null) {
             iMeta.displayName(ToolInstance.parseColor(modifier.getIngredientDisplayName()));
