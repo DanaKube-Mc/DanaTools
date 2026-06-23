@@ -3,15 +3,19 @@ package com.danakube.danatools.model;
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.storage.ToolDataStorage;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ToolInstance {
     private final ItemStack item;
@@ -184,8 +188,24 @@ public class ToolInstance {
             meta.displayName(parseColor(displayName));
         }
 
-        List<String> rawLore = config.getLore();
         List<Component> formattedLore = new ArrayList<>();
+
+        Map<Enchantment, Integer> enchantments = item.getEnchantments();
+        if (!enchantments.isEmpty()) {
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
+                Enchantment ench = entry.getKey();
+                int level = entry.getValue();
+                Component lineComp = Component.translatable(ench)
+                        .append(Component.text(" " + toRoman(level)))
+                        .color(ench.isCursed() ? NamedTextColor.RED : NamedTextColor.GRAY);
+                formattedLore.add(lineComp);
+            }
+        } else {
+            meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
+
+        List<String> rawLore = config.getLore();
 
         int level = getLevel();
         int xp = getXp();
@@ -236,6 +256,20 @@ public class ToolInstance {
         }
 
         item.setItemMeta(meta);
+    }
+
+    public static String toRoman(int number) {
+        if (number <= 0) return String.valueOf(number);
+        int[] values = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        String[] romanLetters = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        StringBuilder roman = new StringBuilder();
+        for (int i = 0; i < values.length; i++) {
+            while (number >= values[i]) {
+                number -= values[i];
+                roman.append(romanLetters[i]);
+            }
+        }
+        return roman.toString();
     }
 
     public static Component parseColor(String text) {

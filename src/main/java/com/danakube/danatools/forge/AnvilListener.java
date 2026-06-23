@@ -130,6 +130,20 @@ public class AnvilListener implements Listener {
             if (resultMeta instanceof Repairable repairable) {
                 repairable.setRepairCost(0);
             }
+
+            resultMeta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+            resultMeta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
+            java.util.List<Component> bookLore = new java.util.ArrayList<>();
+            for (Map.Entry<Enchantment, Integer> entry : combinedEnchants.entrySet()) {
+                Enchantment ench = entry.getKey();
+                int lvl = entry.getValue();
+                Component line = Component.translatable(ench)
+                        .append(Component.text(" " + ToolInstance.toRoman(lvl)))
+                        .color(ench.isCursed() ? net.kyori.adventure.text.format.NamedTextColor.RED : net.kyori.adventure.text.format.NamedTextColor.GRAY);
+                bookLore.add(line);
+            }
+            resultMeta.lore(bookLore);
+
             result.setItemMeta(resultMeta);
         }
 
