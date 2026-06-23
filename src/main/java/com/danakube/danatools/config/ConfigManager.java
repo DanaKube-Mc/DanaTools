@@ -1,11 +1,8 @@
 package com.danakube.danatools.config;
 
 import com.danakube.danatools.DanaTools;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 
 public class ConfigManager {
 

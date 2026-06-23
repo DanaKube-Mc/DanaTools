@@ -1,7 +1,6 @@
 package com.danakube.danatools.progression;
 
 import com.danakube.danatools.DanaTools;
-import com.danakube.danatools.model.CustomTool;
 import com.danakube.danatools.model.ToolInstance;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

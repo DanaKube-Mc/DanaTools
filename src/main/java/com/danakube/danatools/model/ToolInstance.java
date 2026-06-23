@@ -1,12 +1,10 @@
 package com.danakube.danatools.model;
 
 import com.danakube.danatools.DanaTools;
-import com.danakube.danatools.config.ToolConfigManager;
 import com.danakube.danatools.storage.ToolDataStorage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

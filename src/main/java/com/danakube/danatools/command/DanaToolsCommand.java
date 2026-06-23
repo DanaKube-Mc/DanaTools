@@ -7,7 +7,6 @@ import com.danakube.danatools.model.ToolInstance;
 import com.danakube.danatools.storage.ToolDataStorage;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

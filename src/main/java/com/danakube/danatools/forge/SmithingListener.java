@@ -3,7 +3,6 @@ package com.danakube.danatools.forge;
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.ToolInstance;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
