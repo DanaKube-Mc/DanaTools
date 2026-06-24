@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,6 +22,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.enchantments.Enchantment;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class PlanterModifier extends DanaModifier {
@@ -51,9 +53,8 @@ public class PlanterModifier extends DanaModifier {
         CustomModifier.LevelSettings settings = modifier.getLevel(level);
         if (settings == null) return;
 
-        @SuppressWarnings("unchecked")
-        Map<String, Object> cropsConfig = (Map<String, Object>) settings.getBehaviorSettings().get("crops");
-        if (cropsConfig == null) return;
+        Map<String, Object> cropsConfig = loadCropsConfig(settings);
+        if (cropsConfig.isEmpty()) return;
 
         Material seed = detectSeed(player, cropsConfig);
         if (seed == null) return;
@@ -167,5 +168,23 @@ public class PlanterModifier extends DanaModifier {
                 }
             }
         }
+    }
+
+    private Map<String, Object> loadCropsConfig(CustomModifier.LevelSettings settings) {
+        Map<String, Object> cropsMap = new HashMap<>();
+        if (settings == null) return cropsMap;
+        Object cropsObj = settings.getBehaviorSettings().get("crops");
+        if (cropsObj instanceof ConfigurationSection sec) {
+            for (String key : sec.getKeys(false)) {
+                cropsMap.put(key, sec.get(key));
+            }
+        } else if (cropsObj instanceof Map<?, ?> map) {
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                if (entry.getKey() != null && entry.getValue() != null) {
+                    cropsMap.put(entry.getKey().toString(), entry.getValue());
+                }
+            }
+        }
+        return cropsMap;
     }
 }
