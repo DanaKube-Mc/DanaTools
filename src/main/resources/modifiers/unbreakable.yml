@@ -1,0 +1,25 @@
+id: "unbreakable"
+incompatible-modifiers: []
+
+# Recette de forge
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5015
+  display-name: "&6Placard de Forge : Indestructible"
+
+ingredient-item:
+  material: "NETHER_STAR"
+  display-name: "&bÉtoile d'Indestructibilité"
+
+# Niveau unique
+levels:
+  1:
+    display-name: "&dModificateur : Indestructible"
+    lore:
+      - "&7Rend votre outil totalement insensible"
+      - "&7à la perte de durabilité."
+      - "&dSlots requis : &f4"
+    slot-cost: 4
+    min-tool-level: 20
+    behavior:
+      type: "UNBREAKABLE"

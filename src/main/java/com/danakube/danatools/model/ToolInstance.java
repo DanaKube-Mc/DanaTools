@@ -279,6 +279,14 @@ public class ToolInstance {
             meta.setCustomModelData(config.getCustomModelData());
         }
 
+        if (hasModifier("unbreakable")) {
+            meta.setUnbreakable(true);
+            meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        } else {
+            meta.setUnbreakable(false);
+            meta.removeItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        }
+
         item.setItemMeta(meta);
     }
 

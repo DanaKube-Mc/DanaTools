@@ -118,4 +118,5 @@ allowed-modifiers:
   auto_sell: 2    # Bridé au niveau 2
   haste: 1
   magnet: 2       # Bridé au niveau 2
+  unbreakable: 1
 

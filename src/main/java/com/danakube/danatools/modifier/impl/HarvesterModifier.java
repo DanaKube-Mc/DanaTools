@@ -126,6 +126,7 @@ public class HarvesterModifier extends DanaModifier {
     private void applyDurabilityDamage(Player player, ItemStack item) {
         if (item == null || !item.hasItemMeta()) return;
         if (item.getItemMeta() instanceof Damageable damageable) {
+            if (damageable.isUnbreakable()) return;
             int unbreakingLevel = item.getEnchantmentLevel(Enchantment.UNBREAKING);
             if (Math.random() < (1.0 / (unbreakingLevel + 1))) {
                 int newDamage = damageable.getDamage() + 1;

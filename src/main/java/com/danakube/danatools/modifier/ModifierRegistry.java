@@ -13,6 +13,7 @@ import com.danakube.danatools.modifier.impl.ChainStripperModifier;
 import com.danakube.danatools.modifier.impl.HarvesterModifier;
 import com.danakube.danatools.modifier.impl.LearningModifier;
 import com.danakube.danatools.modifier.impl.TrenchModifier;
+import com.danakube.danatools.modifier.impl.UnbreakableModifier;
 import com.danakube.danatools.modifier.impl.VeinMinerModifier;
 import com.danakube.danatools.modifier.impl.WisdomModifier;
 import org.bukkit.Bukkit;
@@ -44,6 +45,7 @@ public class ModifierRegistry {
         register(new PlanterModifier());
         register(new ChainStripperModifier());
         register(new HarvesterModifier());
+        register(new UnbreakableModifier());
     }
 
     private void register(DanaModifier modifier) {
