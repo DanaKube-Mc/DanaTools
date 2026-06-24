@@ -16,6 +16,8 @@ import com.danakube.danatools.modifier.PotionModifierListener;
 import com.danakube.danatools.modifier.MagnetTask;
 import com.danakube.danatools.progression.ToolXPListener;
 import com.danakube.danatools.progression.XPManager;
+import com.danakube.danatools.progression.ArmorExplorationTask;
+import com.danakube.danatools.progression.ArmorXPListener;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.entity.Player;
@@ -38,6 +40,7 @@ public final class DanaTools extends JavaPlugin {
     private CompactorManager compactorManager;
     private AutoSellManager autoSellManager;
     private PotionModifierManager potionModifierManager;
+    private ArmorExplorationTask armorExplorationTask;
     private Economy economy;
 
     @Override
@@ -80,6 +83,9 @@ public final class DanaTools extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new AnvilListener(this), this);
         getServer().getPluginManager().registerEvents(new PotionModifierListener(this), this);
 
+        this.armorExplorationTask = new ArmorExplorationTask();
+        getServer().getPluginManager().registerEvents(new ArmorXPListener(this.armorExplorationTask), this);
+
         getServer().getScheduler().runTaskTimer(this, () -> {
             for (Player player : getServer().getOnlinePlayers()) {
                 this.potionModifierManager.checkAndApply(player);
@@ -87,6 +93,7 @@ public final class DanaTools extends JavaPlugin {
         }, 40L, 40L);
 
         getServer().getScheduler().runTaskTimer(this, new MagnetTask(), 10L, 10L);
+        getServer().getScheduler().runTaskTimer(this, this.armorExplorationTask, 100L, 100L);
 
         DanaToolsCommand cmd = new DanaToolsCommand(this);
         getCommand("danatools").setExecutor(cmd);

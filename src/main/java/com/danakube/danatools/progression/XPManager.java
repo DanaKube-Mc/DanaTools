@@ -3,7 +3,7 @@ package com.danakube.danatools.progression;
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.CustomTool;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 
 public class XPManager {
 
@@ -19,7 +19,7 @@ public class XPManager {
         return (int) Math.round(base * Math.pow(currentLevel, multiplier));
     }
 
-    public int applyLearningBoost(ToolInstance tool, int baseXP) {
+    public int applyLearningBoost(DanaItemInstance tool, int baseXP) {
         if (tool == null || baseXP <= 0) return baseXP;
         int xpGain = baseXP;
         if (tool.hasModifier("learning")) {

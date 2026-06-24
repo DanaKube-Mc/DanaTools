@@ -2,7 +2,7 @@ package com.danakube.danatools.modifier.impl;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import com.danakube.danatools.modifier.DropManager;
 
@@ -71,7 +71,7 @@ public class TrenchModifier extends DanaModifier {
     private void triggerTrenchMining(Player player, Block startBlock, BlockFace face, ItemStack toolItem) {
         processingCustomBreak.set(true);
 
-        ToolInstance toolInstance = ToolInstance.fromItemStack(toolItem);
+        DanaItemInstance toolInstance = DanaItemInstance.fromItemStack(toolItem);
         int currentLvl = toolInstance != null ? toolInstance.getModifierLevel("trench") : 1;
 
         CustomModifier modConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("trench");

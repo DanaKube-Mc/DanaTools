@@ -1,7 +1,7 @@
 package com.danakube.danatools.modifier.impl;
 
 import com.danakube.danatools.DanaTools;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -24,7 +24,7 @@ public class CompactorModifier extends DanaModifier {
         if (!(event.getEntity() instanceof Player player)) return;
 
         ItemStack handItem = player.getInventory().getItemInMainHand();
-        ToolInstance tool = ToolInstance.fromItemStack(handItem);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(handItem);
 
         if (tool != null && tool.hasModifier("compactor")) {
             Material pickedMaterial = event.getItem().getItemStack().getType();
@@ -40,7 +40,7 @@ public class CompactorModifier extends DanaModifier {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEnchantItem(EnchantItemEvent event) {
         ItemStack item = event.getItem();
-        ToolInstance tool = ToolInstance.fromItemStack(item);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(item);
         if (tool != null && tool.hasModifier("compactor")) {
             if (event.getEnchantsToAdd().containsKey(Enchantment.SILK_TOUCH)) {
                 event.getEnchantsToAdd().remove(Enchantment.SILK_TOUCH);

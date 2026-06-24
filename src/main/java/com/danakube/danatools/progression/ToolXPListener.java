@@ -2,7 +2,7 @@ package com.danakube.danatools.progression;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomTool;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,7 +31,7 @@ public class ToolXPListener implements Listener {
         Player player = event.getPlayer();
         ItemStack handItem = player.getInventory().getItemInMainHand();
 
-        ToolInstance tool = ToolInstance.fromItemStack(handItem);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(handItem);
         if (tool == null) {
             return;
         }
@@ -57,7 +57,7 @@ public class ToolXPListener implements Listener {
         Player player = event.getPlayer();
         ItemStack handItem = player.getInventory().getItemInMainHand();
 
-        ToolInstance tool = ToolInstance.fromItemStack(handItem);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(handItem);
         if (tool == null) {
             return;
         }
@@ -95,11 +95,11 @@ public class ToolXPListener implements Listener {
 
         Player player = event.getPlayer();
         ItemStack handItem = player.getInventory().getItemInMainHand();
-        ToolInstance tool = ToolInstance.fromItemStack(handItem);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(handItem);
 
         if (tool == null) {
             ItemStack offHand = player.getInventory().getItemInOffHand();
-            tool = ToolInstance.fromItemStack(offHand);
+            tool = DanaItemInstance.fromItemStack(offHand);
         }
 
         if (tool == null) return;
@@ -119,7 +119,7 @@ public class ToolXPListener implements Listener {
         }
     }
 
-    private void awardInteractXP(Player player, Block block, ToolInstance tool, Material originalType) {
+    private void awardInteractXP(Player player, Block block, DanaItemInstance tool, Material originalType) {
         CustomTool.BlockActivity activity = tool.getConfig().getBlockActivity(originalType);
         if (activity != null) {
             int xpGain = activity.getXp();

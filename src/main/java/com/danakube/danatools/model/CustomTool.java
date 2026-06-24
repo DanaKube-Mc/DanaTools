@@ -25,13 +25,16 @@ public class CustomTool {
     private final Map<Enchantment, Integer> enchantmentLimits;
     private final String noModifierMessage;
     private final Map<String, Integer> allowedModifiers;
+    private final double xpGainDamageMultiplier;
+    private final double xpGainMovementMultiplier;
 
     public CustomTool(String id, Material material, int customModelData, String displayName, List<String> lore,
                       int xpCurveBase, double xpCurveMultiplier, Map<Material, BlockActivity> blockActivities,
                       FishingActivity fishingActivity,
                       int maxLevel, Map<Integer, Integer> slotsProgression, int maxSlots,
                       Map<Enchantment, Integer> enchantmentLimits, String noModifierMessage,
-                      Map<String, Integer> allowedModifiers) {
+                      Map<String, Integer> allowedModifiers,
+                      double xpGainDamageMultiplier, double xpGainMovementMultiplier) {
         this.id = id;
         this.material = material;
         this.customModelData = customModelData;
@@ -47,6 +50,8 @@ public class CustomTool {
         this.enchantmentLimits = enchantmentLimits != null ? enchantmentLimits : new HashMap<>();
         this.noModifierMessage = noModifierMessage;
         this.allowedModifiers = allowedModifiers != null ? allowedModifiers : new HashMap<>();
+        this.xpGainDamageMultiplier = xpGainDamageMultiplier;
+        this.xpGainMovementMultiplier = xpGainMovementMultiplier;
     }
 
     public String getId() {
@@ -96,6 +101,14 @@ public class CustomTool {
 
     public FishingActivity getFishingActivity() {
         return fishingActivity;
+    }
+
+    public double getXpGainDamageMultiplier() {
+        return xpGainDamageMultiplier;
+    }
+
+    public double getXpGainMovementMultiplier() {
+        return xpGainMovementMultiplier;
     }
 
     public int getMaxLevel() {

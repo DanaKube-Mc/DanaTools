@@ -2,7 +2,7 @@ package com.danakube.danatools.modifier.impl;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -45,7 +45,7 @@ public class PlanterModifier extends DanaModifier {
         ItemStack hoe = event.getItem();
         if (hoe == null) return;
 
-        ToolInstance tool = ToolInstance.fromItemStack(hoe);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(hoe);
         int level = tool != null ? tool.getModifierLevel("planter") : 1;
 
         CustomModifier modifier = DanaTools.getInstance().getModifierConfigManager().getModifier("planter");

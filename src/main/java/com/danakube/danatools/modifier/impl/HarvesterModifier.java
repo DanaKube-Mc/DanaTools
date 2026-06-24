@@ -2,7 +2,7 @@ package com.danakube.danatools.modifier.impl;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import com.danakube.danatools.modifier.DropManager;
 import org.bukkit.Bukkit;
@@ -41,7 +41,7 @@ public class HarvesterModifier extends DanaModifier {
         Block startBlock = event.getBlock();
         ItemStack toolItem = player.getInventory().getItemInMainHand();
 
-        ToolInstance tool = ToolInstance.fromItemStack(toolItem);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
         int level = tool != null ? tool.getModifierLevel("harvester") : 1;
 
         CustomModifier modifierConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("harvester");

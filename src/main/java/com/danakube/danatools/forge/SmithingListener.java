@@ -2,7 +2,7 @@ package com.danakube.danatools.forge;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import net.kyori.adventure.text.Component;
@@ -42,7 +42,7 @@ public class SmithingListener implements Listener {
             return;
         }
 
-        ToolInstance tool = ToolInstance.fromItemStack(base);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(base);
         if (tool == null) {
             return;
         }
@@ -52,7 +52,7 @@ public class SmithingListener implements Listener {
                 
                 if (tool.canApplyOrUpgradeModifier(modifier)) {
                     ItemStack result = base.clone();
-                    ToolInstance resultTool = ToolInstance.fromItemStack(result);
+                    DanaItemInstance resultTool = DanaItemInstance.fromItemStack(result);
                     if (resultTool != null) {
                         resultTool.applyOrUpgradeModifier(modifier);
                         event.setResult(resultTool.getItemStack());
@@ -71,7 +71,7 @@ public class SmithingListener implements Listener {
         ItemStack result = event.getCurrentItem();
         if (result == null) return;
 
-        ToolInstance tool = ToolInstance.fromItemStack(result);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(result);
         if (tool == null) return;
 
         if (event.getWhoClicked() instanceof Player player) {
@@ -99,7 +99,7 @@ public class SmithingListener implements Listener {
             if (!item.hasItemMeta()) return false;
             ItemMeta meta = item.getItemMeta();
             if (!meta.hasDisplayName()) return false;
-            Component expected = ToolInstance.parseColor(modifier.getTemplateDisplayName());
+            Component expected = DanaItemInstance.parseColor(modifier.getTemplateDisplayName());
             Component actual = meta.displayName();
             if (actual == null) return false;
             if (!actual.equals(expected)) {
@@ -144,7 +144,7 @@ public class SmithingListener implements Listener {
             if (!item.hasItemMeta()) return false;
             ItemMeta meta = item.getItemMeta();
             if (!meta.hasDisplayName()) return false;
-            Component expected = ToolInstance.parseColor(modifier.getIngredientDisplayName());
+            Component expected = DanaItemInstance.parseColor(modifier.getIngredientDisplayName());
             Component actual = meta.displayName();
             if (actual == null) return false;
             if (!actual.equals(expected)) {

@@ -1,7 +1,7 @@
 package com.danakube.danatools.config;
 
 import com.danakube.danatools.DanaTools;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -55,6 +55,6 @@ public class LangManager {
             }
         }
 
-        return ToolInstance.parseColor(raw);
+        return DanaItemInstance.parseColor(raw);
     }
 }

@@ -3,7 +3,7 @@ package com.danakube.danatools.progression;
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.CustomTool;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -15,14 +15,14 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class CoreDropManager {
 
-    public static void checkAndDropCore(Player player, Block block, ToolInstance tool, CustomTool.BlockActivity activity) {
+    public static void checkAndDropCore(Player player, Block block, DanaItemInstance tool, CustomTool.BlockActivity activity) {
         if (activity == null || !activity.hasCoreDrop()) {
             return;
         }
         checkAndDropCore(player, block.getLocation().add(0.5, 0.5, 0.5), tool, activity.getCoreDrop());
     }
 
-    public static void checkAndDropCore(Player player, org.bukkit.Location location, ToolInstance tool, CustomTool.CoreDrop coreDrop) {
+    public static void checkAndDropCore(Player player, org.bukkit.Location location, DanaItemInstance tool, CustomTool.CoreDrop coreDrop) {
         if (coreDrop == null) {
             return;
         }
@@ -85,7 +85,7 @@ public class CoreDropManager {
         if (plugin.getConfig().getBoolean("core-drop-settings.action-bar.enabled", false)) {
             String messageRaw = plugin.getConfig().getString("core-drop-settings.action-bar.message");
             if (messageRaw != null && !messageRaw.isEmpty()) {
-                player.sendActionBar(ToolInstance.parseColor(messageRaw));
+                player.sendActionBar(DanaItemInstance.parseColor(messageRaw));
             }
         }
     }

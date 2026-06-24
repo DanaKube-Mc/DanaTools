@@ -3,7 +3,7 @@ package com.danakube.danatools.modifier.impl;
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.CustomTool.BlockActivity;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import com.danakube.danatools.progression.CoreDropManager;
 
@@ -44,7 +44,7 @@ public class TillerModifier extends DanaModifier {
         ItemStack hoe = event.getItem();
         if (hoe == null) return;
 
-        ToolInstance tool = ToolInstance.fromItemStack(hoe);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(hoe);
         int level = tool != null ? tool.getModifierLevel("tiller") : 1;
 
         CustomModifier modifier = DanaTools.getInstance().getModifierConfigManager().getModifier("tiller");
@@ -92,7 +92,7 @@ public class TillerModifier extends DanaModifier {
                         Material originalType = targetBlock.getType();
                         targetBlock.setType(Material.FARMLAND);
 
-                        ToolInstance toolInstance = ToolInstance.fromItemStack(tool);
+                        DanaItemInstance toolInstance = DanaItemInstance.fromItemStack(tool);
                         if (toolInstance != null) {
                             BlockActivity activity = toolInstance.getConfig().getBlockActivity(originalType);
                             if (activity != null) {

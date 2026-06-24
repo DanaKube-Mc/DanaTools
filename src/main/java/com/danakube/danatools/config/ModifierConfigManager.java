@@ -2,7 +2,7 @@ package com.danakube.danatools.config;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -98,6 +98,13 @@ public class ModifierConfigManager {
                                     }
                                 }
 
+                                ConfigurationSection propertiesSec = lvlSec.getConfigurationSection("properties");
+                                if (propertiesSec != null) {
+                                    for (String pKey : propertiesSec.getKeys(false)) {
+                                        lvlBehaviorSettings.put(pKey, propertiesSec.get(pKey));
+                                    }
+                                }
+
                                 CustomModifier.LevelSettings lvlSettings = new CustomModifier.LevelSettings(
                                         levelNum, lvlDisplayName, lvlLore, lvlMinToolLevel, lvlSlotCost,
                                         lvlBehaviorType, lvlBehaviorSettings
@@ -152,7 +159,7 @@ public class ModifierConfigManager {
 
         ItemMeta iMeta = ingredient.getItemMeta();
         if (iMeta != null) {
-            iMeta.displayName(ToolInstance.parseColor(modifier.getIngredientDisplayName()));
+            iMeta.displayName(DanaItemInstance.parseColor(modifier.getIngredientDisplayName()));
             if (modifier.getIngredientCustomModelData() > 0) {
                 iMeta.setCustomModelData(modifier.getIngredientCustomModelData());
             }

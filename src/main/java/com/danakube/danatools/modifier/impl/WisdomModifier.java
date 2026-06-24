@@ -2,7 +2,7 @@ package com.danakube.danatools.modifier.impl;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,7 +22,7 @@ public class WisdomModifier extends DanaModifier {
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
-        ToolInstance tool = ToolInstance.fromItemStack(item);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(item);
         
         if (tool != null && tool.hasModifier("wisdom")) {
             int level = tool.getModifierLevel("wisdom");
@@ -42,7 +42,7 @@ public class WisdomModifier extends DanaModifier {
         if (killer == null) return;
         
         ItemStack item = killer.getInventory().getItemInMainHand();
-        ToolInstance tool = ToolInstance.fromItemStack(item);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(item);
         
         if (tool != null && tool.hasModifier("wisdom")) {
             int level = tool.getModifierLevel("wisdom");
@@ -62,7 +62,7 @@ public class WisdomModifier extends DanaModifier {
         
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
-        ToolInstance tool = ToolInstance.fromItemStack(item);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(item);
         
         if (tool != null && tool.hasModifier("wisdom")) {
             int level = tool.getModifierLevel("wisdom");

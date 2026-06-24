@@ -3,7 +3,7 @@ package com.danakube.danatools.command;
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.CustomTool;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.storage.ToolDataStorage;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -107,7 +107,7 @@ public class DanaToolsCommand implements CommandExecutor, TabCompleter {
         int initialSlots = toolConfig.getSlotsForLevel(1);
         ToolDataStorage.initToolData(item, toolId, initialSlots);
 
-        ToolInstance toolInstance = ToolInstance.fromItemStack(item);
+        DanaItemInstance toolInstance = DanaItemInstance.fromItemStack(item);
         if (toolInstance != null) {
             toolInstance.updateLore();
         }
@@ -146,7 +146,7 @@ public class DanaToolsCommand implements CommandExecutor, TabCompleter {
         ItemStack template = new ItemStack(modifier.getTemplateMaterial());
         ItemMeta tMeta = template.getItemMeta();
         if (tMeta != null) {
-            tMeta.displayName(ToolInstance.parseColor(modifier.getTemplateDisplayName()));
+            tMeta.displayName(DanaItemInstance.parseColor(modifier.getTemplateDisplayName()));
             if (modifier.getTemplateCustomModelData() > 0) {
                 tMeta.setCustomModelData(modifier.getTemplateCustomModelData());
             }
@@ -154,7 +154,7 @@ public class DanaToolsCommand implements CommandExecutor, TabCompleter {
             CustomModifier.LevelSettings lvl1 = modifier.getLevel(1);
             if (lvl1 != null) {
                 for (String l : lvl1.getLore()) {
-                    tLore.add(ToolInstance.parseColor(l));
+                    tLore.add(DanaItemInstance.parseColor(l));
                 }
             }
             tMeta.lore(tLore);
@@ -196,7 +196,7 @@ public class DanaToolsCommand implements CommandExecutor, TabCompleter {
         }
 
         ItemStack handItem = target.getInventory().getItemInMainHand();
-        ToolInstance tool = ToolInstance.fromItemStack(handItem);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(handItem);
         if (tool == null) {
             sender.sendMessage(plugin.getLangManager().getMessage("xp.no_tool", "{player}", target.getName()));
             return;
@@ -235,7 +235,7 @@ public class DanaToolsCommand implements CommandExecutor, TabCompleter {
         }
 
         ItemStack handItem = target.getInventory().getItemInMainHand();
-        ToolInstance tool = ToolInstance.fromItemStack(handItem);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(handItem);
         if (tool == null) {
             sender.sendMessage(plugin.getLangManager().getMessage("xp.no_tool", "{player}", target.getName()));
             return;

@@ -158,12 +158,16 @@ public class ToolConfigManager {
                     fishingActivity = new CustomTool.FishingActivity(xp, coreDrop);
                 }
 
+                double xpGainDamageMultiplier = config.getDouble("xp-gain-damage-multiplier", 0.0);
+                double xpGainMovementMultiplier = config.getDouble("xp-gain-movement-multiplier", 0.0);
+
                 CustomTool customTool = new CustomTool(
                         id, material, customModelData, displayName, lore,
                         xpCurveBase, xpCurveMultiplier, blockActivities,
                         fishingActivity,
                         maxLevel, slotsProgression, maxSlots, enchantmentLimits,
-                        noModifierMessage, allowedModifiers
+                        noModifierMessage, allowedModifiers,
+                        xpGainDamageMultiplier, xpGainMovementMultiplier
                 );
 
                 tools.put(id, customTool);

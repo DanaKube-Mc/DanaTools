@@ -1,7 +1,7 @@
 package com.danakube.danatools.modifier.impl;
 
 import com.danakube.danatools.DanaTools;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import com.danakube.danatools.modifier.DropManager;
 import org.bukkit.Bukkit;
@@ -36,7 +36,7 @@ public class AutoReplantModifier extends DanaModifier {
         Block block = event.getBlock();
         Player player = event.getPlayer();
         ItemStack hand = player.getInventory().getItemInMainHand();
-        ToolInstance tool = ToolInstance.fromItemStack(hand);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(hand);
 
         if (tool != null && tool.hasModifier("auto_replant")) {
             if (DropManager.isReplantableCrop(block.getType())) {
@@ -62,7 +62,7 @@ public class AutoReplantModifier extends DanaModifier {
 
         Player player = event.getPlayer();
         ItemStack hand = player.getInventory().getItemInMainHand();
-        ToolInstance tool = ToolInstance.fromItemStack(hand);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(hand);
         if (tool == null || !tool.hasModifier("auto_replant")) return;
 
         Material seedMaterial = DropManager.getRequiredSeed(originalData.getMaterial());

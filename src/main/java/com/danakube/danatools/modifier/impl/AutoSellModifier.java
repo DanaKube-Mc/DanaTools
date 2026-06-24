@@ -2,7 +2,7 @@ package com.danakube.danatools.modifier.impl;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import com.danakube.danatools.modifier.AutoSellManager;
 
@@ -30,7 +30,7 @@ public class AutoSellModifier extends DanaModifier {
     public void onBlockDropItem(BlockDropItemEvent event) {
         Player player = event.getPlayer();
         ItemStack toolItem = player.getInventory().getItemInMainHand();
-        ToolInstance tool = ToolInstance.fromItemStack(toolItem);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
 
         if (tool != null && tool.hasModifier("auto_sell")) {
             int level = tool.getModifierLevel("auto_sell");
@@ -61,7 +61,7 @@ public class AutoSellModifier extends DanaModifier {
         if (killer == null) return;
 
         ItemStack toolItem = killer.getInventory().getItemInMainHand();
-        ToolInstance tool = ToolInstance.fromItemStack(toolItem);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
 
         if (tool != null && tool.hasModifier("auto_sell")) {
             int level = tool.getModifierLevel("auto_sell");
@@ -92,7 +92,7 @@ public class AutoSellModifier extends DanaModifier {
 
         Player player = event.getPlayer();
         ItemStack toolItem = player.getInventory().getItemInMainHand();
-        ToolInstance tool = ToolInstance.fromItemStack(toolItem);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
 
         if (tool != null && tool.hasModifier("auto_sell")) {
             int level = tool.getModifierLevel("auto_sell");
@@ -115,7 +115,7 @@ public class AutoSellModifier extends DanaModifier {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEnchantItem(EnchantItemEvent event) {
         ItemStack item = event.getItem();
-        ToolInstance tool = ToolInstance.fromItemStack(item);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(item);
         if (tool != null && tool.hasModifier("auto_sell")) {
             if (event.getEnchantsToAdd().containsKey(Enchantment.SILK_TOUCH)) {
                 event.getEnchantsToAdd().remove(Enchantment.SILK_TOUCH);

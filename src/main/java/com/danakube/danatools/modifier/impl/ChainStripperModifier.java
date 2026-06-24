@@ -3,7 +3,7 @@ package com.danakube.danatools.modifier.impl;
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.CustomTool.BlockActivity;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import com.danakube.danatools.progression.CoreDropManager;
 
@@ -48,7 +48,7 @@ public class ChainStripperModifier extends DanaModifier {
         ItemStack axe = event.getItem();
         if (axe == null) return;
 
-        ToolInstance tool = ToolInstance.fromItemStack(axe);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(axe);
         int level = tool != null ? tool.getModifierLevel("chain_stripper") : 1;
 
         CustomModifier modifier = DanaTools.getInstance().getModifierConfigManager().getModifier("chain_stripper");
@@ -122,7 +122,7 @@ public class ChainStripperModifier extends DanaModifier {
                     BlockData blockData = current.getBlockData();
                     current.setType(strippedType);
 
-                    ToolInstance toolInstance = ToolInstance.fromItemStack(tool);
+                    DanaItemInstance toolInstance = DanaItemInstance.fromItemStack(tool);
                     if (toolInstance != null) {
                         BlockActivity activity = toolInstance.getConfig().getBlockActivity(currentType);
                         if (activity != null) {

@@ -2,7 +2,7 @@ package com.danakube.danatools.modifier;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
@@ -25,7 +25,7 @@ public class MagnetTask implements Runnable {
             }
 
             ItemStack hand = player.getInventory().getItemInMainHand();
-            ToolInstance tool = ToolInstance.fromItemStack(hand);
+            DanaItemInstance tool = DanaItemInstance.fromItemStack(hand);
 
             if (tool != null && tool.hasModifier("magnet")) {
                 int level = tool.getModifierLevel("magnet");

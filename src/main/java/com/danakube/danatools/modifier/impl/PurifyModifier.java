@@ -2,7 +2,7 @@ package com.danakube.danatools.modifier.impl;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -44,7 +44,7 @@ public class PurifyModifier extends DanaModifier {
         }
 
         ItemStack toolItem = player.getInventory().getItemInMainHand();
-        ToolInstance tool = ToolInstance.fromItemStack(toolItem);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
         if (tool == null) {
             return;
         }

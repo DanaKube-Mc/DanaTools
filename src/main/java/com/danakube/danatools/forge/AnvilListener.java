@@ -2,7 +2,7 @@ package com.danakube.danatools.forge;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomTool;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.storage.ToolDataStorage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -136,7 +136,7 @@ public class AnvilListener implements Listener {
                 resultMeta.addStoredEnchant(entry.getKey(), entry.getValue(), true);
             }
             if (renamed) {
-                resultMeta.displayName(ToolInstance.parseColor(renameText));
+                resultMeta.displayName(DanaItemInstance.parseColor(renameText));
             }
             if (resultMeta instanceof Repairable repairable) {
                 repairable.setRepairCost(0);
@@ -150,7 +150,7 @@ public class AnvilListener implements Listener {
                 Enchantment ench = entry.getKey();
                 int lvl = entry.getValue();
                 Component line = Component.translatable(ench)
-                        .append(Component.text(" " + ToolInstance.toRoman(lvl)))
+                        .append(Component.text(" " + DanaItemInstance.toRoman(lvl)))
                         .color(ench.isCursed() ? NamedTextColor.RED : NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
                 bookLore.add(line);
@@ -183,7 +183,7 @@ public class AnvilListener implements Listener {
         boolean changed = false;
         int xpCost = 2;
 
-        ToolInstance leftTool = ToolInstance.fromItemStack(left);
+        DanaItemInstance leftTool = DanaItemInstance.fromItemStack(left);
         boolean hasIncompatibleModifier = leftTool != null && (leftTool.hasModifier("auto_smelt") || leftTool.hasModifier("compactor") || leftTool.hasModifier("auto_sell"));
 
         for (Map.Entry<Enchantment, Integer> entry : rightEnchants.entrySet()) {
@@ -262,7 +262,7 @@ public class AnvilListener implements Listener {
             result.setItemMeta(resultMeta);
         }
 
-        ToolInstance tool = ToolInstance.fromItemStack(result);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(result);
         if (tool != null) {
             tool.updateLore();
             result = tool.getItemStack();
@@ -297,7 +297,7 @@ public class AnvilListener implements Listener {
         boolean changed = false;
         int xpCost = 2;
 
-        ToolInstance leftTool = ToolInstance.fromItemStack(left);
+        DanaItemInstance leftTool = DanaItemInstance.fromItemStack(left);
         boolean hasIncompatibleModifier = leftTool != null && (leftTool.hasModifier("auto_smelt") || leftTool.hasModifier("compactor") || leftTool.hasModifier("auto_sell"));
 
         for (Map.Entry<Enchantment, Integer> entry : rightEnchants.entrySet()) {
@@ -395,7 +395,7 @@ public class AnvilListener implements Listener {
             result.setItemMeta(resultMeta);
         }
 
-        ToolInstance tool = ToolInstance.fromItemStack(result);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(result);
         if (tool != null) {
             tool.updateLore();
             result = tool.getItemStack();
@@ -456,7 +456,7 @@ public class AnvilListener implements Listener {
             return;
         }
 
-        ToolInstance tool = ToolInstance.fromItemStack(result);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(result);
         if (tool != null) {
             tool.updateLore();
             result = tool.getItemStack();

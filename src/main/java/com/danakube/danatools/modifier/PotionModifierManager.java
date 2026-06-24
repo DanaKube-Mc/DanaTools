@@ -2,7 +2,7 @@ package com.danakube.danatools.modifier;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.entity.Player;
@@ -26,7 +26,7 @@ public class PotionModifierManager {
         if (player == null || !player.isOnline()) return;
 
         ItemStack hand = player.getInventory().getItemInMainHand();
-        ToolInstance tool = ToolInstance.fromItemStack(hand);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(hand);
 
         if (tool != null) {
             for (String modId : tool.getModifiers()) {

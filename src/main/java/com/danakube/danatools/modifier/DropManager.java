@@ -2,7 +2,7 @@ package com.danakube.danatools.modifier;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.ToolInstance;
+import com.danakube.danatools.model.DanaItemInstance;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -19,7 +19,7 @@ import java.util.Map;
 public class DropManager {
 
     public static void breakBlock(Player player, Block block, ItemStack toolItem, int expToDrop) {
-        ToolInstance tool = ToolInstance.fromItemStack(toolItem);
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
         
         if (tool != null && (tool.hasModifier("auto_smelt") || tool.hasModifier("auto_sell") || tool.hasModifier("auto_replant"))) {
             if (tool.hasModifier("auto_replant") && isReplantableCrop(block.getType())) {

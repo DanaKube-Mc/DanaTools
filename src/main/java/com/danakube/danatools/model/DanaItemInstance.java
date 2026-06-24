@@ -18,16 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ToolInstance {
+public class DanaItemInstance {
     private final ItemStack item;
     private final CustomTool config;
 
-    private ToolInstance(ItemStack item, CustomTool config) {
+    private DanaItemInstance(ItemStack item, CustomTool config) {
         this.item = item;
         this.config = config;
     }
 
-    public static ToolInstance fromItemStack(ItemStack item) {
+    public static DanaItemInstance fromItemStack(ItemStack item) {
         if (item == null || !ToolDataStorage.isDanaTool(item)) {
             return null;
         }
@@ -36,7 +36,7 @@ public class ToolInstance {
         if (config == null) {
             return null;
         }
-        return new ToolInstance(item, config);
+        return new DanaItemInstance(item, config);
     }
 
     public ItemStack getItemStack() {
@@ -116,6 +116,49 @@ public class ToolInstance {
         }
 
         updateLore();
+
+        if (player != null && !isEquippedArmor(player) && isHeldInMainHand(player)) {
+            shareResonanceXP(amount, player);
+        }
+    }
+
+    private boolean isEquippedArmor(Player player) {
+        ItemStack[] armor = player.getInventory().getArmorContents();
+        for (ItemStack armorPiece : armor) {
+            if (armorPiece != null && armorPiece.equals(this.item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isHeldInMainHand(Player player) {
+        return player.getInventory().getItemInMainHand().equals(this.item);
+    }
+
+    private void shareResonanceXP(int amount, Player player) {
+        ItemStack[] armor = player.getInventory().getArmorContents();
+        for (ItemStack armorPiece : armor) {
+            if (armorPiece != null) {
+                DanaItemInstance armorInstance = DanaItemInstance.fromItemStack(armorPiece);
+                if (armorInstance != null && armorInstance.hasModifier("resonance")) {
+                    int lvl = armorInstance.getModifierLevel("resonance");
+                    CustomModifier modConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("resonance");
+                    if (modConfig != null) {
+                        CustomModifier.LevelSettings settings = modConfig.getLevel(lvl);
+                        if (settings != null) {
+                            int sharePercent = settings.getBehaviorInt("xp-share-percent", 0);
+                            if (sharePercent > 0) {
+                                int sharedXp = (int) Math.round(amount * (sharePercent / 100.0));
+                                if (sharedXp > 0) {
+                                    armorInstance.addXP(sharedXp, player);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public int getModifierLevel(String modifierId) {
