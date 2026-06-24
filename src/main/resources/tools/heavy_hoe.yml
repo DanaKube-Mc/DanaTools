@@ -74,6 +74,7 @@ enchantment-limits:
 # Modificateurs autorisés et niveau maximum pour cet outil
 allowed-modifiers:
   tiller: 3
+  planter: 3
   wisdom: 3
   learning: 3
   auto_replant: 1
