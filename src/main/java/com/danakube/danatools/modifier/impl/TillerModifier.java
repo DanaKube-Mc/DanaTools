@@ -2,8 +2,11 @@ package com.danakube.danatools.modifier.impl;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
+import com.danakube.danatools.model.CustomTool.BlockActivity;
 import com.danakube.danatools.model.ToolInstance;
 import com.danakube.danatools.modifier.DanaModifier;
+import com.danakube.danatools.progression.CoreDropManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -86,7 +89,21 @@ public class TillerModifier extends DanaModifier {
                     Bukkit.getPluginManager().callEvent(virtualEvent);
 
                     if (!virtualEvent.isCancelled()) {
+                        Material originalType = targetBlock.getType();
                         targetBlock.setType(Material.FARMLAND);
+
+                        ToolInstance toolInstance = ToolInstance.fromItemStack(tool);
+                        if (toolInstance != null) {
+                            BlockActivity activity = toolInstance.getConfig().getBlockActivity(originalType);
+                            if (activity != null) {
+                                int xpGain = activity.getXp();
+                                if (xpGain > 0) {
+                                    xpGain = DanaTools.getInstance().getXpManager().applyLearningBoost(toolInstance, xpGain);
+                                    toolInstance.addXP(xpGain, player);
+                                }
+                                CoreDropManager.checkAndDropCore(player, targetBlock.getLocation().add(0.5, 0.5, 0.5), toolInstance, activity.getCoreDrop());
+                            }
+                        }
                         
                         if (blockAbove.getType() != Material.AIR) {
                             blockAbove.setType(Material.AIR);

@@ -4,6 +4,7 @@ import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.CustomTool;
 import com.danakube.danatools.model.ToolInstance;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -18,8 +19,14 @@ public class CoreDropManager {
         if (activity == null || !activity.hasCoreDrop()) {
             return;
         }
+        checkAndDropCore(player, block.getLocation().add(0.5, 0.5, 0.5), tool, activity.getCoreDrop());
+    }
 
-        CustomTool.CoreDrop coreDrop = activity.getCoreDrop();
+    public static void checkAndDropCore(Player player, org.bukkit.Location location, ToolInstance tool, CustomTool.CoreDrop coreDrop) {
+        if (coreDrop == null) {
+            return;
+        }
+
         double roll = ThreadLocalRandom.current().nextDouble(100.0);
         double chance = coreDrop.getChancePercent();
 
@@ -29,14 +36,14 @@ public class CoreDropManager {
             if (modifier != null) {
                 ItemStack coreItem = DanaTools.getInstance().getModifierConfigManager().buildIngredientItem(modifier);
                 if (coreItem != null) {
-                    block.getWorld().dropItemNaturally(block.getLocation(), coreItem);
-                    triggerFeedbacks(player, block);
+                    location.getWorld().dropItemNaturally(location, coreItem);
+                    triggerFeedbacks(player, location);
                 }
             }
         }
     }
 
-    private static void triggerFeedbacks(Player player, Block block) {
+    private static void triggerFeedbacks(Player player, Location location) {
         DanaTools plugin = DanaTools.getInstance();
 
         if (plugin.getConfig().getBoolean("core-drop-settings.sound.enabled", false)) {
@@ -62,9 +69,9 @@ public class CoreDropManager {
                     double offset = plugin.getConfig().getDouble("core-drop-settings.particles.offset", 0.3);
                     double speed = plugin.getConfig().getDouble("core-drop-settings.particles.speed", 0.1);
 
-                    block.getWorld().spawnParticle(
+                    location.getWorld().spawnParticle(
                             particle,
-                            block.getLocation().add(0.5, 0.5, 0.5),
+                            location,
                             count,
                             offset, offset, offset,
                             speed

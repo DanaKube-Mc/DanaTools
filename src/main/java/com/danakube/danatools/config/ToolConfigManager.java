@@ -142,9 +142,26 @@ public class ToolConfigManager {
                     }
                 }
 
+                CustomTool.FishingActivity fishingActivity = null;
+                ConfigurationSection fishSec = config.getConfigurationSection("fishing-activity");
+                if (fishSec != null) {
+                    int xp = fishSec.getInt("xp", 0);
+                    CustomTool.CoreDrop coreDrop = null;
+                    ConfigurationSection dropSec = fishSec.getConfigurationSection("core-drop");
+                    if (dropSec != null) {
+                        String modifierId = dropSec.getString("modifier-id");
+                        double chancePercent = dropSec.getDouble("chance-percent", 0.0);
+                        if (modifierId != null) {
+                            coreDrop = new CustomTool.CoreDrop(modifierId, chancePercent);
+                        }
+                    }
+                    fishingActivity = new CustomTool.FishingActivity(xp, coreDrop);
+                }
+
                 CustomTool customTool = new CustomTool(
                         id, material, customModelData, displayName, lore,
                         xpCurveBase, xpCurveMultiplier, blockActivities,
+                        fishingActivity,
                         maxLevel, slotsProgression, maxSlots, enchantmentLimits,
                         noModifierMessage, allowedModifiers
                 );

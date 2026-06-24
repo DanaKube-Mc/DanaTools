@@ -35,20 +35,44 @@ xp-curve:
 block-activities:
   OAK_LOG:
     xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
   SPRUCE_LOG:
     xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
   BIRCH_LOG:
     xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
   JUNGLE_LOG:
     xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
   ACACIA_LOG:
     xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
   DARK_OAK_LOG:
     xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
   MANGROVE_LOG:
     xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
   CHERRY_LOG:
     xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
   BAMBOO_BLOCK:
     xp: 1
   CRIMSON_STEM:

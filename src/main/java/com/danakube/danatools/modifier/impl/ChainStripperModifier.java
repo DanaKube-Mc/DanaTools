@@ -2,8 +2,11 @@ package com.danakube.danatools.modifier.impl;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
+import com.danakube.danatools.model.CustomTool.BlockActivity;
 import com.danakube.danatools.model.ToolInstance;
 import com.danakube.danatools.modifier.DanaModifier;
+import com.danakube.danatools.progression.CoreDropManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -118,6 +121,19 @@ public class ChainStripperModifier extends DanaModifier {
                 if (!virtualEvent.isCancelled()) {
                     BlockData blockData = current.getBlockData();
                     current.setType(strippedType);
+
+                    ToolInstance toolInstance = ToolInstance.fromItemStack(tool);
+                    if (toolInstance != null) {
+                        BlockActivity activity = toolInstance.getConfig().getBlockActivity(currentType);
+                        if (activity != null) {
+                            int xpGain = activity.getXp();
+                            if (xpGain > 0) {
+                                xpGain = DanaTools.getInstance().getXpManager().applyLearningBoost(toolInstance, xpGain);
+                                toolInstance.addXP(xpGain, player);
+                            }
+                            CoreDropManager.checkAndDropCore(player, current.getLocation().add(0.5, 0.5, 0.5), toolInstance, activity.getCoreDrop());
+                        }
+                    }
 
                     if (blockData instanceof Orientable orientable) {
                         BlockData newBlockData = current.getBlockData();

@@ -49,6 +49,20 @@ block-activities:
     xp: 2
   NETHER_WART:
     xp: 1
+  GRASS_BLOCK:
+    xp: 1
+    core-drop:
+      modifier-id: "tiller"
+      chance-percent: 0.5
+  DIRT:
+    xp: 1
+    core-drop:
+      modifier-id: "tiller"
+      chance-percent: 0.5
+  DIRT_PATH:
+    xp: 1
+  ROOTED_DIRT:
+    xp: 1
 
 # Progression de l'outil
 progression:

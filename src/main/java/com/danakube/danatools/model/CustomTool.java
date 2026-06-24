@@ -17,6 +17,7 @@ public class CustomTool {
     private final double xpCurveMultiplier;
     
     private final Map<Material, BlockActivity> blockActivities;
+    private final FishingActivity fishingActivity;
     
     private final int maxLevel;
     private final Map<Integer, Integer> slotsProgression;
@@ -27,6 +28,7 @@ public class CustomTool {
 
     public CustomTool(String id, Material material, int customModelData, String displayName, List<String> lore,
                       int xpCurveBase, double xpCurveMultiplier, Map<Material, BlockActivity> blockActivities,
+                      FishingActivity fishingActivity,
                       int maxLevel, Map<Integer, Integer> slotsProgression, int maxSlots,
                       Map<Enchantment, Integer> enchantmentLimits, String noModifierMessage,
                       Map<String, Integer> allowedModifiers) {
@@ -38,6 +40,7 @@ public class CustomTool {
         this.xpCurveBase = xpCurveBase;
         this.xpCurveMultiplier = xpCurveMultiplier;
         this.blockActivities = blockActivities != null ? blockActivities : new HashMap<>();
+        this.fishingActivity = fishingActivity;
         this.maxLevel = maxLevel;
         this.slotsProgression = slotsProgression != null ? slotsProgression : new HashMap<>();
         this.maxSlots = maxSlots;
@@ -89,6 +92,10 @@ public class CustomTool {
 
     public BlockActivity getBlockActivity(Material material) {
         return blockActivities.get(material);
+    }
+
+    public FishingActivity getFishingActivity() {
+        return fishingActivity;
     }
 
     public int getMaxLevel() {
@@ -169,6 +176,28 @@ public class CustomTool {
 
         public double getChancePercent() {
             return chancePercent;
+        }
+    }
+
+    public static class FishingActivity {
+        private final int xp;
+        private final CoreDrop coreDrop;
+
+        public FishingActivity(int xp, CoreDrop coreDrop) {
+            this.xp = xp;
+            this.coreDrop = coreDrop;
+        }
+
+        public int getXp() {
+            return xp;
+        }
+
+        public CoreDrop getCoreDrop() {
+            return coreDrop;
+        }
+
+        public boolean hasCoreDrop() {
+            return coreDrop != null;
         }
     }
 }
