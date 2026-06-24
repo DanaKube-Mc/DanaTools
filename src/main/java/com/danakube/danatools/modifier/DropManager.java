@@ -5,7 +5,10 @@ import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.ToolInstance;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
@@ -18,7 +21,88 @@ public class DropManager {
     public static void breakBlock(Player player, Block block, ItemStack toolItem, int expToDrop) {
         ToolInstance tool = ToolInstance.fromItemStack(toolItem);
         
-        if (tool != null && (tool.hasModifier("auto_smelt") || tool.hasModifier("auto_sell"))) {
+        if (tool != null && (tool.hasModifier("auto_smelt") || tool.hasModifier("auto_sell") || tool.hasModifier("auto_replant"))) {
+            if (tool.hasModifier("auto_replant") && isReplantableCrop(block.getType())) {
+                BlockData blockData = block.getBlockData();
+                if (blockData instanceof Ageable ageable) {
+                    if (ageable.getAge() == ageable.getMaximumAge()) {
+                        Material seedMaterial = getRequiredSeed(block.getType());
+                        if (seedMaterial != null) {
+                            Collection<ItemStack> drops = block.getDrops(toolItem);
+                            boolean seedConsumed = false;
+                            for (ItemStack drop : drops) {
+                                if (drop.getType() == seedMaterial) {
+                                    drop.setAmount(drop.getAmount() - 1);
+                                    seedConsumed = true;
+                                    break;
+                                }
+                            }
+                            if (seedConsumed) {
+                                drops.removeIf(item -> item.getAmount() <= 0);
+                                
+                                double wisdomBoost = 0.0;
+                                if (tool.hasModifier("wisdom")) {
+                                    int wisdomLvl = tool.getModifierLevel("wisdom");
+                                    CustomModifier wisdomConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("wisdom");
+                                    if (wisdomConfig != null) {
+                                        CustomModifier.LevelSettings settings = wisdomConfig.getLevel(wisdomLvl);
+                                        if (settings != null) {
+                                            Object boostObj = settings.getBehaviorSettings().get("xp-boost");
+                                            if (boostObj instanceof Number num) {
+                                                wisdomBoost = num.doubleValue();
+                                            }
+                                        }
+                                    }
+                                }
+
+                                double totalXp = expToDrop;
+                                double sellMultiplier = 1.0;
+                                boolean hasAutoSell = tool.hasModifier("auto_sell");
+                                if (hasAutoSell) {
+                                    int autoSellLvl = tool.getModifierLevel("auto_sell");
+                                    CustomModifier autoSellConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("auto_sell");
+                                    if (autoSellConfig != null) {
+                                        CustomModifier.LevelSettings settings = autoSellConfig.getLevel(autoSellLvl);
+                                        if (settings != null) {
+                                            sellMultiplier = settings.getBehaviorDouble("multiplier", 1.0);
+                                        }
+                                    }
+                                }
+
+                                for (ItemStack drop : drops) {
+                                    ItemStack finalDrop = drop;
+                                    if (tool.hasModifier("auto_smelt")) {
+                                        SmeltResult smelt = getSmeltResult(drop.getType());
+                                        if (smelt != null) {
+                                            double smeltingXp = drop.getAmount() * smelt.getXp();
+                                            totalXp += smeltingXp * (1.0 + wisdomBoost);
+                                            finalDrop = new ItemStack(smelt.getResult(), drop.getAmount());
+                                        }
+                                    }
+
+                                    boolean sold = false;
+                                    if (hasAutoSell) {
+                                        sold = DanaTools.getInstance().getAutoSellManager().sellItem(player, finalDrop, sellMultiplier);
+                                    }
+
+                                    if (!sold) {
+                                        block.getWorld().dropItemNaturally(block.getLocation(), finalDrop);
+                                    }
+                                }
+
+                                ageable.setAge(0);
+                                block.setBlockData(ageable, true);
+                                block.getWorld().playSound(block.getLocation(), Sound.ITEM_CROP_PLANT, 1.0f, 1.0f);
+                                if (totalXp > 0) {
+                                    spawnXP(block.getLocation(), totalXp);
+                                }
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
             Collection<ItemStack> drops = block.getDrops(toolItem);
             
             double wisdomBoost = 0.0;
@@ -156,5 +240,42 @@ public class DropManager {
             int finalXp = xp;
             loc.getWorld().spawn(loc, ExperienceOrb.class, orb -> orb.setExperience(finalXp));
         }
+    }
+
+    public static boolean isReplantableCrop(Material blockType) {
+        CustomModifier modifier = DanaTools.getInstance().getModifierConfigManager().getModifier("auto_replant");
+        if (modifier == null) return false;
+        CustomModifier.LevelSettings settings = modifier.getLevel(1);
+        if (settings == null) return false;
+
+        Object cropsObj = settings.getBehaviorSettings().get("crops");
+        if (cropsObj instanceof ConfigurationSection sec) {
+            return sec.contains(blockType.name());
+        } else if (cropsObj instanceof Map<?, ?> map) {
+            return map.containsKey(blockType.name());
+        }
+        return false;
+    }
+
+    public static Material getRequiredSeed(Material blockType) {
+        CustomModifier modifier = DanaTools.getInstance().getModifierConfigManager().getModifier("auto_replant");
+        if (modifier == null) return null;
+        CustomModifier.LevelSettings settings = modifier.getLevel(1);
+        if (settings == null) return null;
+
+        Object cropsObj = settings.getBehaviorSettings().get("crops");
+        String seedName = null;
+        if (cropsObj instanceof ConfigurationSection sec) {
+            seedName = sec.getString(blockType.name());
+        } else if (cropsObj instanceof Map<?, ?> map) {
+            Object val = map.get(blockType.name());
+            if (val != null) {
+                seedName = val.toString();
+            }
+        }
+        if (seedName != null) {
+            return Material.matchMaterial(seedName);
+        }
+        return null;
     }
 }

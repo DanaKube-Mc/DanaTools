@@ -13,6 +13,7 @@ import com.danakube.danatools.modifier.CompactorManager;
 import com.danakube.danatools.modifier.AutoSellManager;
 import com.danakube.danatools.modifier.PotionModifierManager;
 import com.danakube.danatools.modifier.PotionModifierListener;
+import com.danakube.danatools.modifier.MagnetTask;
 import com.danakube.danatools.progression.BlockBreakXPListener;
 import com.danakube.danatools.progression.XPManager;
 import net.milkbowl.vault.economy.Economy;
@@ -84,6 +85,8 @@ public final class DanaTools extends JavaPlugin {
                 this.potionModifierManager.checkAndApply(player);
             }
         }, 40L, 40L);
+
+        getServer().getScheduler().runTaskTimer(this, new MagnetTask(), 10L, 10L);
 
         DanaToolsCommand cmd = new DanaToolsCommand(this);
         getCommand("danatools").setExecutor(cmd);

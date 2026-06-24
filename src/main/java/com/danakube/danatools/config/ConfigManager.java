@@ -32,6 +32,8 @@ public class ConfigManager {
         saveResourceIfNotExists("modifiers/auto_sell.yml");
         saveResourceIfNotExists("modifiers/haste.yml");
         saveResourceIfNotExists("modifiers/night_vision.yml");
+        saveResourceIfNotExists("modifiers/auto_replant.yml");
+        saveResourceIfNotExists("modifiers/magnet.yml");
 
         this.toolsFolder = new File(plugin.getDataFolder(), "tools");
         this.modifiersFolder = new File(plugin.getDataFolder(), "modifiers");
