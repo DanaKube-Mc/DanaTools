@@ -43,3 +43,6 @@ modifiers:
 
 auto_sell:
   action_bar: "&a+${amount} &7(Vente Auto)"
+
+purify:
+  invalid_entity: "<red>Erreur de configuration du modificateur Purify : type d'entité inconnu {type}</red>"
