@@ -9,6 +9,7 @@ import com.danakube.danatools.modifier.impl.AutoReplantModifier;
 import com.danakube.danatools.modifier.impl.MagnetModifier;
 import com.danakube.danatools.modifier.impl.TillerModifier;
 import com.danakube.danatools.modifier.impl.PlanterModifier;
+import com.danakube.danatools.modifier.impl.ChainStripperModifier;
 import com.danakube.danatools.modifier.impl.LearningModifier;
 import com.danakube.danatools.modifier.impl.TrenchModifier;
 import com.danakube.danatools.modifier.impl.VeinMinerModifier;
@@ -40,6 +41,7 @@ public class ModifierRegistry {
         register(new MagnetModifier());
         register(new TillerModifier());
         register(new PlanterModifier());
+        register(new ChainStripperModifier());
     }
 
     private void register(DanaModifier modifier) {
