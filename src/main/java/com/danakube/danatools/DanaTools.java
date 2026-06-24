@@ -11,9 +11,13 @@ import com.danakube.danatools.forge.SmithingListener;
 import com.danakube.danatools.modifier.ModifierRegistry;
 import com.danakube.danatools.modifier.CompactorManager;
 import com.danakube.danatools.modifier.AutoSellManager;
+import com.danakube.danatools.modifier.PotionModifierManager;
+import com.danakube.danatools.modifier.PotionModifierListener;
 import com.danakube.danatools.progression.BlockBreakXPListener;
 import com.danakube.danatools.progression.XPManager;
 import net.milkbowl.vault.economy.Economy;
+
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -32,6 +36,7 @@ public final class DanaTools extends JavaPlugin {
     private XPManager xpManager;
     private CompactorManager compactorManager;
     private AutoSellManager autoSellManager;
+    private PotionModifierManager potionModifierManager;
     private Economy economy;
 
     @Override
@@ -64,12 +69,21 @@ public final class DanaTools extends JavaPlugin {
         this.autoSellManager = new AutoSellManager(this);
         this.autoSellManager.loadPrices();
 
+        this.potionModifierManager = new PotionModifierManager(this);
+
         this.modifierRegistry = new ModifierRegistry(this);
         this.modifierRegistry.registerDefaultModifiers();
 
         getServer().getPluginManager().registerEvents(new SmithingListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockBreakXPListener(this), this);
         getServer().getPluginManager().registerEvents(new AnvilListener(this), this);
+        getServer().getPluginManager().registerEvents(new PotionModifierListener(this), this);
+
+        getServer().getScheduler().runTaskTimer(this, () -> {
+            for (Player player : getServer().getOnlinePlayers()) {
+                this.potionModifierManager.checkAndApply(player);
+            }
+        }, 40L, 40L);
 
         DanaToolsCommand cmd = new DanaToolsCommand(this);
         getCommand("danatools").setExecutor(cmd);
@@ -108,6 +122,10 @@ public final class DanaTools extends JavaPlugin {
 
     public ModifierRegistry getModifierRegistry() {
         return modifierRegistry;
+    }
+
+    public PotionModifierManager getPotionModifierManager() {
+        return potionModifierManager;
     }
 
     public XPManager getXpManager() {
