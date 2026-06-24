@@ -10,8 +10,11 @@ import com.danakube.danatools.forge.ForgeRecipeRegistry;
 import com.danakube.danatools.forge.SmithingListener;
 import com.danakube.danatools.modifier.ModifierRegistry;
 import com.danakube.danatools.modifier.CompactorManager;
+import com.danakube.danatools.modifier.AutoSellManager;
 import com.danakube.danatools.progression.BlockBreakXPListener;
 import com.danakube.danatools.progression.XPManager;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
@@ -28,6 +31,8 @@ public final class DanaTools extends JavaPlugin {
     private ModifierRegistry modifierRegistry;
     private XPManager xpManager;
     private CompactorManager compactorManager;
+    private AutoSellManager autoSellManager;
+    private Economy economy;
 
     @Override
     public void onEnable() {
@@ -54,6 +59,10 @@ public final class DanaTools extends JavaPlugin {
 
         this.compactorManager = new CompactorManager();
         this.compactorManager.loadRecipes();
+
+        setupEconomy();
+        this.autoSellManager = new AutoSellManager(this);
+        this.autoSellManager.loadPrices();
 
         this.modifierRegistry = new ModifierRegistry(this);
         this.modifierRegistry.registerDefaultModifiers();
@@ -109,6 +118,26 @@ public final class DanaTools extends JavaPlugin {
         return compactorManager;
     }
 
+    public AutoSellManager getAutoSellManager() {
+        return autoSellManager;
+    }
+
+    public Economy getEconomy() {
+        return economy;
+    }
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        this.economy = rsp.getProvider();
+        return this.economy != null;
+    }
+
     public void reloadPlugin() {
         try {
             this.configManager.setupConfigs();
@@ -118,6 +147,9 @@ public final class DanaTools extends JavaPlugin {
             this.modifierConfigManager.loadModifiers();
             if (this.compactorManager != null) {
                 this.compactorManager.loadRecipes();
+            }
+            if (this.autoSellManager != null) {
+                this.autoSellManager.loadPrices();
             }
             if (this.forgeRecipeRegistry != null) {
                 this.forgeRecipeRegistry.registerRecipes();

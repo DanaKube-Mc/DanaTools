@@ -159,7 +159,7 @@ public class ToolInstance {
             }
         }
 
-        if (modifier.getId().equals("auto_smelt") || modifier.getId().equals("compactor")) {
+        if (modifier.getId().equals("auto_smelt") || modifier.getId().equals("compactor") || modifier.getId().equals("auto_sell")) {
             if (item.getEnchantments().containsKey(Enchantment.SILK_TOUCH)) {
                 return false;
             }

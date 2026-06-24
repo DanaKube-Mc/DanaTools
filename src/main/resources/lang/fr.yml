@@ -40,3 +40,6 @@ modifiers:
   none: "&7 (Aucun modificateur)"
   format_with_level: "&7 - {modifier} (Lvl {level})"
   format_no_level: "&7 - {modifier}"
+
+auto_sell:
+  action_bar: "&a+${amount} &7(Vente Auto)"

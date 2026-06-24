@@ -151,5 +151,13 @@ public class CustomModifier {
             }
             return defaultValue;
         }
+
+        public double getBehaviorDouble(String key, double defaultValue) {
+            Object obj = behaviorSettings.get(key);
+            if (obj instanceof Number) {
+                return ((Number) obj).doubleValue();
+            }
+            return defaultValue;
+        }
     }
 }

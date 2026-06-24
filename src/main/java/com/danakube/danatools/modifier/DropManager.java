@@ -18,9 +18,8 @@ public class DropManager {
     public static void breakBlock(Player player, Block block, ItemStack toolItem, int expToDrop) {
         ToolInstance tool = ToolInstance.fromItemStack(toolItem);
         
-        if (tool != null && tool.hasModifier("auto_smelt")) {
+        if (tool != null && (tool.hasModifier("auto_smelt") || tool.hasModifier("auto_sell"))) {
             Collection<ItemStack> drops = block.getDrops(toolItem);
-            boolean customDropPerformed = false;
             
             double wisdomBoost = 0.0;
             if (tool.hasModifier("wisdom")) {
@@ -38,28 +37,47 @@ public class DropManager {
             }
 
             double totalXp = expToDrop;
+            
+            double sellMultiplier = 1.0;
+            boolean hasAutoSell = tool.hasModifier("auto_sell");
+            if (hasAutoSell) {
+                int autoSellLvl = tool.getModifierLevel("auto_sell");
+                CustomModifier autoSellConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("auto_sell");
+                if (autoSellConfig != null) {
+                    CustomModifier.LevelSettings settings = autoSellConfig.getLevel(autoSellLvl);
+                    if (settings != null) {
+                        sellMultiplier = settings.getBehaviorDouble("multiplier", 1.0);
+                    }
+                }
+            }
 
             for (ItemStack drop : drops) {
-                SmeltResult smelt = getSmeltResult(drop.getType());
-                if (smelt != null) {
-                    double smeltingXp = drop.getAmount() * smelt.getXp();
-                    totalXp += smeltingXp * (1.0 + wisdomBoost);
-                    ItemStack cookedDrop = new ItemStack(smelt.getResult(), drop.getAmount());
-                    block.getWorld().dropItemNaturally(block.getLocation(), cookedDrop);
-                    customDropPerformed = true;
-                } else {
-                    block.getWorld().dropItemNaturally(block.getLocation(), drop);
-                    customDropPerformed = true;
+                ItemStack finalDrop = drop;
+                
+                if (tool.hasModifier("auto_smelt")) {
+                    SmeltResult smelt = getSmeltResult(drop.getType());
+                    if (smelt != null) {
+                        double smeltingXp = drop.getAmount() * smelt.getXp();
+                        totalXp += smeltingXp * (1.0 + wisdomBoost);
+                        finalDrop = new ItemStack(smelt.getResult(), drop.getAmount());
+                    }
+                }
+
+                boolean sold = false;
+                if (hasAutoSell) {
+                    sold = DanaTools.getInstance().getAutoSellManager().sellItem(player, finalDrop, sellMultiplier);
+                }
+
+                if (!sold) {
+                    block.getWorld().dropItemNaturally(block.getLocation(), finalDrop);
                 }
             }
             
-            if (customDropPerformed) {
-                block.setType(Material.AIR);
-                if (totalXp > 0) {
-                    spawnXP(block.getLocation(), totalXp);
-                }
-                return;
+            block.setType(Material.AIR);
+            if (totalXp > 0) {
+                spawnXP(block.getLocation(), totalXp);
             }
+            return;
         }
         
         block.breakNaturally(toolItem);
