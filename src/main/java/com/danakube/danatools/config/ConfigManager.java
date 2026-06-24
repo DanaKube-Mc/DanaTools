@@ -41,6 +41,7 @@ public class ConfigManager {
         saveResourceIfNotExists("modifiers/chain_stripper.yml");
         saveResourceIfNotExists("modifiers/harvester.yml");
         saveResourceIfNotExists("modifiers/unbreakable.yml");
+        saveResourceIfNotExists("modifiers/bouncy.yml");
 
         this.toolsFolder = new File(plugin.getDataFolder(), "tools");
         this.modifiersFolder = new File(plugin.getDataFolder(), "modifiers");

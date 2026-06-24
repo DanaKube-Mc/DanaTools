@@ -1,0 +1,51 @@
+id: "bouncy"
+incompatible-modifiers: []
+
+# Recette de forge
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5016
+  display-name: "&6Placard de Forge : Rebond"
+
+ingredient-item:
+  material: "SLIME_BLOCK"
+  display-name: "&aNoyau Élastique"
+
+# Niveaux et paramètres physiques
+levels:
+  1:
+    display-name: "&aModificateur : Rebond I"
+    lore:
+      - "&7Annule les dégâts de chute et vous"
+      - "&7fait rebondir de 30% de la hauteur."
+      - "&dSlots requis : &f1"
+    slot-cost: 1
+    min-tool-level: 5
+    behavior:
+      type: "BOUNCY"
+      bounce-factor: 0.3
+      max-velocity: 1.2
+  2:
+    display-name: "&aModificateur : Rebond II"
+    lore:
+      - "&7Annule les dégâts de chute et vous"
+      - "&7fait rebondir de 50% de la hauteur."
+      - "&dSlots requis : &f2"
+    slot-cost: 2
+    min-tool-level: 10
+    behavior:
+      type: "BOUNCY"
+      bounce-factor: 0.5
+      max-velocity: 1.5
+  3:
+    display-name: "&aModificateur : Rebond III"
+    lore:
+      - "&7Annule les dégâts de chute et vous"
+      - "&7fait rebondir de 80% de la hauteur."
+      - "&dSlots requis : &f4"
+    slot-cost: 4
+    min-tool-level: 15
+    behavior:
+      type: "BOUNCY"
+      bounce-factor: 0.8
+      max-velocity: 2.0

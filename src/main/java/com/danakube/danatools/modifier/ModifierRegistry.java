@@ -2,6 +2,7 @@ package com.danakube.danatools.modifier;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.modifier.impl.AutoSmeltModifier;
+import com.danakube.danatools.modifier.impl.BouncyModifier;
 import com.danakube.danatools.modifier.impl.CompactorModifier;
 import com.danakube.danatools.modifier.impl.AutoSellModifier;
 import com.danakube.danatools.modifier.impl.PotionEffectModifier;
@@ -46,6 +47,7 @@ public class ModifierRegistry {
         register(new ChainStripperModifier());
         register(new HarvesterModifier());
         register(new UnbreakableModifier());
+        register(new BouncyModifier());
     }
 
     private void register(DanaModifier modifier) {
