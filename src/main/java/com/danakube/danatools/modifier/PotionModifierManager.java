@@ -63,7 +63,8 @@ public class PotionModifierManager {
             particles = (Boolean) particlesObj;
         }
 
-        PotionEffect effect = new PotionEffect(type, 100, amplifier, ambient, particles, true);
+        int duration = settings.getBehaviorInt("duration", 320);
+        PotionEffect effect = new PotionEffect(type, duration, amplifier, ambient, particles, true);
         player.addPotionEffect(effect);
 
         player.setMetadata(POTION_METADATA_PREFIX + modifierId, new FixedMetadataValue(plugin, true));
