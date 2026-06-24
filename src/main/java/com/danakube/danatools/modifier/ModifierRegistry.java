@@ -7,6 +7,7 @@ import com.danakube.danatools.modifier.impl.AutoSellModifier;
 import com.danakube.danatools.modifier.impl.PotionEffectModifier;
 import com.danakube.danatools.modifier.impl.AutoReplantModifier;
 import com.danakube.danatools.modifier.impl.MagnetModifier;
+import com.danakube.danatools.modifier.impl.TillerModifier;
 import com.danakube.danatools.modifier.impl.LearningModifier;
 import com.danakube.danatools.modifier.impl.TrenchModifier;
 import com.danakube.danatools.modifier.impl.VeinMinerModifier;
@@ -36,6 +37,7 @@ public class ModifierRegistry {
         register(new PotionEffectModifier("night_vision"));
         register(new AutoReplantModifier());
         register(new MagnetModifier());
+        register(new TillerModifier());
     }
 
     private void register(DanaModifier modifier) {

@@ -1,0 +1,81 @@
+# =========================================================================
+# Configuration d'Outil : Houe Lourde de Depart (heavy_hoe)
+# =========================================================================
+
+# Identifiant unique de l'outil
+id: "heavy_hoe"
+
+# Materiel Minecraft sous-jacent
+material: "DIAMOND_HOE"
+
+# CustomModelData utilise pour changer la texture/modele 3D
+custom-model-data: 10026
+
+# Nom d'affichage de l'item.
+display-name: "<gradient:#55ff55:#aaffaa>Houe Lourde de Depart</gradient>"
+
+# Description/Lore de l'outil.
+no-modifier-message: "&7 (Aucun modificateur)"
+lore:
+  - "&7Une houe qui s'adapte a son porteur."
+  - ""
+  - "&eProgression :"
+  - "&d - Niveau : &f{level}"
+  - "&d - XP : &f{xp}/{max_xp}"
+  - ""
+  - "&eModificateurs ({slots_used}/{slots_total}) :"
+  - "{modifiers_list}"
+
+# Formule de courbe d'experience necessaire pour passer de niveau.
+xp-curve:
+  base: 100
+  multiplier: 1.5
+
+# Configuration de l'XP et des drops par bloc cassé
+block-activities:
+  WHEAT:
+    xp: 1
+  CARROTS:
+    xp: 1
+  POTATOES:
+    xp: 1
+  BEETROOTS:
+    xp: 1
+  COCOA:
+    xp: 1
+  MELON:
+    xp: 2
+  PUMPKIN:
+    xp: 2
+  NETHER_WART:
+    xp: 1
+
+# Progression de l'outil
+progression:
+  # Niveau maximum que l'outil peut atteindre
+  max-level: 20
+  
+  # Slots de modificateurs debloques aux niveaux specifiques.
+  slots:
+    5: 1   # Au niveau 5, debloque 1 slot total
+    10: 2  # Au niveau 10, debloque 2 slots total
+    15: 3  # Au niveau 15, debloque 3 slots total
+    20: 4  # Au niveau 20, debloque 4 slots total
+    
+  # Nombre maximum de slots de modificateurs autorise pour cet outil
+  max-slots: 4
+
+# Limites maximales des enchantements pour cet outil
+enchantment-limits:
+  EFFICIENCY: 10
+  UNBREAKING: 8
+  FORTUNE: 5
+
+# Modificateurs autorisés et niveau maximum pour cet outil
+allowed-modifiers:
+  tiller: 3
+  wisdom: 3
+  learning: 3
+  auto_replant: 1
+  magnet: 3
+  haste: 1
