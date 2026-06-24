@@ -134,11 +134,19 @@ public class ToolConfigManager {
 
                 String noModifierMessage = config.getString("no-modifier-message", null);
 
+                Map<String, Integer> allowedModifiers = new HashMap<>();
+                ConfigurationSection allowedSec = config.getConfigurationSection("allowed-modifiers");
+                if (allowedSec != null) {
+                    for (String key : allowedSec.getKeys(false)) {
+                        allowedModifiers.put(key, allowedSec.getInt(key));
+                    }
+                }
+
                 CustomTool customTool = new CustomTool(
                         id, material, customModelData, displayName, lore,
                         xpCurveBase, xpCurveMultiplier, blockActivities,
                         maxLevel, slotsProgression, maxSlots, enchantmentLimits,
-                        noModifierMessage
+                        noModifierMessage, allowedModifiers
                 );
 
                 tools.put(id, customTool);

@@ -145,10 +145,13 @@ public class ToolInstance {
             return false;
         }
 
-        if (modifier.getCompatibleTools() != null && !modifier.getCompatibleTools().isEmpty()) {
-            if (!modifier.getCompatibleTools().contains(getToolId())) {
-                return false;
-            }
+        Map<String, Integer> allowedMods = getConfig().getAllowedModifiers();
+        if (allowedMods == null || !allowedMods.containsKey(modifier.getId())) {
+            return false;
+        }
+        int maxLvl = allowedMods.get(modifier.getId());
+        if (targetLvl > maxLvl) {
+            return false;
         }
 
         if (currentLvl == 0) {

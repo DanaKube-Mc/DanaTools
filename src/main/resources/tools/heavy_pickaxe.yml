@@ -106,3 +106,16 @@ enchantment-limits:
   EFFICIENCY: 10
   UNBREAKING: 8
   FORTUNE: 5
+
+# Modificateurs autorisés et niveau maximum pour cet outil
+allowed-modifiers:
+  trench: 3       # Excavation autorisée jusqu'au niveau 3 (max global)
+  vein_miner: 2   # Minage en veine autorisé jusqu'au niveau 2
+  wisdom: 3
+  learning: 3
+  auto_smelt: 1
+  compactor: 1
+  auto_sell: 2    # Bridé au niveau 2
+  haste: 1
+  magnet: 2       # Bridé au niveau 2
+

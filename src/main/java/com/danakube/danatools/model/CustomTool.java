@@ -23,11 +23,13 @@ public class CustomTool {
     private final int maxSlots;
     private final Map<Enchantment, Integer> enchantmentLimits;
     private final String noModifierMessage;
+    private final Map<String, Integer> allowedModifiers;
 
     public CustomTool(String id, Material material, int customModelData, String displayName, List<String> lore,
                       int xpCurveBase, double xpCurveMultiplier, Map<Material, BlockActivity> blockActivities,
                       int maxLevel, Map<Integer, Integer> slotsProgression, int maxSlots,
-                      Map<Enchantment, Integer> enchantmentLimits, String noModifierMessage) {
+                      Map<Enchantment, Integer> enchantmentLimits, String noModifierMessage,
+                      Map<String, Integer> allowedModifiers) {
         this.id = id;
         this.material = material;
         this.customModelData = customModelData;
@@ -41,6 +43,7 @@ public class CustomTool {
         this.maxSlots = maxSlots;
         this.enchantmentLimits = enchantmentLimits != null ? enchantmentLimits : new HashMap<>();
         this.noModifierMessage = noModifierMessage;
+        this.allowedModifiers = allowedModifiers != null ? allowedModifiers : new HashMap<>();
     }
 
     public String getId() {
@@ -123,6 +126,10 @@ public class CustomTool {
 
     public String getNoModifierMessage() {
         return noModifierMessage;
+    }
+
+    public Map<String, Integer> getAllowedModifiers() {
+        return allowedModifiers;
     }
 
     public static class BlockActivity {
