@@ -13,7 +13,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Piglin;
-import org.bukkit.entity.PiglinBrute;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.ZombieVillager;
 import org.bukkit.entity.PigZombie;
@@ -89,20 +88,20 @@ public class PurifyModifier extends DanaModifier {
             ZombieVillager zombieVillager = (ZombieVillager) target;
             zombieVillager.setConversionTime(20);
             zombieVillager.setConversionPlayer(player);
-        } else if (sourceTypeName.equals("PIG_ZOOMBIE") || sourceTypeName.equals("PIG_ZOMBIE")) {
+        } else if (sourceTypeName.equals("ZOMBIFIED_PIGLIN")) {
             PigZombie zombifiedPiglin = (PigZombie) target;
             Class<? extends LivingEntity> targetClass = Piglin.class;
             
             if (destinationTypeName.equals("PIGLIN_BRUTE") || destinationTypeName.equals("PIGLIN")) {
                 ItemStack mainHand = zombifiedPiglin.getEquipment().getItemInMainHand();
                 if (mainHand != null && mainHand.getType() == Material.GOLDEN_AXE) {
-                    targetClass = PiglinBrute.class;
+                    targetClass = Piglin.class;
                 } else if (destinationTypeName.equals("PIGLIN_BRUTE")) {
-                    targetClass = PiglinBrute.class;
+                    targetClass = Piglin.class;
                 }
             } else {
                 try {
-                    org.bukkit.entity.EntityType destType = org.bukkit.entity.EntityType.valueOf(destinationTypeName);
+                    EntityType destType = EntityType.valueOf(destinationTypeName);
                     Class<? extends Entity> entClass = destType.getEntityClass();
                     if (entClass != null && LivingEntity.class.isAssignableFrom(entClass)) {
                         targetClass = entClass.asSubclass(LivingEntity.class);

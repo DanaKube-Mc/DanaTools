@@ -25,7 +25,10 @@ public class WisdomModifier extends DanaModifier {
             
             int originalExp = event.getExpToDrop();
             if (originalExp > 0) {
-                int newExp = (int) Math.round(originalExp * (1.0 + boost));
+                double exactExp = originalExp * (1.0 + boost);
+                int floor = (int) Math.floor(exactExp);
+                double fraction = exactExp - floor;
+                int newExp = floor + (Math.random() < fraction ? 1 : 0);
                 event.setExpToDrop(newExp);
             }
         }
@@ -42,7 +45,10 @@ public class WisdomModifier extends DanaModifier {
             
             int originalExp = event.getDroppedExp();
             if (originalExp > 0) {
-                int newExp = (int) Math.round(originalExp * (1.0 + boost));
+                double exactExp = originalExp * (1.0 + boost);
+                int floor = (int) Math.floor(exactExp);
+                double fraction = exactExp - floor;
+                int newExp = floor + (Math.random() < fraction ? 1 : 0);
                 event.setDroppedExp(newExp);
             }
         }
@@ -59,7 +65,10 @@ public class WisdomModifier extends DanaModifier {
             
             int originalExp = event.getExpToDrop();
             if (originalExp > 0) {
-                int newExp = (int) Math.round(originalExp * (1.0 + boost));
+                double exactExp = originalExp * (1.0 + boost);
+                int floor = (int) Math.floor(exactExp);
+                double fraction = exactExp - floor;
+                int newExp = floor + (Math.random() < fraction ? 1 : 0);
                 event.setExpToDrop(newExp);
             }
         }

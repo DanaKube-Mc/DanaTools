@@ -62,5 +62,5 @@ levels:
       durability-cost: 5
       targets:
         ZOMBIE_VILLAGER: "VILLAGER"
-        PIG_ZOMBIE: "PIGLIN"
+        ZOMBIFIED_PIGLIN: "PIGLIN"
         WITCH: "WANDERING_TRADER"

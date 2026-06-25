@@ -31,7 +31,10 @@ public class XPManager {
                 if (settings != null) {
                     Object boostObj = settings.getBehaviorSettings().get("xp-boost");
                     if (boostObj instanceof Number num) {
-                        xpGain = (int) Math.round(xpGain * (1.0 + num.doubleValue()));
+                        double exactXP = baseXP * (1.0 + num.doubleValue());
+                        int floor = (int) Math.floor(exactXP);
+                        double fraction = exactXP - floor;
+                        xpGain = floor + (Math.random() < fraction ? 1 : 0);
                     }
                 }
             }
