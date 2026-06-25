@@ -2,7 +2,6 @@ package com.danakube.danatools.modifier.impl;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,7 +9,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class WisdomModifier extends DanaModifier {
 
@@ -21,11 +19,8 @@ public class WisdomModifier extends DanaModifier {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        ItemStack item = player.getInventory().getItemInMainHand();
-        DanaItemInstance tool = DanaItemInstance.fromItemStack(item);
-        
-        if (tool != null && tool.hasModifier("wisdom")) {
-            int level = tool.getModifierLevel("wisdom");
+        int level = getHighestModifierLevel(player);
+        if (level > 0) {
             double boost = getXpBoost("wisdom", level);
             
             int originalExp = event.getExpToDrop();
@@ -41,11 +36,8 @@ public class WisdomModifier extends DanaModifier {
         Player killer = event.getEntity().getKiller();
         if (killer == null) return;
         
-        ItemStack item = killer.getInventory().getItemInMainHand();
-        DanaItemInstance tool = DanaItemInstance.fromItemStack(item);
-        
-        if (tool != null && tool.hasModifier("wisdom")) {
-            int level = tool.getModifierLevel("wisdom");
+        int level = getHighestModifierLevel(killer);
+        if (level > 0) {
             double boost = getXpBoost("wisdom", level);
             
             int originalExp = event.getDroppedExp();
@@ -61,11 +53,8 @@ public class WisdomModifier extends DanaModifier {
         if (event.getState() != PlayerFishEvent.State.CAUGHT_FISH) return;
         
         Player player = event.getPlayer();
-        ItemStack item = player.getInventory().getItemInMainHand();
-        DanaItemInstance tool = DanaItemInstance.fromItemStack(item);
-        
-        if (tool != null && tool.hasModifier("wisdom")) {
-            int level = tool.getModifierLevel("wisdom");
+        int level = getHighestModifierLevel(player);
+        if (level > 0) {
             double boost = getXpBoost("wisdom", level);
             
             int originalExp = event.getExpToDrop();

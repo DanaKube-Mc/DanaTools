@@ -2,7 +2,6 @@ package com.danakube.danatools.modifier.impl;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -40,12 +39,7 @@ public class BouncyModifier extends DanaModifier {
             return;
         }
 
-        DanaItemInstance tool = DanaItemInstance.fromItemStack(player.getInventory().getItemInMainHand());
-        if (tool == null) {
-            return;
-        }
-
-        int level = tool.getModifierLevel("bouncy");
+        int level = getHighestModifierLevel(player);
         if (level <= 0) {
             return;
         }

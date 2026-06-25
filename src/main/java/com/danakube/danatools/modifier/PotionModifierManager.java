@@ -2,11 +2,9 @@ package com.danakube.danatools.modifier;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.DanaItemInstance;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -25,21 +23,40 @@ public class PotionModifierManager {
     public void checkAndApply(Player player) {
         if (player == null || !player.isOnline()) return;
 
-        ItemStack hand = player.getInventory().getItemInMainHand();
-        DanaItemInstance tool = DanaItemInstance.fromItemStack(hand);
+        for (CustomModifier modifier : plugin.getModifierConfigManager().getModifiers()) {
+            String modId = modifier.getId();
+            int activeLvl = DanaModifier.getHighestModifierLevel(player, modId);
 
-        if (tool != null) {
-            for (String modId : tool.getModifiers()) {
-                CustomModifier modifier = plugin.getModifierConfigManager().getModifier(modId);
-                if (modifier == null) continue;
-
-                int activeLvl = tool.getModifierLevel(modId);
+            if (activeLvl > 0) {
                 CustomModifier.LevelSettings settings = modifier.getLevel(activeLvl);
-
                 if (settings != null && "POTION_EFFECT".equalsIgnoreCase(settings.getBehaviorType())) {
                     applyPotionEffect(player, modId, settings);
+                } else {
+                    removePotionEffectIfApplied(player, modifier);
+                }
+            } else {
+                removePotionEffectIfApplied(player, modifier);
+            }
+        }
+    }
+
+    private void removePotionEffectIfApplied(Player player, CustomModifier modifier) {
+        String key = POTION_METADATA_PREFIX + modifier.getId();
+        if (player.hasMetadata(key)) {
+            for (int lvl = 1; lvl <= 10; lvl++) {
+                CustomModifier.LevelSettings settings = modifier.getLevel(lvl);
+                if (settings != null && "POTION_EFFECT".equalsIgnoreCase(settings.getBehaviorType())) {
+                    Object effectNameObj = settings.getBehaviorSettings().get("effect-type");
+                    if (effectNameObj != null) {
+                        PotionEffectType type = Registry.EFFECT.get(NamespacedKey.minecraft(effectNameObj.toString().toLowerCase(Locale.ROOT)));
+                        if (type != null) {
+                            player.removePotionEffect(type);
+                        }
+                    }
+                    break;
                 }
             }
+            player.removeMetadata(key, plugin);
         }
     }
 

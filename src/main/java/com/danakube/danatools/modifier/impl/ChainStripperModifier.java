@@ -128,7 +128,7 @@ public class ChainStripperModifier extends DanaModifier {
                         if (activity != null) {
                             int xpGain = activity.getXp();
                             if (xpGain > 0) {
-                                xpGain = DanaTools.getInstance().getXpManager().applyLearningBoost(toolInstance, xpGain);
+                                xpGain = DanaTools.getInstance().getXpManager().applyLearningBoost(player, xpGain);
                                 toolInstance.addXP(xpGain, player);
                             }
                             CoreDropManager.checkAndDropCore(player, current.getLocation().add(0.5, 0.5, 0.5), toolInstance, activity.getCoreDrop());

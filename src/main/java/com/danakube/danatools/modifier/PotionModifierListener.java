@@ -5,8 +5,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.ItemStack;
 
 public class PotionModifierListener implements Listener {
 
@@ -55,6 +57,23 @@ public class PotionModifierListener implements Listener {
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             plugin.getPotionModifierManager().checkAndApply(player);
         }, 1L);
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            ItemStack item = event.getItem();
+            if (item != null) {
+                String typeName = item.getType().name();
+                if (typeName.endsWith("_HELMET") || typeName.endsWith("_CHESTPLATE") || typeName.endsWith("_LEGGINGS") || typeName.endsWith("_BOOTS")) {
+                    Player player = event.getPlayer();
+                    plugin.getPotionModifierManager().removeAllPluginEffects(player);
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        plugin.getPotionModifierManager().checkAndApply(player);
+                    }, 1L);
+                }
+            }
+        }
     }
 
     @EventHandler

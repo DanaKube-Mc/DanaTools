@@ -2,7 +2,6 @@ package com.danakube.danatools.modifier.impl;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -43,14 +42,13 @@ public class PurifyModifier extends DanaModifier {
             return;
         }
 
-        ItemStack toolItem = player.getInventory().getItemInMainHand();
-        DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
-        if (tool == null) {
+        int level = getHighestModifierLevel(player);
+        if (level <= 0) {
             return;
         }
 
-        int level = tool.getModifierLevel("purify");
-        if (level <= 0) {
+        ItemStack toolItem = getHighestModifierItem(player, "purify");
+        if (toolItem == null) {
             return;
         }
 
@@ -214,7 +212,20 @@ public class PurifyModifier extends DanaModifier {
             if (finalDamage > 0) {
                 int newDamage = damageable.getDamage() + finalDamage;
                 if (newDamage >= item.getType().getMaxDurability()) {
-                    player.getInventory().setItemInMainHand(null);
+                    if (player.getInventory().getItemInMainHand() == item || item.equals(player.getInventory().getItemInMainHand())) {
+                        player.getInventory().setItemInMainHand(null);
+                    } else if (player.getInventory().getItemInOffHand() == item || item.equals(player.getInventory().getItemInOffHand())) {
+                        player.getInventory().setItemInOffHand(null);
+                    } else {
+                        ItemStack[] armor = player.getInventory().getArmorContents();
+                        for (int i = 0; i < armor.length; i++) {
+                            if (armor[i] == item || item.equals(armor[i])) {
+                                armor[i] = null;
+                                player.getInventory().setArmorContents(armor);
+                                break;
+                            }
+                        }
+                    }
                     player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
                 } else {
                     damageable.setDamage(newDamage);

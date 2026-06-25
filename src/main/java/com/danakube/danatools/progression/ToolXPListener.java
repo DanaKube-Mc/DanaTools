@@ -42,7 +42,7 @@ public class ToolXPListener implements Listener {
         if (activity != null) {
             int xpGain = activity.getXp();
             if (xpGain > 0) {
-                xpGain = plugin.getXpManager().applyLearningBoost(tool, xpGain);
+                xpGain = plugin.getXpManager().applyLearningBoost(player, xpGain);
                 tool.addXP(xpGain, player);
             }
             CoreDropManager.checkAndDropCore(player, event.getBlock(), tool, activity);
@@ -108,7 +108,7 @@ public class ToolXPListener implements Listener {
         if (activity != null) {
             int xpGain = activity.getXp();
             if (xpGain > 0) {
-                xpGain = plugin.getXpManager().applyLearningBoost(tool, xpGain);
+                xpGain = plugin.getXpManager().applyLearningBoost(player, xpGain);
                 tool.addXP(xpGain, player);
             }
 
@@ -124,7 +124,7 @@ public class ToolXPListener implements Listener {
         if (activity != null) {
             int xpGain = activity.getXp();
             if (xpGain > 0) {
-                xpGain = plugin.getXpManager().applyLearningBoost(tool, xpGain);
+                xpGain = plugin.getXpManager().applyLearningBoost(player, xpGain);
                 tool.addXP(xpGain, player);
             }
             CoreDropManager.checkAndDropCore(player, block, tool, activity);
