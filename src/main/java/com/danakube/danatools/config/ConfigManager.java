@@ -26,6 +26,7 @@ public class ConfigManager {
         saveResourceIfNotExists("tools/heavy_hoe.yml");
         saveResourceIfNotExists("tools/heavy_axe.yml");
         saveResourceIfNotExists("tools/legendary_chestplate.yml");
+        saveResourceIfNotExists("tools/heavy_boots.yml");
         saveResourceIfNotExists("modifiers/vein_miner.yml");
         saveResourceIfNotExists("modifiers/trench.yml");
         saveResourceIfNotExists("modifiers/wisdom.yml");
@@ -45,6 +46,7 @@ public class ConfigManager {
         saveResourceIfNotExists("modifiers/bouncy.yml");
         saveResourceIfNotExists("modifiers/purify.yml");
         saveResourceIfNotExists("modifiers/resonance.yml");
+        saveResourceIfNotExists("modifiers/feather_step.yml");
 
         this.toolsFolder = new File(plugin.getDataFolder(), "tools");
         this.modifiersFolder = new File(plugin.getDataFolder(), "modifiers");

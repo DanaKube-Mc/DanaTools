@@ -1,0 +1,61 @@
+id: "feather_step"
+incompatible-modifiers: []
+
+# Recette de forge
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5019
+  display-name: "&6Placard de Forge : Pas de Plume"
+
+ingredient-item:
+  material: "FEATHER"
+  display-name: "&fPlume Céleste"
+
+# Niveaux de progression
+levels:
+  1:
+    display-name: "&fModificateur : Pas de Plume I"
+    lore:
+      - "&7Protège la terre labourée, les"
+      - "&7œufs de tortue, et empêche l'affaissement"
+      - "&7des grandes dripleafs sous vos pieds."
+      - "&dSlots requis : &f1"
+    slot-cost: 1
+    min-tool-level: 5
+    behavior:
+      type: "FEATHER_STEP"
+      materials:
+        - "FARMLAND"
+        - "TURTLE_EGG"
+        - "BIG_DRIPLEAF"
+  2:
+    display-name: "&fModificateur : Pas de Plume II"
+    lore:
+      - "&7Ajoute l'immunité aux pièges :"
+      - "&7n'active plus les plaques de pression"
+      - "&7ni les fils de déclenchement (tripwires)."
+      - "&dSlots requis : &f2"
+    slot-cost: 2
+    min-tool-level: 10
+    behavior:
+      type: "FEATHER_STEP"
+      materials:
+        - "TRIPWIRE"
+      material-substrings:
+        - "PRESSURE_PLATE"
+  3:
+    display-name: "&fModificateur : Pas de Plume III"
+    lore:
+      - "&7Ajoute le silence absolu :"
+      - "&7n'émet plus de vibrations de mouvement."
+      - "&aInvisible pour les capteurs sculk et le Warden."
+      - "&dSlots requis : &f3"
+    slot-cost: 3
+    min-tool-level: 15
+    behavior:
+      type: "FEATHER_STEP"
+      events:
+        - "STEP"
+        - "HIT_GROUND"
+        - "SWIM"
+        - "SPLASH"

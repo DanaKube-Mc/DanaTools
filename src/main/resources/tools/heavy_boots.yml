@@ -1,0 +1,66 @@
+# =========================================================================
+# Configuration d'Outil : Bottes Lourdes de Depart (heavy_boots)
+# =========================================================================
+
+# Identifiant unique de l'outil
+id: "heavy_boots"
+
+# Materiel Minecraft sous-jacent
+material: "DIAMOND_BOOTS"
+
+# CustomModelData utilise pour changer la texture/modele 3D
+custom-model-data: 10029
+
+# Nom d'affichage de l'item
+display-name: "<gradient:#aaccff:#ffffff>Bottes Lourdes de Depart</gradient>"
+
+# Description/Lore de l'outil
+no-modifier-message: "&7 (Aucun modificateur)"
+lore:
+  - "&7Des bottes protectrices qui évoluent avec vous."
+  - ""
+  - "&eProgression :"
+  - "&d - Niveau : &f{level}"
+  - "&d - XP : &f{xp}/{max_xp}"
+  - ""
+  - "&eModificateurs ({slots_used}/{slots_total}) :"
+  - "{modifiers_list}"
+
+# Formule de courbe d'experience necessaire pour passer de niveau
+xp-curve:
+  base: 100
+  multiplier: 1.5
+
+# Multiplicateurs d'XP specifiques a l'armure
+xp-gain-damage-multiplier: 5.0
+xp-gain-movement-multiplier: 0.5
+
+# Progression de l'outil
+progression:
+  # Niveau maximum
+  max-level: 20
+  
+  # Slots de modificateurs debloques aux niveaux specifiques
+  slots:
+    5: 1
+    10: 2
+    15: 3
+    20: 4
+    
+  # Nombre maximum de slots de modificateurs
+  max-slots: 4
+
+# Limites maximales des enchantements pour cet outil
+enchantment-limits:
+  PROTECTION: 8
+  FEATHER_FALLING: 6
+  UNBREAKING: 8
+
+# Modificateurs autorises et niveau maximum
+allowed-modifiers:
+  wisdom: 3
+  learning: 3
+  magnet: 3
+  haste: 1
+  unbreakable: 1
+  feather_step: 3
