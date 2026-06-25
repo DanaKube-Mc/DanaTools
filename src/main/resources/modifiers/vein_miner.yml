@@ -1,0 +1,44 @@
+# =========================================================================
+# Configuration de Modificateur : Minage en Veine (vein_miner)
+# =========================================================================
+
+# Identifiant unique du modificateur (doit correspondre au nom du fichier sans le .yml)
+id: "vein_miner"
+
+# Liste des modificateurs incompatibles (bloque l'application initiale)
+incompatible-modifiers:
+  - "trench"
+
+# Recette de forge (commune pour tous les niveaux)
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5001
+  display-name: "&6Placard de Forge : Minage en Veine"
+
+ingredient-item:
+  material: "CLAY_BALL"
+  custom-model-data: 12001
+  display-name: "&eNoyau de Vie"
+
+# Niveaux disponibles et configurations specifiques de progression
+levels:
+  1:
+    display-name: "&6Modificateur : Minage en Veine I"
+    lore:
+      - "&7Permet de miner toute une veine de minerai d'un coup (max 32)."
+      - "&dSlots requis : &f1"
+    slot-cost: 1
+    min-tool-level: 5
+    behavior:
+      type: "VEIN_MINER"
+      max-blocks: 32
+  2:
+    display-name: "&6Modificateur : Minage en Veine II"
+    lore:
+      - "&7Permet de miner toute une veine de minerai d'un coup (max 64)."
+      - "&dSlots requis : &f2"
+    slot-cost: 2
+    min-tool-level: 12
+    behavior:
+      type: "VEIN_MINER"
+      max-blocks: 64

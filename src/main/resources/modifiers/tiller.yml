@@ -1,0 +1,45 @@
+id: "tiller"
+incompatible-modifiers: []
+
+# Recette de forge
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5011
+  display-name: "&6Placard de Forge : Labourage"
+
+ingredient-item:
+  material: "HAY_BLOCK"
+  display-name: "&aNoyau Agricole"
+
+# Niveaux et rayon d'action
+levels:
+  1:
+    display-name: "&aModificateur : Labourage I"
+    lore:
+      - "&7Laboure la terre en zone 3x3."
+      - "&dSlots requis : &f1"
+    slot-cost: 1
+    min-tool-level: 5
+    behavior:
+      type: "TILLER"
+      range: 1 # Rayon de 1 (Zone 3x3)
+  2:
+    display-name: "&aModificateur : Labourage II"
+    lore:
+      - "&7Laboure la terre en zone 5x5."
+      - "&dSlots requis : &f2"
+    slot-cost: 2
+    min-tool-level: 10
+    behavior:
+      type: "TILLER"
+      range: 2 # Rayon de 2 (Zone 5x5)
+  3:
+    display-name: "&aModificateur : Labourage III"
+    lore:
+      - "&7Laboure la terre en zone 7x7."
+      - "&dSlots requis : &f4"
+    slot-cost: 4
+    min-tool-level: 15
+    behavior:
+      type: "TILLER"
+      range: 3 # Rayon de 3 (Zone 7x7)

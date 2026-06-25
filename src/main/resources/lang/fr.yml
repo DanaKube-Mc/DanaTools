@@ -1,39 +1,48 @@
-prefix: "§a[DanaTools] §f"
-no_permission: "§cVous n'avez pas la permission de faire cela."
-no_permission_menu: "§cVous n'avez pas la permission d'ouvrir ce menu."
-console_only_reload: "§cLa console ne peut utiliser que: /tools reload"
-reload_success: "La configuration et les permissions ont été rechargées avec succès !"
-tool_received: "Vous avez reçu votre outil évolutif !"
-tool_stored: "Vous avez rangé votre outil évolutif."
-tool_level_up: "§6§lUP! §7Votre outil est passé au §eNiveau %level%§7 !"
-cannot_drop_tool: "§cCet outil est lié à vous, vous ne pouvez pas le jeter ou le ranger dans un coffre."
-help_header: "Voici les commandes disponibles :"
+# ==========================================
+# Fichier de Langue (Francais) - DanaTools
+# ==========================================
+
+prefix: "<green><b>[DanaTools]</b></green>"
+
+no_permission: "<red>Vous n'avez pas la permission d'effectuer cette action.</red>"
+reload_success: "{prefix} <green>Configurations et messages recharges avec succes !</green>"
+invalid_amount: "<red>Veuillez entrer un nombre valide.</red>"
+player_not_found: "<red>Joueur introuvable : {player}</red>"
+specify_player: "<red>Veuillez specifier un joueur dans la commande.</red>"
+
+# Commandes d'administration
 help:
-  tools: "§a/tools §f- Ouvre le menu des outils"
-  help: "§a/tools help §f- Affiche l'aide"
-  reload: "§a/tools reload §f- Recharge la configuration"
-  admin_give: "§a/tools give <joueur> <id> [niv] §f- Donne un outil"
-  admin_addxp: "§a/tools addxp <joueur> <id> <montant> §f- Ajoute de l'XP"
-  admin_removexp: "§a/tools removexp <joueur> <id> <montant> §f- Retire de l'XP"
-  admin_set: "§a/tools set <joueur> <id> <level|xp> <valeur> §f- Modifie les stats"
-  admin_look: "§a/tools look <joueur> §f- Visualise les outils d'un joueur"
+  header: "<gold>=== <b>Aide DanaTools</b> ===</gold>"
+  give: "<yellow>/danatools give <tool_id> [player] <gray>- Donne un outil specifique"
+  givemodifier: "<yellow>/danatools givemodifier <modifier_id> [player] <gray>- Donne les ingredients de forge d'un modificateur"
+  addxp: "<yellow>/danatools addxp <amount> [player] <gray>- Ajoute de l'XP a l'outil en main"
+  setlevel: "<yellow>/danatools setlevel <level> [player] <gray>- Definit le niveau de l'outil"
+  reload: "<yellow>/danatools reload <gray>- Recharge la configuration et la langue"
 
-player_not_found: "§cJoueur introuvable."
-tool_not_found: "§cL'outil '%id%' n'existe pas."
-invalid_amount: "§cVeuillez entrer un nombre valide."
-xp_added: "§a%amount% XP ajoutés à l'outil '%id%' de %player%."
-xp_removed: "§a%amount% XP retirés à l'outil '%id%' de %player%."
-level_set: "§aNiveau de l'outil '%id%' de %player% mis à %value%."
-xp_set: "§aXP de l'outil '%id%' de %player% mis à %value%."
-tool_given_admin: "§aL'outil %id% (Niveau %level%) a été donné à %player%."
-xp_gain_action_bar: "§6+%amount% XP §7(%current%/%max%)"
+give:
+  tool_not_found: "<red>Outil inconnu : {tool}</red>"
+  success: "{prefix} L'outil <gold>{tool}</gold> a ete donne a <yellow>{player}</yellow>."
 
-no_permission_unlock_tool: "§cVous n'avez pas la permission de débloquer cet outil !"
-skill_max_level: "§cCe skill est déjà au niveau maximum !"
-skill_requires_tool_level: "§cVotre outil n'a pas le niveau requis pour ce skill !"
-no_permission_unlock_skill: "§cVous n'avez pas la permission de débloquer ce skill !"
-not_enough_xp_levels: "§cVous n'avez pas assez d'expérience (Niveaux) !"
-not_enough_skill_points: "§cVous n'avez pas assez de Skill Points !"
-not_enough_money: "§cVous n'avez pas assez d'argent !"
-skill_upgraded: "§aSkill amélioré au niveau %level% !"
+givemodifier:
+  modifier_not_found: "<red>Modificateur inconnu : {modifier}</red>"
+  success: "{prefix} Les elements de forge du modificateur <gold>{modifier}</gold> ont ete donnes a <yellow>{player}</yellow>."
 
+xp:
+  no_tool: "<red>Le joueur {player} ne tient pas un outil DanaTools evolutif valide.</red>"
+  success: "{prefix} Ajoute de <gold>{amount} XP</gold> a l'outil de <yellow>{player}</yellow>."
+  level_up: "{prefix} <green>Votre outil a evolue au niveau <gold>{level}</gold> !</green>"
+
+level:
+  invalid_range: "<red>Le niveau doit etre compris entre 1 et {max_level}.</red>"
+  success: "{prefix} Niveau de l'outil defini a <gold>{level}</gold> pour <yellow>{player}</yellow>."
+
+modifiers:
+  none: "&7 (Aucun modificateur)"
+  format_with_level: "&7 - {modifier} (Lvl {level})"
+  format_no_level: "&7 - {modifier}"
+
+auto_sell:
+  action_bar: "&a+${amount} &7(Vente Auto)"
+
+purify:
+  invalid_entity: "<red>Erreur de configuration du modificateur Purify : type d'entité inconnu {type}</red>"

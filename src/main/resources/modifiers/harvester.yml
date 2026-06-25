@@ -1,0 +1,69 @@
+id: "harvester"
+incompatible-modifiers: []
+
+# Recette de forge
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5014
+  display-name: "&6Placard de Forge : Moissonneur"
+
+ingredient-item:
+  material: "BONE_MEAL"
+  display-name: "&aNoyau de Croissance"
+
+# Niveaux et rayon d'action
+levels:
+  1:
+    display-name: "&aModificateur : Moissonneur I"
+    lore:
+      - "&7Moissonne les cultures en zone 3x3."
+      - "&dSlots requis : &f1"
+    slot-cost: 1
+    min-tool-level: 5
+    behavior:
+      type: "HARVESTER"
+      range: 1 # Zone 3x3
+      only-mature: true
+      crops:
+        - "WHEAT"
+        - "CARROTS"
+        - "POTATOES"
+        - "BEETROOTS"
+        - "NETHER_WART"
+        - "COCOA"
+  2:
+    display-name: "&aModificateur : Moissonneur II"
+    lore:
+      - "&7Moissonne les cultures en zone 5x5."
+      - "&dSlots requis : &f2"
+    slot-cost: 2
+    min-tool-level: 10
+    behavior:
+      type: "HARVESTER"
+      range: 2 # Zone 5x5
+      only-mature: true
+      crops:
+        - "WHEAT"
+        - "CARROTS"
+        - "POTATOES"
+        - "BEETROOTS"
+        - "NETHER_WART"
+        - "COCOA"
+  3:
+    display-name: "&aModificateur : Moissonneur III"
+    lore:
+      - "&7Moissonne les cultures en zone 7x7."
+      - "&dSlots requis : &f4"
+    slot-cost: 4
+    min-tool-level: 15
+    behavior:
+      type: "HARVESTER"
+      range: 3 # Zone 7x7
+      only-mature: true
+      crops:
+        - "WHEAT"
+        - "CARROTS"
+        - "POTATOES"
+        - "BEETROOTS"
+        - "NETHER_WART"
+        - "COCOA"

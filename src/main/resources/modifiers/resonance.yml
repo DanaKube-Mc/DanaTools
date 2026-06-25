@@ -1,0 +1,51 @@
+# =========================================================================
+# Configuration de Modificateur : Résonance (resonance)
+# =========================================================================
+
+id: "resonance"
+display-name: "&bModificateur : Résonance"
+lore:
+  - "&7Permet à l'armure de résonner avec"
+  - "&7l'outil tenu pour absorber son XP."
+
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5011
+  display-name: "&6Placard de Forge : Résonance"
+
+ingredient-item:
+  material: "PLAYER_HEAD"
+  texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2Q4Y2NhYTY4NDdiM2M0Njk2ZGE3NWU2ZDIyNDkxYzY5ODIwNDc4NWYxY2Y1N2EzMmQ5MTJjMWE1YjU3NiJ9fX0="
+  display-name: "&bNoyau de Résonance"
+
+levels:
+  1:
+    display-name: "&bModificateur : Résonance I"
+    lore:
+      - "&7Absorbe &f10% &7de l'XP de l'outil en main."
+      - "&dSlots requis : &f1"
+    slot-cost: 1
+    min-tool-level: 5
+    behavior:
+      type: "RESONANCE"
+      xp-share-percent: 10
+  2:
+    display-name: "&bModificateur : Résonance II"
+    lore:
+      - "&7Absorbe &f20% &7de l'XP de l'outil en main."
+      - "&dSlots requis : &f2"
+    slot-cost: 2
+    min-tool-level: 10
+    behavior:
+      type: "RESONANCE"
+      xp-share-percent: 20
+  3:
+    display-name: "&bModificateur : Résonance III"
+    lore:
+      - "&7Absorbe &f35% &7de l'XP de l'outil en main."
+      - "&dSlots requis : &f3"
+    slot-cost: 3
+    min-tool-level: 15
+    behavior:
+      type: "RESONANCE"
+      xp-share-percent: 35

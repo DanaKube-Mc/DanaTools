@@ -1,0 +1,46 @@
+# =========================================================================
+# Configuration d'Armure : Plastron Légendaire (legendary_chestplate)
+# =========================================================================
+
+id: "legendary_chestplate"
+material: "DIAMOND_CHESTPLATE"
+custom-model-data: 20001
+display-name: "<gradient:#aa0000:#ff5555>Plastron Légendaire</gradient>"
+lore:
+  - "&7Une armure forgée dans le sang des boss."
+  - ""
+  - "&eProgression :"
+  - "&d - Niveau : &f{level}"
+  - "&d - XP : &f{xp}/{max_xp}"
+
+# Multiplicateurs d'XP spécifiques aux armures
+xp-gain-damage-multiplier: 1.5 # 1.5 XP par demi-coeur perdu
+xp-gain-movement-multiplier: 0.1 # 0.1 XP par bloc parcouru activement
+
+# Whitelist des modificateurs applicables sur cette armure
+allowed-modifiers:
+  resonance: 3      # Modificateur de synergie XP
+  magnet: 2         # Magnétisme
+  night_vision: 1   # Vision nocturne
+  haste: 1          # Célérité
+
+# Formule de courbe d'experience necessaire pour passer de niveau.
+xp-curve:
+  base: 100
+  multiplier: 1.5
+
+# Progression de l'armure
+progression:
+  max-level: 50
+  slots:
+    5: 1
+    10: 2
+    15: 3
+    20: 4
+    25: 5
+    30: 6
+    35: 7
+    40: 8
+    45: 9
+    50: 10
+  max-slots: 10

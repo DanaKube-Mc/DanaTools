@@ -1,0 +1,33 @@
+id: "auto_replant"
+incompatible-modifiers: []
+
+# Recette de forge
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5009
+  display-name: "&6Placard de Forge : Replantation"
+
+# Ingrédient nécessaire (Graines)
+ingredient-item:
+  material: "WHEAT_SEEDS"
+  display-name: "&aNoyau Fertile"
+
+# Niveau unique
+levels:
+  1:
+    display-name: "&aModificateur : Replantation"
+    lore:
+      - "&7Replante automatiquement les cultures"
+      - "&7lorsqu'elles sont récoltées."
+      - "&dSlots requis : &f1"
+    slot-cost: 1
+    min-tool-level: 5
+    behavior:
+      type: "AUTO_REPLANT"
+      crops:
+        WHEAT: "WHEAT_SEEDS"
+        CARROTS: "CARROT"
+        POTATOES: "POTATO"
+        BEETROOTS: "BEETROOT_SEEDS"
+        NETHER_WART: "NETHER_WART"
+        COCOA: "COCOA_BEANS"

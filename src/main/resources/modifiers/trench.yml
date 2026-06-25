@@ -1,0 +1,55 @@
+# =========================================================================
+# Configuration de Modificateur : Excavation (trench)
+# =========================================================================
+
+# Identifiant unique du modificateur (doit correspondre au nom du fichier sans le .yml)
+id: "trench"
+
+# Liste des modificateurs incompatibles (bloque l'application initiale)
+incompatible-modifiers:
+  - "vein_miner"
+
+# Recette de forge (commune pour tous les niveaux)
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5001
+  display-name: "&6Placard de Forge : Excavation"
+
+ingredient-item:
+  material: "PLAYER_HEAD"
+  # Texture Base64 du Noyau de Terre
+  texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjViNTVhM2I0OTlhNDk2YTkyODkyYjRlYTVmZGQ2NThkOWQ1N2UxNjgxMWI1MzVkM2M2M2NhNDhjYjU0YTkifX19"
+  display-name: "&eNoyau de Terre"
+
+# Niveaux disponibles et configurations specifiques de progression
+levels:
+  1:
+    display-name: "&6Modificateur : Excavation I"
+    lore:
+      - "&7Mine en zone 3x3."
+      - "&dSlots requis : &f1"
+    slot-cost: 1
+    min-tool-level: 5
+    behavior:
+      type: "TRENCH"
+      range: 1 # Rayon de 1 bloc autour du bloc casse (3x3)
+  2:
+    display-name: "&6Modificateur : Excavation II"
+    lore:
+      - "&7Mine en zone 5x5."
+      - "&dSlots requis : &f2"
+    slot-cost: 2 # Cout total requis sur l'outil
+    min-tool-level: 10
+    behavior:
+      type: "TRENCH"
+      range: 2 # Rayon de 2 blocs (5x5)
+  3:
+    display-name: "&6Modificateur : Excavation III"
+    lore:
+      - "&7Mine en zone 7x7."
+      - "&dSlots requis : &f4"
+    slot-cost: 4
+    min-tool-level: 15
+    behavior:
+      type: "TRENCH"
+      range: 3 # Rayon de 3 blocs (7x7)

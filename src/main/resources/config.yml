@@ -1,17 +1,28 @@
-# Langue du plugin (le fichier sera généré dans le dossier /lang/)
-language: "fr"
+# ==========================================
+# Config Generale - DanaTools
+# ==========================================
 
-# Configuration du GUI des outils
-menus:
-  tools:
-    title: "<dark_aqua>Menu des Outils Evolutifs"
-    size: 3
+# Langue utilisee par le plugin.
+# Doit correspondre a un fichier present dans le dossier lang/. (Exemple: fr.yml)
+lang: "fr"
 
-messages_action_barre: true
+# Configuration des notifications de drop de noyaux
+core-drop-settings:
+  # Notification dans l'Action Bar
+  action-bar:
+    enabled: true
+    message: "<green>[DanaTools] Vous avez trouvé un Noyau Élémentaire !" # Supporte Kyori MiniMessage
+  # Effet sonore joué au joueur
+  sound:
+    enabled: true
+    type: "BLOCK_AMETHYST_BLOCK_CHIME" # Nom du Sound Bukkit/Spigot
+    volume: 1.0
+    pitch: 1.2
+  # Effet de particules au sol à l'emplacement du bloc brisé
+  particles:
+    enabled: true
+    type: "HAPPY_VILLAGER" # Nom de la Particle Bukkit/Spigot
+    count: 15
+    offset: 0.3
+    speed: 0.1
 
-# Paramètres globaux
-settings:
-  level_up_sound: "ENTITY_PLAYER_LEVELUP"
-  level_up_volume: 1.0
-  level_up_pitch: 1.0
-  use_vault: true

@@ -1,0 +1,48 @@
+id: "magnet"
+incompatible-modifiers: []
+
+# Recette de forge
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5010
+  display-name: "&6Placard de Forge : Magnétisme"
+
+ingredient-item:
+  material: "LODESTONE"
+  display-name: "&7Noyau Magnétique"
+
+# Niveaux et rayon d'action
+levels:
+  1:
+    display-name: "&7Modificateur : Magnétisme I"
+    lore:
+      - "&7Aspire les items au sol."
+      - "&dRayon : &f4 blocs"
+      - "&dSlots requis : &f1"
+    slot-cost: 1
+    min-tool-level: 5
+    behavior:
+      type: "MAGNET"
+      radius: 4.0
+  2:
+    display-name: "&7Modificateur : Magnétisme II"
+    lore:
+      - "&7Aspire les items au sol."
+      - "&dRayon : &f8 blocs"
+      - "&dSlots requis : &f2"
+    slot-cost: 2
+    min-tool-level: 10
+    behavior:
+      type: "MAGNET"
+      radius: 8.0
+  3:
+    display-name: "&7Modificateur : Magnétisme III"
+    lore:
+      - "&7Aspire les items au sol."
+      - "&dRayon : &f12 blocs"
+      - "&dSlots requis : &f3"
+    slot-cost: 3
+    min-tool-level: 15
+    behavior:
+      type: "MAGNET"
+      radius: 12.0

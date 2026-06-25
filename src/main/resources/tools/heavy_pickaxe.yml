@@ -1,0 +1,124 @@
+# =========================================================================
+# Configuration d'Outil : Pioche Lourde de Depart (heavy_pickaxe)
+# =========================================================================
+
+# Identifiant unique de l'outil (doit correspondre au nom du fichier sans le .yml)
+id: "heavy_pickaxe"
+
+# Materiel Minecraft sous-jacent (doit correspondre a un Materiel Spigot valide)
+material: "DIAMOND_PICKAXE"
+
+# CustomModelData utilise pour changer la texture/modele 3D (ex: ItemsAdder / Resource Pack)
+# Mettre a 0 pour desactiver.
+custom-model-data: 10025
+
+# Nom d'affichage de l'item. Supporte MiniMessage (gradients, tags) et les anciens codes couleurs (&)
+display-name: "<gradient:#ff5555:#ffaacc>Pioche Lourde de Depart</gradient>"
+
+# Description/Lore de l'outil.
+# Placeholders supportes :
+#   {level}         - Niveau actuel de l'outil
+#   {xp}            - XP actuelle
+#   {max_xp}        - XP requise pour le prochain niveau
+#   {slots_used}    - Nombre de slots de modificateurs occupes
+#   {slots_total}   - Nombre total de slots de modificateurs debloques
+#   {modifiers_list} - Remplacer par la liste des modificateurs actifs
+no-modifier-message: "&7 (Aucun modificateur)"
+lore:
+  - "&7Une pioche qui s'adapte a son porteur."
+  - ""
+  - "&eProgression :"
+  - "&d - Niveau : &f{level}"
+  - "&d - XP : &f{xp}/{max_xp}"
+  - ""
+  - "&eModificateurs ({slots_used}/{slots_total}) :"
+  - "{modifiers_list}"
+
+# Formule de courbe d'experience necessaire pour passer de niveau.
+# Formule : XP_requise = base * (niveau_actuel ^ multiplier)
+xp-curve:
+  base: 100
+  multiplier: 1.5
+
+# Configuration de l'XP et des drops par bloc cassé (block-activities)
+# Format :
+# block-activities:
+#   MATERIEL_MINECRAFT:
+#     xp: quantite_xp
+#     core-drop:
+#       modifier-id: "modifier_id"
+#       chance-percent: pourcentage_chance
+block-activities:
+  COAL_ORE:
+    xp: 2
+    core-drop:
+      modifier-id: "trench"
+      chance-percent: 0.05
+  DEEPSLATE_COAL_ORE:
+    xp: 2
+    core-drop:
+      modifier-id: "trench"
+      chance-percent: 0.05
+  IRON_ORE:
+    xp: 3
+    core-drop:
+      modifier-id: "trench"
+      chance-percent: 0.1
+  DEEPSLATE_IRON_ORE:
+    xp: 3
+    core-drop:
+      modifier-id: "trench"
+      chance-percent: 0.1
+  DIAMOND_ORE:
+    xp: 10
+    core-drop:
+      modifier-id: "trench"
+      chance-percent: 1.0
+  DEEPSLATE_DIAMOND_ORE:
+    xp: 10
+    core-drop:
+      modifier-id: "trench"
+      chance-percent: 1.0
+  STONE:
+    xp: 1
+  DEEPSLATE:
+    xp: 1
+
+
+# Progression de l'outil
+progression:
+  # Niveau maximum que l'outil peut atteindre
+  max-level: 20
+  
+  # Slots de modificateurs debloques aux niveaux specifiques.
+  # Format : niveau: total_slots
+  slots:
+    5: 1   # Au niveau 5, debloque 1 slot total
+    10: 2  # Au niveau 10, debloque 2 slots total
+    15: 3  # Au niveau 15, debloque 3 slots total
+    20: 4  # Au niveau 20, debloque 4 slots total
+    
+  # Nombre maximum de slots de modificateurs autorise pour cet outil
+  max-slots: 4
+
+# Limites maximales des enchantements pour cet outil
+enchantment-limits:
+  EFFICIENCY: 10
+  UNBREAKING: 8
+  FORTUNE: 5
+
+# Modificateurs autorisés et niveau maximum pour cet outil
+allowed-modifiers:
+  trench: 3       # Excavation autorisée jusqu'au niveau 3 (max global)
+  vein_miner: 2   # Minage en veine autorisé jusqu'au niveau 2
+  wisdom: 3
+  learning: 3
+  auto_smelt: 1
+  compactor: 1
+  auto_sell: 2    # Bridé au niveau 2
+  haste: 1
+  magnet: 2       # Bridé au niveau 2
+  unbreakable: 1
+  bouncy: 3
+  purify: 3
+

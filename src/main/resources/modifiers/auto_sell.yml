@@ -1,0 +1,100 @@
+id: "auto_sell"
+incompatible-modifiers: []
+
+# Recette de forge
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5005
+  display-name: "&6Placard de Forge : Auto-Vente"
+
+ingredient-item:
+  material: "EMERALD"
+  display-name: "&aNoyau Marchand"
+
+# Progression des niveaux
+levels:
+  1:
+    display-name: "&aModificateur : Auto-Vente I"
+    lore:
+      - "&7Vend automatiquement vos récoltes."
+      - "&7Efficacité : &e80%"
+      - "&cIncompatible avec Toucher de Soie."
+      - "&dSlots requis : &f2"
+    slot-cost: 2
+    min-tool-level: 5
+    behavior:
+      type: "AUTO_SELL"
+      multiplier: 0.80
+  2:
+    display-name: "&aModificateur : Auto-Vente II"
+    lore:
+      - "&7Vend automatiquement vos récoltes."
+      - "&7Efficacité : &e100%"
+      - "&cIncompatible avec Toucher de Soie."
+      - "&dSlots requis : &f3"
+    slot-cost: 3
+    min-tool-level: 15
+    behavior:
+      type: "AUTO_SELL"
+      multiplier: 1.00
+  3:
+    display-name: "&aModificateur : Auto-Vente III"
+    lore:
+      - "&7Vend automatiquement vos récoltes."
+      - "&7Efficacité : &e120%"
+      - "&cIncompatible avec Toucher de Soie."
+      - "&dSlots requis : &f4"
+    slot-cost: 4
+    min-tool-level: 25
+    behavior:
+      type: "AUTO_SELL"
+      multiplier: 1.20
+
+# Prix de vente par défaut des ressources (racine)
+prices:
+  # Minerais bruts / blocs
+  COAL: 2.0
+  RAW_IRON: 7.0
+  IRON_INGOT: 10.0
+  RAW_GOLD: 10.0
+  GOLD_INGOT: 15.0
+  RAW_COPPER: 3.0
+  COPPER_INGOT: 4.5
+  DIAMOND: 100.0
+  EMERALD: 80.0
+  LAPIS_LAZULI: 4.0
+  REDSTONE: 3.0
+  NETHERITE_SCRAP: 250.0
+  NETHERITE_INGOT: 1000.0
+  QUARTZ: 1.5
+  AMETHYST_SHARD: 2.0
+  COBBLESTONE: 0.1
+  STONE: 0.2
+  DIRT: 0.05
+  GRAVEL: 0.05
+  SAND: 0.1
+
+  # Agriculture / Drops de mobs
+  WHEAT: 1.0
+  POTATO: 1.0
+  CARROT: 1.0
+  BEEF: 2.5
+  COOKED_BEEF: 4.0
+  PORKCHOP: 2.5
+  COOKED_PORKCHOP: 4.0
+  CHICKEN: 2.0
+  COOKED_CHICKEN: 3.0
+  MUTTON: 2.0
+  COOKED_MUTTON: 3.0
+  ROTTEN_FLESH: 0.5
+  BONE: 1.0
+  STRING: 1.0
+  GUNPOWDER: 3.0
+  ENDER_PEARL: 15.0
+  SLIME_BALL: 5.0
+
+  # Poisson
+  COD: 1.5
+  COOKED_COD: 2.5
+  SALMON: 2.0
+  COOKED_SALMON: 3.5

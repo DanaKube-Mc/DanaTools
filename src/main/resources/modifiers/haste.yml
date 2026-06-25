@@ -1,0 +1,45 @@
+id: "haste"
+incompatible-modifiers: []
+
+# Recette de forge
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5007
+  display-name: "&6Placard de Forge : Célérité"
+
+ingredient-item:
+  material: "SUGAR"
+  display-name: "&eNoyau de Célérité"
+
+# Niveaux
+levels:
+  1:
+    display-name: "&eModificateur : Célérité I"
+    lore:
+      - "&7Confère l'effet Célérité I"
+      - "&7lorsque l'outil est tenu en main."
+      - "&dSlots requis : &f1"
+    slot-cost: 1
+    min-tool-level: 5
+    behavior:
+      type: "POTION_EFFECT"
+      effect-type: "HASTE"
+      duration: 320
+      amplifier: 0
+      ambient: true
+      particles: false
+  2:
+    display-name: "&eModificateur : Célérité II"
+    lore:
+      - "&7Confère l'effet Célérité II"
+      - "&7lorsque l'outil est tenu en main."
+      - "&dSlots requis : &f2"
+    slot-cost: 2
+    min-tool-level: 15
+    behavior:
+      type: "POTION_EFFECT"
+      effect-type: "HASTE"
+      duration: 320
+      amplifier: 1
+      ambient: true
+      particles: false

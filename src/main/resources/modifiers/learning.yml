@@ -1,0 +1,45 @@
+id: "learning"
+incompatible-modifiers: []
+
+# Recette de forge
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5003
+  display-name: "&6Placard de Forge : Apprentissage"
+
+ingredient-item:
+  material: "BOOK"
+  display-name: "&eTome de Connaissance"
+
+# Progression des niveaux
+levels:
+  1:
+    display-name: "&eModificateur : Apprentissage I"
+    lore:
+      - "&7Augmente l'XP de l'outil de 20%."
+      - "&dSlots requis : &f1"
+    slot-cost: 1
+    min-tool-level: 5
+    behavior:
+      type: "LEARNING"
+      xp-boost: 0.20
+  2:
+    display-name: "&eModificateur : Apprentissage II"
+    lore:
+      - "&7Augmente l'XP de l'outil de 40%."
+      - "&dSlots requis : &f2"
+    slot-cost: 2
+    min-tool-level: 12
+    behavior:
+      type: "LEARNING"
+      xp-boost: 0.40
+  3:
+    display-name: "&eModificateur : Apprentissage III"
+    lore:
+      - "&7Augmente l'XP de l'outil de 60%."
+      - "&dSlots requis : &f4"
+    slot-cost: 4
+    min-tool-level: 18
+    behavior:
+      type: "LEARNING"
+      xp-boost: 0.60

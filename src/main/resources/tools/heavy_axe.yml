@@ -1,0 +1,135 @@
+# =========================================================================
+# Configuration d'Outil : Hache Lourde de Depart (heavy_axe)
+# =========================================================================
+
+# Identifiant unique de l'outil
+id: "heavy_axe"
+
+# Materiel Minecraft sous-jacent
+material: "DIAMOND_AXE"
+
+# CustomModelData utilise pour changer la texture/modele 3D
+custom-model-data: 10027
+
+# Nom d'affichage de l'item.
+display-name: "<gradient:#ffaa00:#ff5500>Hache Lourde de Depart</gradient>"
+
+# Description/Lore de l'outil.
+no-modifier-message: "&7 (Aucun modificateur)"
+lore:
+  - "&7Une hache qui s'adapte a son porteur."
+  - ""
+  - "&eProgression :"
+  - "&d - Niveau : &f{level}"
+  - "&d - XP : &f{xp}/{max_xp}"
+  - ""
+  - "&eModificateurs ({slots_used}/{slots_total}) :"
+  - "{modifiers_list}"
+
+# Formule de courbe d'experience necessaire pour passer de niveau.
+xp-curve:
+  base: 100
+  multiplier: 1.5
+
+# Configuration de l'XP et des drops par bloc cassé
+block-activities:
+  OAK_LOG:
+    xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
+  SPRUCE_LOG:
+    xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
+  BIRCH_LOG:
+    xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
+  JUNGLE_LOG:
+    xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
+  ACACIA_LOG:
+    xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
+  DARK_OAK_LOG:
+    xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
+  MANGROVE_LOG:
+    xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
+  CHERRY_LOG:
+    xp: 1
+    core-drop:
+      modifier-id: "chain_stripper"
+      chance-percent: 0.5
+  BAMBOO_BLOCK:
+    xp: 1
+  CRIMSON_STEM:
+    xp: 1
+  WARPED_STEM:
+    xp: 1
+  OAK_WOOD:
+    xp: 1
+  SPRUCE_WOOD:
+    xp: 1
+  BIRCH_WOOD:
+    xp: 1
+  JUNGLE_WOOD:
+    xp: 1
+  ACACIA_WOOD:
+    xp: 1
+  DARK_OAK_WOOD:
+    xp: 1
+  MANGROVE_WOOD:
+    xp: 1
+  CHERRY_WOOD:
+    xp: 1
+  CRIMSON_HYPHAE:
+    xp: 1
+  WARPED_HYPHAE:
+    xp: 1
+
+# Progression de l'outil
+progression:
+  # Niveau maximum que l'outil peut atteindre
+  max-level: 20
+  
+  # Slots de modificateurs debloques aux niveaux specifiques.
+  slots:
+    5: 1   # Au niveau 5, debloque 1 slot total
+    10: 2  # Au niveau 10, debloque 2 slots total
+    15: 3  # Au niveau 15, debloque 3 slots total
+    20: 4  # Au niveau 20, debloque 4 slots total
+    
+  # Nombre maximum de slots de modificateurs autorise pour cet outil
+  max-slots: 4
+
+# Limites maximales des enchantements pour cet outil
+enchantment-limits:
+  EFFICIENCY: 10
+  UNBREAKING: 8
+  FORTUNE: 5
+
+# Modificateurs autorisés et niveau maximum pour cet outil
+allowed-modifiers:
+  chain_stripper: 3
+  vein_miner: 2
+  wisdom: 3
+  learning: 3
+  auto_sell: 2
+  magnet: 3
+  haste: 1
+  unbreakable: 1
+  bouncy: 3
+  purify: 3

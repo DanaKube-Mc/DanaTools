@@ -1,0 +1,66 @@
+id: "purify"
+incompatible-modifiers: []
+
+# Recette de forge
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5017
+  display-name: "&6Placard de Forge : Purificateur"
+
+ingredient-item:
+  material: "GOLDEN_APPLE"
+  display-name: "&eNoyau de Purification"
+
+# Progression des chances de réussite
+levels:
+  1:
+    display-name: "&aModificateur : Purificateur I"
+    lore:
+      - "&733% de chance de guérir un zombie villageois,"
+      - "&7un piglin zombifié, ou une sorcière (marchand)."
+      - "&cRisque de blesser/tuer la cible en cas d'échec."
+      - "&dSlots requis : &f1"
+    slot-cost: 1
+    min-tool-level: 5
+    behavior:
+      type: "PURIFY"
+      chance: 0.33
+      durability-cost: 5
+      targets:
+        ZOMBIE_VILLAGER: "VILLAGER"
+        PIG_ZOMBIE: "PIGLIN"
+        WITCH: "WANDERING_TRADER"
+  2:
+    display-name: "&aModificateur : Purificateur II"
+    lore:
+      - "&766% de chance de guérir un zombie villageois,"
+      - "&7un piglin zombifié, ou une sorcière (marchand)."
+      - "&cRisque de blesser/tuer la cible en cas d'échec."
+      - "&dSlots requis : &f2"
+    slot-cost: 2
+    min-tool-level: 10
+    behavior:
+      type: "PURIFY"
+      chance: 0.66
+      durability-cost: 5
+      targets:
+        ZOMBIE_VILLAGER: "VILLAGER"
+        PIG_ZOMBIE: "PIGLIN"
+        WITCH: "WANDERING_TRADER"
+  3:
+    display-name: "&aModificateur : Purificateur III"
+    lore:
+      - "&7100% de chance de guérir un zombie villageois,"
+      - "&7un piglin zombifié, ou une sorcière (marchand)."
+      - "&aAucun risque de blesser la cible."
+      - "&dSlots requis : &f3"
+    slot-cost: 3
+    min-tool-level: 15
+    behavior:
+      type: "PURIFY"
+      chance: 1.0
+      durability-cost: 5
+      targets:
+        ZOMBIE_VILLAGER: "VILLAGER"
+        ZOMBIFIED_PIGLIN: "PIGLIN"
+        WITCH: "WANDERING_TRADER"
