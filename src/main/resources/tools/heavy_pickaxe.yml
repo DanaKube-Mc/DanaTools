@@ -30,6 +30,7 @@ lore:
   - "&eProgression :"
   - "&d - Niveau : &f{level}"
   - "&d - XP : &f{xp}/{max_xp}"
+  - "  <gray>[{progress_bar}<gray>] &f{percent}%"
   - ""
   - "&eModificateurs ({slots_used}/{slots_total}) :"
   - "{modifiers_list}"

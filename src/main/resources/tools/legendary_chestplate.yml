@@ -12,6 +12,7 @@ lore:
   - "&eProgression :"
   - "&d - Niveau : &f{level}"
   - "&d - XP : &f{xp}/{max_xp}"
+  - "  <gray>[{progress_bar}<gray>] &f{percent}%"
 
 # Multiplicateurs d'XP spécifiques aux armures
 xp-gain-damage-multiplier: 1.5 # 1.5 XP par demi-coeur perdu

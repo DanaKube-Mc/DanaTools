@@ -102,3 +102,40 @@ Si vous gagnez 100 XP sur votre pioche principale en minant un minerai et que vo
 - La pioche reçoit **100 XP** (+ boost *learning* s'il y a lieu).
 - Le plastron reçoit **20 XP** bonus.
 - Les bottes reçoivent **35 XP** bonus.
+
+---
+
+## 6. Barre de Progression Visuelle dans le Lore
+
+Pour rendre l'évolution de l'équipement plus attrayante, le Lore de chaque outil et armure peut inclure une barre de progression dynamique en utilisant des placeholders spécifiques dans la configuration.
+
+### Placeholders disponibles
+* **`{progress_bar}`** : Affiche la barre de progression proportionnelle (ex: `■■■■■░░░░░`).
+* **`{percent}`** : Affiche le pourcentage de progression brut sous forme d'entier (ex: `50`).
+
+### Configuration Globale (`config.yml`)
+Les administrateurs peuvent personnaliser le style de la barre de progression (nombre de segments, symbole utilisé et couleurs avec support des dégradés MiniMessage) :
+
+```yaml
+progress-bar:
+  length: 10                     # Nombre de segments dans la barre
+  symbol: "■"                    # Caractère utilisé
+  color-filled: "<gradient:#2ecc71:#a3cb38>" # Dégradé pour le remplissage
+  color-empty: "<gray>"          # Couleur de la partie non remplie
+```
+
+### Exemple de configuration de Lore (`tools/heavy_pickaxe.yml`)
+```yaml
+lore:
+  - "&7Une pioche évolutive de départ."
+  - ""
+  - "&eProgression :"
+  - "&d - Niveau : &f{level}"
+  - "&d - XP : &f{xp}/{max_xp}"
+  - "  <gray>[{progress_bar}<gray>] &f{percent}%"
+```
+
+### Rendu attendu en jeu
+Un outil à 60% d'XP affichera :  
+`[■■■■■■■■■■] 60%` (les 6 premiers carrés colorés en dégradé vert, les 4 derniers en gris).
+

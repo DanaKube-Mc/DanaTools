@@ -2,6 +2,8 @@ package com.danakube.danatools.model;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.storage.ToolDataStorage;
+import com.danakube.danatools.utils.ProgressBarUtils;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -275,6 +277,17 @@ public class DanaItemInstance {
         int slotsUsed = getSlotsUsed();
         int slotsTotal = getSlotsTotal();
 
+        int percent;
+        String progressBarStr;
+        if (level >= maxLevel) {
+            percent = 100;
+            progressBarStr = ProgressBarUtils.generateProgressBar(100, 100);
+        } else {
+            percent = xpNeeded > 0 ? (int) Math.round(((double) xp / xpNeeded) * 100) : 0;
+            percent = Math.max(0, Math.min(100, percent));
+            progressBarStr = ProgressBarUtils.generateProgressBar(xp, xpNeeded);
+        }
+
         for (String line : rawLore) {
             if (line.contains("{modifiers_list}")) {
                 List<String> activeModifiers = getModifiers();
@@ -311,7 +324,9 @@ public class DanaItemInstance {
                         .replace("{xp}", xpStr)
                         .replace("{max_xp}", maxXpStr)
                         .replace("{slots_used}", String.valueOf(slotsUsed))
-                        .replace("{slots_total}", String.valueOf(slotsTotal));
+                        .replace("{slots_total}", String.valueOf(slotsTotal))
+                        .replace("{progress_bar}", progressBarStr)
+                        .replace("{percent}", String.valueOf(percent));
                 formattedLore.add(parseColor(processedLine));
             }
         }
@@ -349,10 +364,53 @@ public class DanaItemInstance {
 
     public static Component parseColor(String text) {
         if (text == null) return Component.empty();
+        Component component;
         if (text.contains("<") && text.contains(">")) {
-            return MiniMessage.miniMessage().deserialize(text);
+            component = MiniMessage.miniMessage().deserialize(convertLegacyToMiniMessage(text));
         } else {
-            return LegacyComponentSerializer.legacyAmpersand().deserialize(text);
+            component = LegacyComponentSerializer.legacyAmpersand().deserialize(text);
         }
+        return component.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+    }
+
+    private static String convertLegacyToMiniMessage(String text) {
+        if (text == null) return null;
+        text = text
+                .replace("&0", "<black>")
+                .replace("&1", "<dark_blue>")
+                .replace("&2", "<dark_green>")
+                .replace("&3", "<dark_aqua>")
+                .replace("&4", "<dark_red>")
+                .replace("&5", "<dark_purple>")
+                .replace("&6", "<gold>")
+                .replace("&7", "<gray>")
+                .replace("&8", "<dark_gray>")
+                .replace("&9", "<blue>")
+                .replace("&a", "<green>")
+                .replace("&b", "<aqua>")
+                .replace("&c", "<red>")
+                .replace("&d", "<light_purple>")
+                .replace("&e", "<yellow>")
+                .replace("&f", "<white>")
+                .replace("&k", "<obfuscated>")
+                .replace("&l", "<bold>")
+                .replace("&m", "<strikethrough>")
+                .replace("&n", "<underlined>")
+                .replace("&o", "<italic>")
+                .replace("&r", "<reset>");
+        text = text
+                .replace("&A", "<green>")
+                .replace("&B", "<aqua>")
+                .replace("&C", "<red>")
+                .replace("&D", "<light_purple>")
+                .replace("&E", "<yellow>")
+                .replace("&F", "<white>")
+                .replace("&K", "<obfuscated>")
+                .replace("&L", "<bold>")
+                .replace("&M", "<strikethrough>")
+                .replace("&N", "<underlined>")
+                .replace("&O", "<italic>")
+                .replace("&R", "<reset>");
+        return text;
     }
 }

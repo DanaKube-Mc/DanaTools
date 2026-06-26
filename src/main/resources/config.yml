@@ -6,6 +6,14 @@
 # Doit correspondre a un fichier present dans le dossier lang/. (Exemple: fr.yml)
 lang: "fr"
 
+# Paramètres globaux de la barre de progression
+progress-bar:
+  length: 10                     # Nombre total de symboles dans la barre
+  symbol: "■"                    # Symbole utilisé (ex: "■", "█", "|", "▪")
+  color-filled: "<gradient:#2ecc71:#a3cb38>" # Couleur/Gradient du remplissage (MiniMessage)
+  color-empty: "<gray>"          # Couleur de la partie non remplie
+  show-percentage-inside: false  # Affiche le pourcentage au milieu de la barre (ex: ■■■■40%■■■■)
+
 # Configuration des notifications de drop de noyaux
 core-drop-settings:
   # Notification dans l'Action Bar
