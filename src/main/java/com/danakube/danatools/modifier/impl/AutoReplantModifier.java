@@ -48,6 +48,8 @@ public class AutoReplantModifier extends DanaModifier {
                         Bukkit.getScheduler().runTask(DanaTools.getInstance(), () -> {
                             matureCropsBroken.remove(loc);
                         });
+                    } else {
+                        event.setCancelled(true);
                     }
                 }
             }
