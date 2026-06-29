@@ -1,6 +1,7 @@
 package com.danakube.danatools.progression;
 
 import com.danakube.danatools.DanaTools;
+import com.danakube.danatools.model.CustomTool;
 import com.danakube.danatools.model.DanaItemInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,10 +31,18 @@ public class MobDeathXPListener implements Listener {
             return;
         }
 
-        int xpGain = tool.getConfig().getXpForMob(event.getEntityType());
-        if (xpGain > 0) {
-            xpGain = plugin.getXpManager().applyLearningBoost(killer, xpGain);
-            tool.addXP(xpGain, killer);
+        CustomTool.MobActivity activity = tool.getConfig().getMobActivity(event.getEntityType());
+        if (activity != null) {
+            int xpGain = activity.getXp();
+            if (xpGain > 0) {
+                xpGain = plugin.getXpManager().applyLearningBoost(killer, xpGain);
+                tool.addXP(xpGain, killer);
+            }
+            if (activity.hasCoreDrop()) {
+                for (CustomTool.CoreDrop coreDrop : activity.getCoreDrops()) {
+                    CoreDropManager.checkAndDropCore(killer, event.getEntity().getLocation().add(0, 0.5, 0), tool, coreDrop);
+                }
+            }
         }
     }
 }

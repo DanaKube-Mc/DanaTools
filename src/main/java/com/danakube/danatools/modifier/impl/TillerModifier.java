@@ -101,7 +101,7 @@ public class TillerModifier extends DanaModifier {
                                     xpGain = DanaTools.getInstance().getXpManager().applyLearningBoost(player, xpGain);
                                     toolInstance.addXP(xpGain, player);
                                 }
-                                CoreDropManager.checkAndDropCore(player, targetBlock.getLocation().add(0.5, 0.5, 0.5), toolInstance, activity.getCoreDrop());
+                                CoreDropManager.checkAndDropCore(player, targetBlock.getLocation().add(0.5, 0.5, 0.5), toolInstance, activity);
                             }
                         }
                         

@@ -3,6 +3,7 @@ package com.danakube.danatools.model;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +31,8 @@ public class CustomTool {
     private final double xpGainDamageMultiplier;
     private final double xpGainMovementMultiplier;
     
-    private final Map<EntityType, Integer> mobActivities;
-    private final int defaultMobXp;
-    private final boolean hasDefaultMobXp;
+    private final Map<EntityType, MobActivity> mobActivities;
+    private final MobActivity defaultMobActivity;
 
     public CustomTool(String id, Material material, int customModelData, String displayName, List<String> lore,
                       int xpCurveBase, double xpCurveMultiplier, Map<Material, BlockActivity> blockActivities,
@@ -41,7 +41,7 @@ public class CustomTool {
                       Map<Enchantment, Integer> enchantmentLimits, String noModifierMessage,
                       Map<String, Integer> allowedModifiers,
                       double xpGainDamageMultiplier, double xpGainMovementMultiplier,
-                      Map<EntityType, Integer> mobActivities, int defaultMobXp, boolean hasDefaultMobXp) {
+                      Map<EntityType, MobActivity> mobActivities, MobActivity defaultMobActivity) {
         this.id = id;
         this.material = material;
         this.customModelData = customModelData;
@@ -61,8 +61,7 @@ public class CustomTool {
         this.xpGainDamageMultiplier = xpGainDamageMultiplier;
         this.xpGainMovementMultiplier = xpGainMovementMultiplier;
         this.mobActivities = mobActivities != null ? mobActivities : new HashMap<>();
-        this.defaultMobXp = defaultMobXp;
-        this.hasDefaultMobXp = hasDefaultMobXp;
+        this.defaultMobActivity = defaultMobActivity;
     }
 
     public String getId() {
@@ -171,35 +170,37 @@ public class CustomTool {
         return defaultBlockActivity != null;
     }
 
-    public Map<EntityType, Integer> getMobActivities() {
+    public Map<EntityType, MobActivity> getMobActivities() {
         return mobActivities;
     }
 
-    public int getDefaultMobXp() {
-        return defaultMobXp;
+    public MobActivity getDefaultMobActivity() {
+        return defaultMobActivity;
     }
 
-    public boolean hasDefaultMobXp() {
-        return hasDefaultMobXp;
+    public boolean hasDefaultMobActivity() {
+        return defaultMobActivity != null;
     }
 
-    public int getXpForMob(EntityType entityType) {
+    public MobActivity getMobActivity(EntityType entityType) {
         if (mobActivities.containsKey(entityType)) {
             return mobActivities.get(entityType);
         }
-        if (hasDefaultMobXp) {
-            return defaultMobXp;
-        }
-        return 0;
+        return defaultMobActivity;
+    }
+
+    public int getXpForMob(EntityType entityType) {
+        MobActivity act = getMobActivity(entityType);
+        return act != null ? act.getXp() : 0;
     }
 
     public static class BlockActivity {
         private final int xp;
-        private final CoreDrop coreDrop;
+        private final List<CoreDrop> coreDrops;
 
-        public BlockActivity(int xp, CoreDrop coreDrop) {
+        public BlockActivity(int xp, List<CoreDrop> coreDrops) {
             this.xp = xp;
-            this.coreDrop = coreDrop;
+            this.coreDrops = coreDrops != null ? coreDrops : new ArrayList<>();
         }
 
         public int getXp() {
@@ -207,11 +208,15 @@ public class CustomTool {
         }
 
         public CoreDrop getCoreDrop() {
-            return coreDrop;
+            return coreDrops.isEmpty() ? null : coreDrops.get(0);
+        }
+
+        public List<CoreDrop> getCoreDrops() {
+            return coreDrops;
         }
 
         public boolean hasCoreDrop() {
-            return coreDrop != null;
+            return !coreDrops.isEmpty();
         }
     }
 
@@ -235,11 +240,11 @@ public class CustomTool {
 
     public static class FishingActivity {
         private final int xp;
-        private final CoreDrop coreDrop;
+        private final List<CoreDrop> coreDrops;
 
-        public FishingActivity(int xp, CoreDrop coreDrop) {
+        public FishingActivity(int xp, List<CoreDrop> coreDrops) {
             this.xp = xp;
-            this.coreDrop = coreDrop;
+            this.coreDrops = coreDrops != null ? coreDrops : new ArrayList<>();
         }
 
         public int getXp() {
@@ -247,11 +252,41 @@ public class CustomTool {
         }
 
         public CoreDrop getCoreDrop() {
-            return coreDrop;
+            return coreDrops.isEmpty() ? null : coreDrops.get(0);
+        }
+
+        public List<CoreDrop> getCoreDrops() {
+            return coreDrops;
         }
 
         public boolean hasCoreDrop() {
-            return coreDrop != null;
+            return !coreDrops.isEmpty();
+        }
+    }
+
+    public static class MobActivity {
+        private final int xp;
+        private final List<CoreDrop> coreDrops;
+
+        public MobActivity(int xp, List<CoreDrop> coreDrops) {
+            this.xp = xp;
+            this.coreDrops = coreDrops != null ? coreDrops : new ArrayList<>();
+        }
+
+        public int getXp() {
+            return xp;
+        }
+
+        public CoreDrop getCoreDrop() {
+            return coreDrops.isEmpty() ? null : coreDrops.get(0);
+        }
+
+        public List<CoreDrop> getCoreDrops() {
+            return coreDrops;
+        }
+
+        public boolean hasCoreDrop() {
+            return !coreDrops.isEmpty();
         }
     }
 }

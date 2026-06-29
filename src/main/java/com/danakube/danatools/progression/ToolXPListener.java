@@ -120,7 +120,9 @@ public class ToolXPListener implements Listener {
 
             if (activity.hasCoreDrop()) {
                 Location loc = (event.getCaught() != null) ? event.getCaught().getLocation() : player.getLocation();
-                CoreDropManager.checkAndDropCore(player, loc, tool, activity.getCoreDrop());
+                for (CustomTool.CoreDrop coreDrop : activity.getCoreDrops()) {
+                    CoreDropManager.checkAndDropCore(player, loc, tool, coreDrop);
+                }
             }
         }
     }

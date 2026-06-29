@@ -22,6 +22,7 @@ public class ConfigManager {
         plugin.saveDefaultConfig();
 
         saveResourceIfNotExists("lang/fr.yml");
+        saveResourceIfNotExists("tools/_default.yml");
         saveResourceIfNotExists("tools/heavy_pickaxe.yml");
         saveResourceIfNotExists("tools/heavy_hoe.yml");
         saveResourceIfNotExists("tools/heavy_axe.yml");

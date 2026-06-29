@@ -65,16 +65,8 @@ public class ToolConfigManager {
                             if (activitiesSection.isConfigurationSection(key)) {
                                 ConfigurationSection activitySec = activitiesSection.getConfigurationSection(key);
                                 int xp = activitySec.getInt("xp", 0);
-                                CustomTool.CoreDrop coreDrop = null;
-                                ConfigurationSection dropSec = activitySec.getConfigurationSection("core-drop");
-                                if (dropSec != null) {
-                                    String modifierId = dropSec.getString("modifier-id");
-                                    double chancePercent = dropSec.getDouble("chance-percent", 0.0);
-                                    if (modifierId != null) {
-                                        coreDrop = new CustomTool.CoreDrop(modifierId, chancePercent);
-                                    }
-                                }
-                                defaultBlockActivity = new CustomTool.BlockActivity(xp, coreDrop);
+                                List<CustomTool.CoreDrop> coreDrops = parseCoreDrops(activitySec);
+                                defaultBlockActivity = new CustomTool.BlockActivity(xp, coreDrops);
                             } else {
                                 int xp = activitiesSection.getInt(key, 0);
                                 defaultBlockActivity = new CustomTool.BlockActivity(xp, null);
@@ -87,16 +79,8 @@ public class ToolConfigManager {
                             if (activitiesSection.isConfigurationSection(key)) {
                                 ConfigurationSection activitySec = activitiesSection.getConfigurationSection(key);
                                 int xp = activitySec.getInt("xp", 0);
-                                CustomTool.CoreDrop coreDrop = null;
-                                ConfigurationSection dropSec = activitySec.getConfigurationSection("core-drop");
-                                if (dropSec != null) {
-                                    String modifierId = dropSec.getString("modifier-id");
-                                    double chancePercent = dropSec.getDouble("chance-percent", 0.0);
-                                    if (modifierId != null) {
-                                        coreDrop = new CustomTool.CoreDrop(modifierId, chancePercent);
-                                    }
-                                }
-                                blockActivities.put(oreMaterial, new CustomTool.BlockActivity(xp, coreDrop));
+                                List<CustomTool.CoreDrop> coreDrops = parseCoreDrops(activitySec);
+                                blockActivities.put(oreMaterial, new CustomTool.BlockActivity(xp, coreDrops));
                             } else {
                                 int xp = activitiesSection.getInt(key, 0);
                                 blockActivities.put(oreMaterial, new CustomTool.BlockActivity(xp, null));
@@ -172,35 +156,41 @@ public class ToolConfigManager {
                 ConfigurationSection fishSec = config.getConfigurationSection("fishing-activity");
                 if (fishSec != null) {
                     int xp = fishSec.getInt("xp", 0);
-                    CustomTool.CoreDrop coreDrop = null;
-                    ConfigurationSection dropSec = fishSec.getConfigurationSection("core-drop");
-                    if (dropSec != null) {
-                        String modifierId = dropSec.getString("modifier-id");
-                        double chancePercent = dropSec.getDouble("chance-percent", 0.0);
-                        if (modifierId != null) {
-                            coreDrop = new CustomTool.CoreDrop(modifierId, chancePercent);
-                        }
-                    }
-                    fishingActivity = new CustomTool.FishingActivity(xp, coreDrop);
+                    List<CustomTool.CoreDrop> coreDrops = parseCoreDrops(fishSec);
+                    fishingActivity = new CustomTool.FishingActivity(xp, coreDrops);
                 }
 
                 double xpGainDamageMultiplier = config.getDouble("xp-gain-damage-multiplier", 0.0);
                 double xpGainMovementMultiplier = config.getDouble("xp-gain-movement-multiplier", 0.0);
 
-                Map<EntityType, Integer> mobActivities = new HashMap<>();
-                int defaultMobXp = 0;
-                boolean hasDefaultMobXp = false;
+                Map<EntityType, CustomTool.MobActivity> mobActivities = new HashMap<>();
+                CustomTool.MobActivity defaultMobActivity = null;
                 ConfigurationSection mobSec = config.getConfigurationSection("mob-activities");
                 if (mobSec != null) {
                     for (String key : mobSec.getKeys(false)) {
                         if (key.equalsIgnoreCase("DEFAULT")) {
-                            defaultMobXp = mobSec.getInt(key, 0);
-                            hasDefaultMobXp = true;
+                            if (mobSec.isConfigurationSection(key)) {
+                                ConfigurationSection activitySec = mobSec.getConfigurationSection(key);
+                                int xp = activitySec.getInt("xp", 0);
+                                List<CustomTool.CoreDrop> coreDrops = parseCoreDrops(activitySec);
+                                defaultMobActivity = new CustomTool.MobActivity(xp, coreDrops);
+                            } else {
+                                int xp = mobSec.getInt(key, 0);
+                                defaultMobActivity = new CustomTool.MobActivity(xp, null);
+                            }
                             continue;
                         }
                         try {
                             EntityType entityType = EntityType.valueOf(key.toUpperCase());
-                            mobActivities.put(entityType, mobSec.getInt(key, 0));
+                            if (mobSec.isConfigurationSection(key)) {
+                                ConfigurationSection activitySec = mobSec.getConfigurationSection(key);
+                                int xp = activitySec.getInt("xp", 0);
+                                List<CustomTool.CoreDrop> coreDrops = parseCoreDrops(activitySec);
+                                mobActivities.put(entityType, new CustomTool.MobActivity(xp, coreDrops));
+                            } else {
+                                int xp = mobSec.getInt(key, 0);
+                                mobActivities.put(entityType, new CustomTool.MobActivity(xp, null));
+                            }
                         } catch (IllegalArgumentException e) {
                             plugin.getLogger().warning("Type d'entite invalide dans mob-activities de l'outil " + id + ": " + key);
                         }
@@ -214,7 +204,7 @@ public class ToolConfigManager {
                         maxLevel, slotsProgression, maxSlots, enchantmentLimits,
                         noModifierMessage, allowedModifiers,
                         xpGainDamageMultiplier, xpGainMovementMultiplier,
-                        mobActivities, defaultMobXp, hasDefaultMobXp
+                        mobActivities, defaultMobActivity
                 );
 
                 tools.put(id, customTool);
@@ -232,5 +222,28 @@ public class ToolConfigManager {
 
     public Collection<CustomTool> getTools() {
         return tools.values();
+    }
+
+    private List<CustomTool.CoreDrop> parseCoreDrops(ConfigurationSection activitySec) {
+        List<CustomTool.CoreDrop> coreDrops = new ArrayList<>();
+        if (activitySec == null) {
+            return coreDrops;
+        }
+        ConfigurationSection dropsSec = activitySec.getConfigurationSection("core-drops");
+        if (dropsSec != null) {
+            for (String modifierId : dropsSec.getKeys(false)) {
+                double chancePercent = dropsSec.getDouble(modifierId, 0.0);
+                coreDrops.add(new CustomTool.CoreDrop(modifierId, chancePercent));
+            }
+        }
+        ConfigurationSection dropSec = activitySec.getConfigurationSection("core-drop");
+        if (dropSec != null) {
+            String modifierId = dropSec.getString("modifier-id");
+            double chancePercent = dropSec.getDouble("chance-percent", 0.0);
+            if (modifierId != null) {
+                coreDrops.add(new CustomTool.CoreDrop(modifierId, chancePercent));
+            }
+        }
+        return coreDrops;
     }
 }

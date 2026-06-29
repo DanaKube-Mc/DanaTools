@@ -1,0 +1,194 @@
+# =========================================================================
+# Fichier de Configuration Modèle / Wiki : Outils & Armures DanaTools
+# Nom du fichier : _default.yml
+# =========================================================================
+#
+# Ce fichier sert de référence complète pour configurer les items évolutifs
+# (outils, armes ou armures). Tout fichier .yml placé dans le dossier 'tools/'
+# sera chargé en tant qu'item évolutif si son 'id' est unique.
+#
+
+# -------------------------------------------------------------------------
+# 1. PARAMÈTRES GÉNÉRAUX DE L'ITEM
+# -------------------------------------------------------------------------
+
+# Identifiant unique de l'outil/armure.
+# Doit correspondre exactement au nom du fichier sans l'extension '.yml'.
+id: "_default"
+
+# Matériel Minecraft sous-jacent (Material Spigot valide).
+# Liste complète : https://jd.papermc.io/paper/1.21.1/org/bukkit/Material.html
+material: "DIAMOND_SWORD"
+
+# CustomModelData utilisé pour changer la texture/modèle 3D de l'item.
+# Utile pour l'intégration avec des plugins de textures (ItemsAdder, Oraxen)
+# ou des resource packs personnalisés. Mettre à 0 pour désactiver.
+custom-model-data: 0
+
+# Nom d'affichage de l'item en jeu.
+# Supporte Kyori MiniMessage (dégradés, polices, styles) ainsi que les anciens codes couleur (&).
+# Ex MiniMessage : "<gradient:#ffaa00:#ff5500><b>Épée de Légende</b></gradient>"
+# Ex Classique : "&6&lÉpée de Légende"
+display-name: "<b><gradient:#FF9304:#FCF65D>Item Évolutif Modèle</gradient></b>"
+
+# Message affiché dans le lore lorsqu'aucun modificateur n'est encore appliqué.
+# Mettre une chaîne vide "" pour ne rien afficher du tout.
+no-modifier-message: "&7 (Aucun modificateur)"
+
+# Description / Lore de l'item.
+# Placeholders dynamiques supportés :
+#   {level}           - Niveau actuel de l'item
+#   {xp}              - XP accumulée dans le niveau en cours
+#   {max_xp}          - XP requise pour passer au niveau suivant
+#   {slots_used}      - Nombre de slots de modificateurs occupés
+#   {slots_total}     - Nombre de slots de modificateurs débloqués
+#   {modifiers_list}  - Liste des modificateurs actifs appliqués à l'item
+#   {progress_bar}    - Barre de progression visuelle d'XP (configurée dans config.yml)
+#   {percent}         - Pourcentage brut d'XP (ex: 45%)
+lore:
+  - "&7Une arme d'entraînement servant de référence."
+  - ""
+  - "<#ffeea2>Progression :"
+  - "  Niveau : &f{level}"
+  - "  XP : &f{xp}/{max_xp}"
+  - "  Progression : {progress_bar}"
+  - ""
+  - "<#ffeea2>Modificateurs ({slots_used}/{slots_total}) :"
+  - "{modifiers_list}"
+
+# -------------------------------------------------------------------------
+# 2. CONFIGURATION DE LA COURBE D'XP
+# -------------------------------------------------------------------------
+# Formule utilisée pour calculer l'XP nécessaire pour monter de niveau :
+#   XP_requise = base * (niveau_actuel ^ multiplier)
+#
+# Exemple avec base: 100 et multiplier: 1.5 :
+#   - Lvl 1 -> Lvl 2 : 100 * (1 ^ 1.5) = 100 XP
+#   - Lvl 2 -> Lvl 3 : 100 * (2 ^ 1.5) = 282 XP
+#   - Lvl 10 -> Lvl 11 : 100 * (10 ^ 1.5) = 3162 XP
+xp-curve:
+  base: 100
+  multiplier: 1.5
+
+# -------------------------------------------------------------------------
+# 3. CONFIGURATION DES NIVEAUX ET SLOTS (PROGRESSION)
+# -------------------------------------------------------------------------
+progression:
+  # Niveau maximum que cet item peut atteindre.
+  max-level: 50
+
+  # Nombre maximum absolu de slots de modificateurs autorisés pour cet item.
+  max-slots: 5
+
+  # Paliers de déblocage des slots de modificateurs.
+  # Format : 'Niveau: Total_Slots_Débloqués'
+  slots:
+    0: 1   # Dès la création (niveau 0/1), l'item a 1 slot disponible
+    10: 2  # Au niveau 10, débloque un 2e slot au total
+    20: 3  # Au niveau 20, débloque un 3e slot au total
+    30: 4  # Au niveau 30, débloque un 4e slot au total
+    40: 5  # Au niveau 40, débloque le 5e slot maximum
+
+# -------------------------------------------------------------------------
+# 4. LIMITATION DES ENCHANTEMENTS (L'ENCLUME)
+# -------------------------------------------------------------------------
+# Définit les niveaux maximums autorisés pour les enchantements sur cet item.
+# Si un joueur tente d'enchanter ou de fusionner un livre dépassant cette limite,
+# l'enchantement sera bridé au niveau configuré ci-dessous.
+# Les noms d'enchantements doivent être en anglais (standard Spigot).
+enchantment-limits:
+  SHARPNESS: 10
+  UNBREAKING: 8
+  FIRE_ASPECT: 3
+  LOOTING: 5
+  KNOCKBACK: 2
+
+# -------------------------------------------------------------------------
+# 5. WHITELIST ET LIMITES DES MODIFICATEURS (LA FORGE)
+# -------------------------------------------------------------------------
+# Modificateurs DanaTools autorisés sur cet item et leur niveau maximum respectif.
+# Tout modificateur absent de cette liste sera bloqué à la forge.
+# De même, tenter de dépasser la limite de niveau configurée sera impossible.
+allowed-modifiers:
+  wisdom: 3         # Modificateur 'Sagesse' autorisé jusqu'au niveau 3
+  learning: 3       # Modificateur 'Apprentissage' autorisé jusqu'au niveau 3
+  unbreakable: 1    # Modificateur 'Incassable' autorisé jusqu'au niveau 1
+  bouncy: 3         # Modificateur 'Rebond' autorisé jusqu'au niveau 3
+  purify: 2         # Modificateur 'Purification' bridé au niveau 2
+
+# -------------------------------------------------------------------------
+# 6. ACTIVITÉS DE MINAGE / RÉCOLTE (BLOCK-ACTIVITIES)
+# -------------------------------------------------------------------------
+# Configure l'XP rapportée et les chances de faire tomber des Noyaux Élémentaires
+# en détruisant des blocs avec l'item.
+#
+# RÈGLES DE REPLI (DEFAULT) & SÉCURITÉ :
+# - 'DEFAULT: 1' : Tout bloc non répertorié ici donne 1 XP.
+# - Sécurité anti-exploit : Les blocs ayant une dureté de 0.0 (torches, cultures, 
+#   fleurs, herbe, etc.) ne donnent JAMAIS d'XP via le repli 'DEFAULT'.
+# - Blacklist manuelle : Configurer un bloc à '0' (ex : 'DIRT: 0') empêche tout gain
+#   d'XP, peu importe sa dureté de base.
+block-activities:
+  # Valeur par défaut pour tout bloc cassé non configuré (si dureté > 0.0f)
+  DEFAULT: 1
+
+  # Exemple de bloc blacklisté manuellement
+  DIRT: 0
+  GRAVEL: 0
+
+  # Configuration détaillée pour un bloc spécifique (Format avec un seul noyau)
+  DIAMOND_ORE:
+    xp: 10              # XP rapportée
+
+  # Configuration détaillée pour un bloc spécifique (Format avec plusieurs noyaux)
+  DEEPSLATE_DIAMOND_ORE:
+    xp: 10
+    core-drops:         # (Optionnel - Nouveau Format) Plusieurs noyaux possibles (chances indépendantes)
+      trench: 1.0       # 1% de chance de drop un noyau de Trench
+      magnet: 0.5       # 0.5% de chance de drop un noyau de Magnet
+
+# -------------------------------------------------------------------------
+# 7. ACTIVITÉS DE COMBAT (MOB-ACTIVITIES)
+# -------------------------------------------------------------------------
+# Configure l'XP rapportée en tuant des entités (mobs) avec l'item.
+#
+# RÈGLES & SÉCURITÉ :
+# - L'item doit être tenu en main principale par le joueur.
+# - Sécurité anti-AFK : L'XP est accordée uniquement si le joueur a porté le coup fatal.
+# - 'DEFAULT' : Utilisé comme valeur de repli pour tout mob non répertorié.
+# - Noms des entités (standard EntityType Spigot) : https://jd.papermc.io/paper/1.21.1/org/bukkit/entity/EntityType.html
+# - Format supportant l'XP simple (ex: CHICKEN: 1) ou configurée en section (ex: WITHER).
+mob-activities:
+  DEFAULT: 5            # Tout mob non configuré rapporte 5 XP
+  WITHER:
+    xp: 250             # Le boss Wither rapporte 250 XP
+    core-drops:
+      purify: 10.0      # 10% de chance de drop un noyau de Purify
+  ENDER_DRAGON: 500     # Le boss Ender Dragon rapporte 500 XP
+  CHICKEN: 1            # Le poulet ne rapporte que 1 XP
+
+# -------------------------------------------------------------------------
+# 8. ACTIVITÉS DE PÊCHE (FISHING-ACTIVITY)
+# -------------------------------------------------------------------------
+# Configure l'XP rapportée et les chances de drop de noyau lors de la pêche.
+fishing-activity:
+  xp: 15                # XP gagnée à chaque poisson attrapé
+  core-drops:           # Plusieurs noyaux possibles (ou format 'core-drop' unique classique)
+    magnet: 2.0         # 2% de chance de drop de noyau de Magnet
+    resonance: 1.0      # 1% de chance de drop de noyau de Resonance
+
+# -------------------------------------------------------------------------
+# 9. GESTION DES ARMURES (XP DE DÉGÂTS & EXPLORATION)
+# -------------------------------------------------------------------------
+# Ces multiplicateurs s'appliquent UNIQUEMENT si l'item est configuré sur une
+# pièce d'armure (ex: DIAMOND_CHESTPLATE, DIAMOND_BOOTS, etc.).
+# Pour les outils classiques, laisser à 0.0.
+
+# Quantité d'XP reçue par l'armure par demi-coeur de dégâts subis par le porteur.
+# Exclut les dégâts environnementaux (chute, noyade, feu).
+xp-gain-damage-multiplier: 0.0
+
+# Quantité d'XP reçue par l'armure par bloc parcouru activement à pied.
+# Exclut les trajets en véhicule (chevaux, bateaux) et l'utilisation d'élytres.
+# Vérifié et attribué toutes les 5 secondes en jeu.
+xp-gain-movement-multiplier: 0.0

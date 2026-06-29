@@ -19,10 +19,19 @@ public class CoreDropManager {
         if (activity == null || !activity.hasCoreDrop()) {
             return;
         }
-        checkAndDropCore(player, block.getLocation().add(0.5, 0.5, 0.5), tool, activity.getCoreDrop());
+        checkAndDropCore(player, block.getLocation().add(0.5, 0.5, 0.5), tool, activity);
     }
 
-    public static void checkAndDropCore(Player player, org.bukkit.Location location, DanaItemInstance tool, CustomTool.CoreDrop coreDrop) {
+    public static void checkAndDropCore(Player player, Location location, DanaItemInstance tool, CustomTool.BlockActivity activity) {
+        if (activity == null || !activity.hasCoreDrop()) {
+            return;
+        }
+        for (CustomTool.CoreDrop coreDrop : activity.getCoreDrops()) {
+            checkAndDropCore(player, location, tool, coreDrop);
+        }
+    }
+
+    public static void checkAndDropCore(Player player, Location location, DanaItemInstance tool, CustomTool.CoreDrop coreDrop) {
         if (coreDrop == null) {
             return;
         }
