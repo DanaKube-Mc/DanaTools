@@ -12,6 +12,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -147,6 +148,7 @@ public class DanaToolsCommand implements CommandExecutor, TabCompleter {
         ItemMeta tMeta = template.getItemMeta();
         if (tMeta != null) {
             tMeta.displayName(DanaItemInstance.parseColor(modifier.getTemplateDisplayName()));
+            tMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
             if (modifier.getTemplateCustomModelData() > 0) {
                 tMeta.setCustomModelData(modifier.getTemplateCustomModelData());
             }
