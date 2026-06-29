@@ -39,6 +39,12 @@ public class ToolXPListener implements Listener {
         Material blockType = event.getBlock().getType();
         CustomTool.BlockActivity activity = tool.getConfig().getBlockActivity(blockType);
 
+        if (activity == null && tool.getConfig().hasDefaultBlockActivity()) {
+            if (blockType.getHardness() > 0.0f) {
+                activity = tool.getConfig().getDefaultBlockActivity();
+            }
+        }
+
         if (activity != null) {
             int xpGain = activity.getXp();
             if (xpGain > 0) {

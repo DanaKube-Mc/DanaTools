@@ -15,6 +15,7 @@ import com.danakube.danatools.modifier.PotionModifierManager;
 import com.danakube.danatools.modifier.PotionModifierListener;
 import com.danakube.danatools.modifier.MagnetTask;
 import com.danakube.danatools.progression.ToolXPListener;
+import com.danakube.danatools.progression.MobDeathXPListener;
 import com.danakube.danatools.progression.XPManager;
 import com.danakube.danatools.progression.ArmorExplorationTask;
 import com.danakube.danatools.progression.ArmorXPListener;
@@ -80,6 +81,7 @@ public final class DanaTools extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new SmithingListener(this), this);
         getServer().getPluginManager().registerEvents(new ToolXPListener(this), this);
+        getServer().getPluginManager().registerEvents(new MobDeathXPListener(this), this);
         getServer().getPluginManager().registerEvents(new AnvilListener(this), this);
         getServer().getPluginManager().registerEvents(new PotionModifierListener(this), this);
 

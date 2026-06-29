@@ -50,6 +50,8 @@ xp-curve:
 #       modifier-id: "modifier_id"
 #       chance-percent: pourcentage_chance
 block-activities:
+  DEFAULT: 1
+  DIRT: 0
   COAL_ORE:
     xp: 2
     core-drop:
@@ -122,4 +124,11 @@ allowed-modifiers:
   unbreakable: 1
   bouncy: 3
   purify: 3
+
+# Récompenses d'XP en tuant des entités (combat)
+mob-activities:
+  DEFAULT: 5            # Tout mob non configuré rapporte 5 XP
+  WITHER: 250           # Sauf le boss Wither
+  ENDER_DRAGON: 500     # Sauf l'Ender Dragon
+  CHICKEN: 1            # Sauf le poulet qui ne rapporte que 1 XP
 

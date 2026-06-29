@@ -10,6 +10,7 @@ import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 
 import java.io.File;
 import java.util.*;
@@ -56,13 +57,35 @@ public class ToolConfigManager {
                 double xpCurveMultiplier = config.getDouble("xp-curve.multiplier", 1.5);
 
                 Map<Material, CustomTool.BlockActivity> blockActivities = new HashMap<>();
+                CustomTool.BlockActivity defaultBlockActivity = null;
                 ConfigurationSection activitiesSection = config.getConfigurationSection("block-activities");
                 if (activitiesSection != null) {
                     for (String key : activitiesSection.getKeys(false)) {
+                        if (key.equalsIgnoreCase("DEFAULT")) {
+                            if (activitiesSection.isConfigurationSection(key)) {
+                                ConfigurationSection activitySec = activitiesSection.getConfigurationSection(key);
+                                int xp = activitySec.getInt("xp", 0);
+                                CustomTool.CoreDrop coreDrop = null;
+                                ConfigurationSection dropSec = activitySec.getConfigurationSection("core-drop");
+                                if (dropSec != null) {
+                                    String modifierId = dropSec.getString("modifier-id");
+                                    double chancePercent = dropSec.getDouble("chance-percent", 0.0);
+                                    if (modifierId != null) {
+                                        coreDrop = new CustomTool.CoreDrop(modifierId, chancePercent);
+                                    }
+                                }
+                                defaultBlockActivity = new CustomTool.BlockActivity(xp, coreDrop);
+                            } else {
+                                int xp = activitiesSection.getInt(key, 0);
+                                defaultBlockActivity = new CustomTool.BlockActivity(xp, null);
+                            }
+                            continue;
+                        }
+
                         Material oreMaterial = Material.matchMaterial(key);
                         if (oreMaterial != null) {
-                            ConfigurationSection activitySec = activitiesSection.getConfigurationSection(key);
-                            if (activitySec != null) {
+                            if (activitiesSection.isConfigurationSection(key)) {
+                                ConfigurationSection activitySec = activitiesSection.getConfigurationSection(key);
                                 int xp = activitySec.getInt("xp", 0);
                                 CustomTool.CoreDrop coreDrop = null;
                                 ConfigurationSection dropSec = activitySec.getConfigurationSection("core-drop");
@@ -74,6 +97,9 @@ public class ToolConfigManager {
                                     }
                                 }
                                 blockActivities.put(oreMaterial, new CustomTool.BlockActivity(xp, coreDrop));
+                            } else {
+                                int xp = activitiesSection.getInt(key, 0);
+                                blockActivities.put(oreMaterial, new CustomTool.BlockActivity(xp, null));
                             }
                         } else {
                             plugin.getLogger().warning("Materiel invalide dans block-activities de l'outil " + id + ": " + key);
@@ -81,7 +107,7 @@ public class ToolConfigManager {
                     }
                 }
 
-                if (blockActivities.isEmpty()) {
+                if (blockActivities.isEmpty() && defaultBlockActivity == null) {
                     ConfigurationSection xpSection = config.getConfigurationSection("xp-gain");
                     if (xpSection != null) {
                         for (String key : xpSection.getKeys(false)) {
@@ -161,13 +187,34 @@ public class ToolConfigManager {
                 double xpGainDamageMultiplier = config.getDouble("xp-gain-damage-multiplier", 0.0);
                 double xpGainMovementMultiplier = config.getDouble("xp-gain-movement-multiplier", 0.0);
 
+                Map<EntityType, Integer> mobActivities = new HashMap<>();
+                int defaultMobXp = 0;
+                boolean hasDefaultMobXp = false;
+                ConfigurationSection mobSec = config.getConfigurationSection("mob-activities");
+                if (mobSec != null) {
+                    for (String key : mobSec.getKeys(false)) {
+                        if (key.equalsIgnoreCase("DEFAULT")) {
+                            defaultMobXp = mobSec.getInt(key, 0);
+                            hasDefaultMobXp = true;
+                            continue;
+                        }
+                        try {
+                            EntityType entityType = EntityType.valueOf(key.toUpperCase());
+                            mobActivities.put(entityType, mobSec.getInt(key, 0));
+                        } catch (IllegalArgumentException e) {
+                            plugin.getLogger().warning("Type d'entite invalide dans mob-activities de l'outil " + id + ": " + key);
+                        }
+                    }
+                }
+
                 CustomTool customTool = new CustomTool(
                         id, material, customModelData, displayName, lore,
                         xpCurveBase, xpCurveMultiplier, blockActivities,
-                        fishingActivity,
+                        defaultBlockActivity, fishingActivity,
                         maxLevel, slotsProgression, maxSlots, enchantmentLimits,
                         noModifierMessage, allowedModifiers,
-                        xpGainDamageMultiplier, xpGainMovementMultiplier
+                        xpGainDamageMultiplier, xpGainMovementMultiplier,
+                        mobActivities, defaultMobXp, hasDefaultMobXp
                 );
 
                 tools.put(id, customTool);

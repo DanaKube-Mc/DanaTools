@@ -38,11 +38,33 @@ Pour une configuration type avec une base de `100` et un multiplicateur de `1.5`
 Les outils (pioches, haches, pelles, houes) gagnent de l'XP de manière passive en effectuant leurs tâches principales.
 
 ### Activités et Blocs compatibles
-Le gain d'XP dépend de la section `block-activities` (ou de l'ancien système `xp-gain` en rétrocompatibilité) définie dans le fichier YAML de l'outil.
-* **Minage :** Destinés aux pioches et pelles (ex: casser du diamant rapporte 10 XP, du charbon 2 XP).
-* **Coupe de bois :** Haches (ex: bûches, feuilles).
-* **Agriculture :** Houes (ex: récolter des cultures arrivées à maturité).
-* **Pêche :** Les cannes à pêche gagnent de l'XP en ferrant et attrapant un poisson, configurée sous la section `fishing-activity`.
+Le gain d'XP dépend de la section `block-activities` définie dans le fichier YAML de l'outil.
+* **Format avec Repli (`DEFAULT`)** :
+  L'administrateur peut utiliser la clé `DEFAULT` pour attribuer de l'XP à n'importe quel bloc cassé sans devoir les lister individuellement :
+  ```yaml
+  block-activities:
+    DEFAULT: 1         # Tout bloc cassé donne 1 XP par défaut
+    DIAMOND_ORE: 10    # Sauf le diamant (10 XP)
+    GRASS: 0           # Blacklist manuelle : l'herbe ne donne rien
+  ```
+* **Sécurité Anti-Exploit (Dureté)** : Pour éviter que les joueurs ne gagnent de l'XP en cassant en boucle des blocs instantanés (comme des torches, herbes, fleurs, tapis, etc.), le plugin applique la règle suivante : si le bloc n'est pas configuré individuellement et se replie sur `DEFAULT`, le gain d'XP n'est autorisé que si la dureté de base (vanilla hardness) du bloc est strictement supérieure à `0.0`.
+* **Activités types** :
+  * **Minage :** Pioches et pelles (ex: diamant, pierre).
+  * **Coupe de bois :** Haches (ex: bûches, feuilles).
+  * **Agriculture :** Houes (ex: cultures mûres).
+  * **Pêche :** Les cannes à pêche gagnent de l'XP en attrapant un poisson, configurée sous la section `fishing-activity` (gère aussi un `DEFAULT` par défaut).
+
+### Élimination de Mobs (XP de Combat pour Outils)
+Les outils de combat (épées, arcs, haches) peuvent gagner de l'XP en terrassant des monstres ou des animaux. Cette fonctionnalité est déclarée sous la section `mob-activities` dans le fichier de configuration de l'outil.
+* **Anti-AFK :** L'XP n'est attribuée que si le coup final est porté par le joueur (le plugin vérifie `getKiller()`). Les pièges automatiques à monstres ou morts environnementales sont exclus.
+* **Exemple de configuration :**
+  ```yaml
+  mob-activities:
+    DEFAULT: 5          # Par défaut, tout mob tué donne 5 XP
+    WITHER: 250         # Sauf le Wither qui donne 250 XP
+    CHICKEN: 1          # Sauf le poulet qui ne donne que 1 XP
+  ```
+  Le système utilise le type spécifique s'il existe, sinon il se rabat sur la valeur `DEFAULT`. Si aucun des deux n'est défini, le mob ne rapporte pas d'XP.
 
 ### Boost d'Apprentissage (`learning`)
 Si le joueur possède le modificateur **Apprentissage** (`learning`) équipé, l'XP accumulée par l'outil en main est augmentée d'un certain pourcentage :
