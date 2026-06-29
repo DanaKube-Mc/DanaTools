@@ -4,12 +4,14 @@ import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.CustomTool;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmithingTransformRecipe;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ForgeRecipeRegistry {
@@ -25,45 +27,51 @@ public class ForgeRecipeRegistry {
         unregisterRecipes();
 
         for (CustomModifier modifier : plugin.getModifierConfigManager().getModifiers()) {
-            java.util.Collection<String> toolIds = modifier.getCompatibleTools();
+            Collection<String> toolIds = modifier.getCompatibleTools();
+            List<Material> compatibleMaterials = new ArrayList<>();
+
             if (toolIds == null || toolIds.isEmpty()) {
-                toolIds = new java.util.ArrayList<>();
                 for (CustomTool t : plugin.getToolConfigManager().getTools()) {
-                    toolIds.add(t.getId());
+                    compatibleMaterials.add(t.getMaterial());
+                }
+            } else {
+                for (String toolId : toolIds) {
+                    CustomTool tool = plugin.getToolConfigManager().getTool(toolId);
+                    if (tool != null) {
+                        compatibleMaterials.add(tool.getMaterial());
+                    }
                 }
             }
 
-            for (String toolId : toolIds) {
-                CustomTool tool = plugin.getToolConfigManager().getTool(toolId);
-                if (tool == null) continue;
+            if (compatibleMaterials.isEmpty())
+                continue;
 
-                NamespacedKey key = new NamespacedKey(plugin, "forge_" + modifier.getId() + "_" + tool.getId());
+            NamespacedKey key = new NamespacedKey(plugin, "forge_grouped_" + modifier.getId());
 
-                try {
-                    RecipeChoice templateChoice = new RecipeChoice.MaterialChoice(modifier.getTemplateMaterial());
-                    RecipeChoice baseChoice = new RecipeChoice.MaterialChoice(tool.getMaterial());
-                    RecipeChoice additionChoice = new RecipeChoice.MaterialChoice(modifier.getIngredientMaterial());
+            try {
+                RecipeChoice templateChoice = new RecipeChoice.MaterialChoice(modifier.getTemplateMaterial());
+                RecipeChoice baseChoice = new RecipeChoice.MaterialChoice(compatibleMaterials);
+                RecipeChoice additionChoice = new RecipeChoice.MaterialChoice(modifier.getIngredientMaterial());
 
-                    ItemStack result = new ItemStack(tool.getMaterial());
+                ItemStack dummyResult = new ItemStack(compatibleMaterials.get(0));
 
-                    SmithingTransformRecipe recipe = new SmithingTransformRecipe(
-                            key,
-                            result,
-                            templateChoice,
-                            baseChoice,
-                            additionChoice
-                    );
+                SmithingTransformRecipe recipe = new SmithingTransformRecipe(
+                        key,
+                        dummyResult,
+                        templateChoice,
+                        baseChoice,
+                        additionChoice);
 
-                    Bukkit.addRecipe(recipe);
-                    registeredKeys.add(key);
-                } catch (Exception e) {
-                    plugin.getLogger().warning("Impossible d'enregistrer la recette de forge pour " + modifier.getId() + " et " + tool.getId() + ": " + e.getMessage());
-                }
+                Bukkit.addRecipe(recipe);
+                registeredKeys.add(key);
+            } catch (Exception e) {
+                plugin.getLogger().warning("Impossible d'enregistrer la recette groupée de forge pour "
+                        + modifier.getId() + ": " + e.getMessage());
             }
         }
 
         if (!registeredKeys.isEmpty()) {
-            plugin.getLogger().info(registeredKeys.size() + " recettes de forge enregistrees pour le client.");
+            plugin.getLogger().info(registeredKeys.size() + " recettes de forge groupées enregistrées pour le client.");
         }
     }
 
