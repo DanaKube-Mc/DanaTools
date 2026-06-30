@@ -229,19 +229,21 @@ public class ToolConfigManager {
         if (activitySec == null) {
             return coreDrops;
         }
-        ConfigurationSection dropsSec = activitySec.getConfigurationSection("core-drops");
-        if (dropsSec != null) {
-            for (String modifierId : dropsSec.getKeys(false)) {
-                double chancePercent = dropsSec.getDouble(modifierId, 0.0);
-                coreDrops.add(new CustomTool.CoreDrop(modifierId, chancePercent));
-            }
-        }
-        ConfigurationSection dropSec = activitySec.getConfigurationSection("core-drop");
-        if (dropSec != null) {
-            String modifierId = dropSec.getString("modifier-id");
-            double chancePercent = dropSec.getDouble("chance-percent", 0.0);
-            if (modifierId != null) {
-                coreDrops.add(new CustomTool.CoreDrop(modifierId, chancePercent));
+        for (String key : new String[]{"core-drops", "core-drop"}) {
+            ConfigurationSection sec = activitySec.getConfigurationSection(key);
+            if (sec != null) {
+                if (sec.contains("modifier-id")) {
+                    String modifierId = sec.getString("modifier-id");
+                    double chancePercent = sec.getDouble("chance-percent", 0.0);
+                    if (modifierId != null) {
+                        coreDrops.add(new CustomTool.CoreDrop(modifierId, chancePercent));
+                    }
+                } else {
+                    for (String modifierId : sec.getKeys(false)) {
+                        double chancePercent = sec.getDouble(modifierId, 0.0);
+                        coreDrops.add(new CustomTool.CoreDrop(modifierId, chancePercent));
+                    }
+                }
             }
         }
         return coreDrops;
