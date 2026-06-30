@@ -48,20 +48,20 @@ public class SmithingListener implements Listener {
         }
 
         for (CustomModifier modifier : plugin.getModifierConfigManager().getModifiers()) {
-            if (matchesTemplate(template, modifier) && matchesIngredient(addition, modifier)) {
-                
-                if (tool.canApplyOrUpgradeModifier(modifier)) {
-                    ItemStack result = base.clone();
-                    DanaItemInstance resultTool = DanaItemInstance.fromItemStack(result);
-                    if (resultTool != null) {
-                        resultTool.applyOrUpgradeModifier(modifier);
-                        event.setResult(resultTool.getItemStack());
-                        return;
+            if (matchesTemplate(template, modifier)) {
+                if (matchesIngredient(addition, modifier)) {
+                    if (tool.canApplyOrUpgradeModifier(modifier)) {
+                        ItemStack result = base.clone();
+                        DanaItemInstance resultTool = DanaItemInstance.fromItemStack(result);
+                        if (resultTool != null) {
+                            resultTool.applyOrUpgradeModifier(modifier);
+                            event.setResult(resultTool.getItemStack());
+                            return;
+                        }
                     }
-                } else {
-                    event.setResult(null);
-                    return;
                 }
+                event.setResult(null);
+                return;
             }
         }
     }
