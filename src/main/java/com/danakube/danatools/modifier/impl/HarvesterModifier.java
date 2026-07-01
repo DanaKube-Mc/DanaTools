@@ -1,6 +1,5 @@
 package com.danakube.danatools.modifier.impl;
 
-import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
@@ -34,17 +33,16 @@ public class HarvesterModifier extends DanaModifier {
         }
 
         Player player = event.getPlayer();
-        if (!isEquipped(player)) {
+        ItemStack toolItem = player.getInventory().getItemInMainHand();
+        DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
+        if (tool == null || !tool.hasBehavior("HARVESTER")) {
             return;
         }
 
         Block startBlock = event.getBlock();
-        ItemStack toolItem = player.getInventory().getItemInMainHand();
+        int level = tool.getBehaviorLevel("HARVESTER");
 
-        DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
-        int level = tool != null ? tool.getModifierLevel("harvester") : 1;
-
-        CustomModifier modifierConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("harvester");
+        CustomModifier modifierConfig = tool.getBehaviorModifier("HARVESTER");
         if (modifierConfig == null) return;
         CustomModifier.LevelSettings settings = modifierConfig.getLevel(level);
         if (settings == null) return;

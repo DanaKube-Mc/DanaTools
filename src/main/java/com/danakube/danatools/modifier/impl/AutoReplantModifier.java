@@ -38,7 +38,7 @@ public class AutoReplantModifier extends DanaModifier {
         ItemStack hand = player.getInventory().getItemInMainHand();
         DanaItemInstance tool = DanaItemInstance.fromItemStack(hand);
 
-        if (tool != null && tool.hasModifier("auto_replant")) {
+        if (tool != null && tool.hasBehavior("AUTO_REPLANT")) {
             if (DropManager.isReplantableCrop(block.getType())) {
                 BlockData blockData = block.getBlockData();
                 if (blockData instanceof Ageable ageable) {
@@ -65,7 +65,7 @@ public class AutoReplantModifier extends DanaModifier {
         Player player = event.getPlayer();
         ItemStack hand = player.getInventory().getItemInMainHand();
         DanaItemInstance tool = DanaItemInstance.fromItemStack(hand);
-        if (tool == null || !tool.hasModifier("auto_replant")) return;
+        if (tool == null || !tool.hasBehavior("AUTO_REPLANT")) return;
 
         Material seedMaterial = DropManager.getRequiredSeed(originalData.getMaterial());
         if (seedMaterial == null) return;

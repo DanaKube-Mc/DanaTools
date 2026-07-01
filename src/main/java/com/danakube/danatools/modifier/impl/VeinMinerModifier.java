@@ -1,6 +1,5 @@
 package com.danakube.danatools.modifier.impl;
 
-import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
@@ -36,14 +35,14 @@ public class VeinMinerModifier extends DanaModifier {
         }
 
         Player player = event.getPlayer();
-        if (!isEquipped(player)) {
+        ItemStack handItem = player.getInventory().getItemInMainHand();
+        DanaItemInstance toolInstance = DanaItemInstance.fromItemStack(handItem);
+        if (toolInstance == null || !toolInstance.hasBehavior("VEIN_MINER")) {
             return;
         }
 
         Block startBlock = event.getBlock();
-        ItemStack handItem = player.getInventory().getItemInMainHand();
-
-        triggerVeinMining(player, startBlock, handItem);
+        triggerVeinMining(player, startBlock, handItem, toolInstance);
     }
 
     private boolean isVeinMinerable(Material material) {
@@ -51,16 +50,15 @@ public class VeinMinerModifier extends DanaModifier {
         return name.endsWith("_ORE") || name.endsWith("_LOG") || name.endsWith("_WOOD");
     }
 
-    private void triggerVeinMining(Player player, Block startBlock, ItemStack toolItem) {
+    private void triggerVeinMining(Player player, Block startBlock, ItemStack toolItem, DanaItemInstance toolInstance) {
         Material targetMaterial = startBlock.getType();
         if (!isVeinMinerable(targetMaterial)) {
             return;
         }
 
-        DanaItemInstance toolInstance = DanaItemInstance.fromItemStack(toolItem);
-        int currentLvl = toolInstance != null ? toolInstance.getModifierLevel("vein_miner") : 1;
+        int currentLvl = toolInstance.getBehaviorLevel("VEIN_MINER");
 
-        CustomModifier modConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("vein_miner");
+        CustomModifier modConfig = toolInstance.getBehaviorModifier("VEIN_MINER");
         int maxBlocks = 64;
         if (modConfig != null) {
             CustomModifier.LevelSettings settings = modConfig.getLevel(currentLvl);

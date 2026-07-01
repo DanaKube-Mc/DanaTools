@@ -1,0 +1,57 @@
+# =========================================================================
+# Configuration de Modificateur : Minage en Veine (vein_miner)
+# =========================================================================
+
+# Identifiant unique du modificateur (doit correspondre au nom du fichier sans le .yml)
+id: "vein_tree"
+
+# Liste des modificateurs incompatibles (bloque l'application initiale)
+incompatible-modifiers:
+  - "trench"
+  - "vein_miner"
+
+# Recette de forge (commune pour tous les niveaux)
+template-item:
+  material: "PAPER"
+  custom-model-data: 10135
+  display-name: "<#ffeea2>Abattage"
+
+ingredient-item:
+  material: "FIREWORK_STAR"
+  custom-model-data: 10002
+  display-name: "<b><gradient:#cc953e:#fafaa5>Noyau antique</gradient></b>"
+
+# Niveaux disponibles et configurations specifiques de progression
+levels:
+  1:
+    display-name: "<#ffeea2>Abattage I"
+    lore:
+      - "<#d4d9d8>Permet de casser <#ffeea2>16 blocs<#d4d9d8> de bois reliés."
+      - "<#d4d9d8>Slots requis : <#ffeea2>1"
+    slot-cost: 1
+    min-tool-level: 0
+    behavior:
+      type: "VEIN_MINER"
+      max-blocks: 16
+  2:
+    display-name: "<#ffeea2>Abattage II"
+    lore:
+      - "<#d4d9d8>Permet de casser <#ffeea2>32 blocs<#d4d9d8> de bois reliés."
+      - "<#d4d9d8>Slots requis : <#ffeea2>2"
+      - "<#d4d9d8>Level requis : <#ffeea2>15"
+    slot-cost: 2
+    min-tool-level: 15
+    behavior:
+      type: "VEIN_MINER"
+      max-blocks: 32
+  3:
+    display-name: "<#ffeea2>Abattage III"
+    lore:
+      - "<#d4d9d8>Permet de casser <#ffeea2>64 blocs<#d4d9d8> de bois reliés."
+      - "<#d4d9d8>Slots requis : <#ffeea2>4"
+      - "<#d4d9d8>Level requis : <#ffeea2>25"
+    slot-cost: 4
+    min-tool-level: 25
+    behavior:
+      type: "VEIN_MINER"
+      max-blocks: 64

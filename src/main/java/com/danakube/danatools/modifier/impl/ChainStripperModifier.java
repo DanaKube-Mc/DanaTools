@@ -40,8 +40,6 @@ public class ChainStripperModifier extends DanaModifier {
         if (event.getHand() != EquipmentSlot.HAND) return;
 
         Player player = event.getPlayer();
-        if (!isEquipped(player)) return;
-
         Block clickedBlock = event.getClickedBlock();
         if (clickedBlock == null) return;
 
@@ -49,9 +47,11 @@ public class ChainStripperModifier extends DanaModifier {
         if (axe == null) return;
 
         DanaItemInstance tool = DanaItemInstance.fromItemStack(axe);
-        int level = tool != null ? tool.getModifierLevel("chain_stripper") : 1;
+        if (tool == null || !tool.hasBehavior("CHAIN_STRIPPER")) return;
 
-        CustomModifier modifier = DanaTools.getInstance().getModifierConfigManager().getModifier("chain_stripper");
+        int level = tool.getBehaviorLevel("CHAIN_STRIPPER");
+
+        CustomModifier modifier = tool.getBehaviorModifier("CHAIN_STRIPPER");
         if (modifier == null) return;
         CustomModifier.LevelSettings settings = modifier.getLevel(level);
         if (settings == null) return;
@@ -60,13 +60,14 @@ public class ChainStripperModifier extends DanaModifier {
         Material startType = clickedBlock.getType();
         if (!stripMap.containsKey(startType)) return;
 
+        boolean isCopper = startType.name().contains("COPPER");
         int maxBlocks = settings.getBehaviorInt("max-blocks", 10);
 
         event.setCancelled(true);
 
         processingCustomBreak.set(true);
         try {
-            triggerChainStripping(player, clickedBlock, startType, maxBlocks, axe, stripMap);
+            triggerChainStripping(player, clickedBlock, startType, maxBlocks, axe, stripMap, isCopper);
         } finally {
             processingCustomBreak.set(false);
         }
@@ -99,7 +100,7 @@ public class ChainStripperModifier extends DanaModifier {
         return stripMap;
     }
 
-    private void triggerChainStripping(Player player, Block startBlock, Material targetMaterial, int maxBlocks, ItemStack tool, Map<Material, Material> stripMap) {
+    private void triggerChainStripping(Player player, Block startBlock, Material targetMaterial, int maxBlocks, ItemStack tool, Map<Material, Material> stripMap, boolean isCopper) {
         Queue<Block> queue = new LinkedList<>();
         Set<Block> visited = new HashSet<>();
 
@@ -144,11 +145,17 @@ public class ChainStripperModifier extends DanaModifier {
                     }
 
                     if (!playedSound) {
-                        current.getWorld().playSound(current.getLocation(), Sound.ITEM_AXE_STRIP, 1.0f, 1.0f);
+                        Sound sound = isCopper ? (currentType.name().startsWith("WAXED_") ? Sound.ITEM_AXE_WAX_OFF : Sound.ITEM_AXE_SCRAPE) : Sound.ITEM_AXE_STRIP;
+                        current.getWorld().playSound(current.getLocation(), sound, 1.0f, 1.0f);
                         playedSound = true;
                     }
 
-                    current.getWorld().spawnParticle(Particle.BLOCK, current.getLocation().add(0.5, 0.5, 0.5), 5, current.getBlockData());
+                    if (isCopper) {
+                        Particle p = currentType.name().startsWith("WAXED_") ? Particle.WAX_OFF : Particle.SCRAPE;
+                        current.getWorld().spawnParticle(p, current.getLocation().add(0.5, 0.5, 0.5), 10, 0.2, 0.2, 0.2, 0.0);
+                    } else {
+                        current.getWorld().spawnParticle(Particle.BLOCK, current.getLocation().add(0.5, 0.5, 0.5), 5, current.getBlockData());
+                    }
 
                     applyDurabilityDamage(player, tool);
                     strippedCount++;
@@ -165,9 +172,12 @@ public class ChainStripperModifier extends DanaModifier {
                         if (x == 0 && y == 0 && z == 0) continue;
 
                         Block neighbor = current.getRelative(x, y, z);
-                        if (!visited.contains(neighbor) && stripMap.containsKey(neighbor.getType()) && isRelatedLog(targetMaterial, neighbor.getType())) {
-                            visited.add(neighbor);
-                            queue.add(neighbor);
+                        if (!visited.contains(neighbor)) {
+                            boolean matches = isCopper ? (neighbor.getType() == targetMaterial) : (stripMap.containsKey(neighbor.getType()) && isRelatedLog(targetMaterial, neighbor.getType()));
+                            if (matches) {
+                                visited.add(neighbor);
+                                queue.add(neighbor);
+                            }
                         }
                     }
                 }

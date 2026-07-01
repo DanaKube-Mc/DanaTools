@@ -36,8 +36,6 @@ public class TillerModifier extends DanaModifier {
         if (event.getHand() != EquipmentSlot.HAND) return;
 
         Player player = event.getPlayer();
-        if (!isEquipped(player)) return;
-
         Block clickedBlock = event.getClickedBlock();
         if (clickedBlock == null || !isTillable(clickedBlock.getType())) return;
 
@@ -45,9 +43,11 @@ public class TillerModifier extends DanaModifier {
         if (hoe == null) return;
 
         DanaItemInstance tool = DanaItemInstance.fromItemStack(hoe);
-        int level = tool != null ? tool.getModifierLevel("tiller") : 1;
+        if (tool == null || !tool.hasBehavior("TILLER")) return;
 
-        CustomModifier modifier = DanaTools.getInstance().getModifierConfigManager().getModifier("tiller");
+        int level = tool.getBehaviorLevel("TILLER");
+
+        CustomModifier modifier = tool.getBehaviorModifier("TILLER");
         int range = 1;
         if (modifier != null) {
             CustomModifier.LevelSettings settings = modifier.getLevel(level);

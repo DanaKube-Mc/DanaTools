@@ -9,6 +9,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -76,6 +78,49 @@ public class DanaItemInstance {
     public boolean hasModifier(String modifierId) {
         return getModifiers().contains(modifierId);
     }
+    
+    public boolean hasBehavior(String behaviorType) {
+        for (String modifierId : getModifiers()) {
+            CustomModifier modifier = DanaTools.getInstance().getModifierConfigManager().getModifier(modifierId);
+            if (modifier != null) {
+                int level = getModifierLevel(modifierId);
+                CustomModifier.LevelSettings settings = modifier.getLevel(level);
+                if (settings != null && behaviorType.equalsIgnoreCase(settings.getBehaviorType())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public int getBehaviorLevel(String behaviorType) {
+        int maxLvl = 0;
+        for (String modifierId : getModifiers()) {
+            CustomModifier modifier = DanaTools.getInstance().getModifierConfigManager().getModifier(modifierId);
+            if (modifier != null) {
+                int level = getModifierLevel(modifierId);
+                CustomModifier.LevelSettings settings = modifier.getLevel(level);
+                if (settings != null && behaviorType.equalsIgnoreCase(settings.getBehaviorType())) {
+                    maxLvl = Math.max(maxLvl, level);
+                }
+            }
+        }
+        return maxLvl;
+    }
+
+    public CustomModifier getBehaviorModifier(String behaviorType) {
+        for (String modifierId : getModifiers()) {
+            CustomModifier modifier = DanaTools.getInstance().getModifierConfigManager().getModifier(modifierId);
+            if (modifier != null) {
+                int level = getModifierLevel(modifierId);
+                CustomModifier.LevelSettings settings = modifier.getLevel(level);
+                if (settings != null && behaviorType.equalsIgnoreCase(settings.getBehaviorType())) {
+                    return modifier;
+                }
+            }
+        }
+        return null;
+    }
 
     public void addXP(int amount, Player player) {
         int maxLevel = config.getMaxLevel();
@@ -110,7 +155,7 @@ public class DanaItemInstance {
 
             if (player != null) {
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.2f);
-                player.spawnParticle(org.bukkit.Particle.HAPPY_VILLAGER, player.getLocation().add(0, 1, 0), 15, 0.5, 0.5, 0.5, 0.1);
+                player.spawnParticle(Particle.HAPPY_VILLAGER, player.getLocation().add(0, 1, 0), 15, 0.5, 0.5, 0.5, 0.1);
                 
                 Component levelUpMsg = DanaTools.getInstance().getLangManager().getMessage("xp.level_up", "{level}", currentLevel);
                 player.sendMessage(levelUpMsg);

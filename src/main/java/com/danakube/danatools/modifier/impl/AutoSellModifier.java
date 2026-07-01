@@ -32,9 +32,9 @@ public class AutoSellModifier extends DanaModifier {
         ItemStack toolItem = player.getInventory().getItemInMainHand();
         DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
 
-        if (tool != null && tool.hasModifier("auto_sell")) {
-            int level = tool.getModifierLevel("auto_sell");
-            CustomModifier config = DanaTools.getInstance().getModifierConfigManager().getModifier("auto_sell");
+        if (tool != null && tool.hasBehavior("AUTO_SELL")) {
+            int level = tool.getBehaviorLevel("AUTO_SELL");
+            CustomModifier config = tool.getBehaviorModifier("AUTO_SELL");
             if (config != null) {
                 CustomModifier.LevelSettings settings = config.getLevel(level);
                 if (settings != null) {
@@ -63,9 +63,9 @@ public class AutoSellModifier extends DanaModifier {
         ItemStack toolItem = killer.getInventory().getItemInMainHand();
         DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
 
-        if (tool != null && tool.hasModifier("auto_sell")) {
-            int level = tool.getModifierLevel("auto_sell");
-            CustomModifier config = DanaTools.getInstance().getModifierConfigManager().getModifier("auto_sell");
+        if (tool != null && tool.hasBehavior("AUTO_SELL")) {
+            int level = tool.getBehaviorLevel("AUTO_SELL");
+            CustomModifier config = tool.getBehaviorModifier("AUTO_SELL");
             if (config != null) {
                 CustomModifier.LevelSettings settings = config.getLevel(level);
                 if (settings != null) {
@@ -94,9 +94,9 @@ public class AutoSellModifier extends DanaModifier {
         ItemStack toolItem = player.getInventory().getItemInMainHand();
         DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
 
-        if (tool != null && tool.hasModifier("auto_sell")) {
-            int level = tool.getModifierLevel("auto_sell");
-            CustomModifier config = DanaTools.getInstance().getModifierConfigManager().getModifier("auto_sell");
+        if (tool != null && tool.hasBehavior("AUTO_SELL")) {
+            int level = tool.getBehaviorLevel("AUTO_SELL");
+            CustomModifier config = tool.getBehaviorModifier("AUTO_SELL");
             if (config != null) {
                 CustomModifier.LevelSettings settings = config.getLevel(level);
                 if (settings != null) {
@@ -116,7 +116,7 @@ public class AutoSellModifier extends DanaModifier {
     public void onEnchantItem(EnchantItemEvent event) {
         ItemStack item = event.getItem();
         DanaItemInstance tool = DanaItemInstance.fromItemStack(item);
-        if (tool != null && tool.hasModifier("auto_sell")) {
+        if (tool != null && tool.hasBehavior("AUTO_SELL")) {
             if (event.getEnchantsToAdd().containsKey(Enchantment.SILK_TOUCH)) {
                 event.getEnchantsToAdd().remove(Enchantment.SILK_TOUCH);
             }

@@ -21,8 +21,8 @@ public class DropManager {
     public static void breakBlock(Player player, Block block, ItemStack toolItem, int expToDrop) {
         DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
         
-        if (tool != null && (tool.hasModifier("auto_smelt") || tool.hasModifier("auto_sell") || tool.hasModifier("auto_replant"))) {
-            if (tool.hasModifier("auto_replant") && isReplantableCrop(block.getType())) {
+        if (tool != null && (tool.hasBehavior("AUTO_SMELT") || tool.hasBehavior("AUTO_SELL") || tool.hasBehavior("AUTO_REPLANT"))) {
+            if (tool.hasBehavior("AUTO_REPLANT") && isReplantableCrop(block.getType())) {
                 BlockData blockData = block.getBlockData();
                 if (blockData instanceof Ageable ageable) {
                     if (ageable.getAge() == ageable.getMaximumAge()) {
@@ -41,9 +41,9 @@ public class DropManager {
                                 drops.removeIf(item -> item.getAmount() <= 0);
                                 
                                 double wisdomBoost = 0.0;
-                                if (tool.hasModifier("wisdom")) {
-                                    int wisdomLvl = tool.getModifierLevel("wisdom");
-                                    CustomModifier wisdomConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("wisdom");
+                                if (tool.hasBehavior("WISDOM")) {
+                                    int wisdomLvl = tool.getBehaviorLevel("WISDOM");
+                                    CustomModifier wisdomConfig = getModifierByBehavior("WISDOM");
                                     if (wisdomConfig != null) {
                                         CustomModifier.LevelSettings settings = wisdomConfig.getLevel(wisdomLvl);
                                         if (settings != null) {
@@ -57,10 +57,10 @@ public class DropManager {
 
                                 double totalXp = expToDrop;
                                 double sellMultiplier = 1.0;
-                                boolean hasAutoSell = tool.hasModifier("auto_sell");
+                                boolean hasAutoSell = tool.hasBehavior("AUTO_SELL");
                                 if (hasAutoSell) {
-                                    int autoSellLvl = tool.getModifierLevel("auto_sell");
-                                    CustomModifier autoSellConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("auto_sell");
+                                    int autoSellLvl = tool.getBehaviorLevel("AUTO_SELL");
+                                    CustomModifier autoSellConfig = getModifierByBehavior("AUTO_SELL");
                                     if (autoSellConfig != null) {
                                         CustomModifier.LevelSettings settings = autoSellConfig.getLevel(autoSellLvl);
                                         if (settings != null) {
@@ -71,7 +71,7 @@ public class DropManager {
 
                                 for (ItemStack drop : drops) {
                                     ItemStack finalDrop = drop;
-                                    if (tool.hasModifier("auto_smelt")) {
+                                    if (tool.hasBehavior("AUTO_SMELT")) {
                                         SmeltResult smelt = getSmeltResult(drop.getType());
                                         if (smelt != null) {
                                             double smeltingXp = drop.getAmount() * smelt.getXp();
@@ -106,9 +106,9 @@ public class DropManager {
             Collection<ItemStack> drops = block.getDrops(toolItem);
             
             double wisdomBoost = 0.0;
-            if (tool.hasModifier("wisdom")) {
-                int wisdomLvl = tool.getModifierLevel("wisdom");
-                CustomModifier wisdomConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("wisdom");
+            if (tool.hasBehavior("WISDOM")) {
+                int wisdomLvl = tool.getBehaviorLevel("WISDOM");
+                CustomModifier wisdomConfig = getModifierByBehavior("WISDOM");
                 if (wisdomConfig != null) {
                     CustomModifier.LevelSettings settings = wisdomConfig.getLevel(wisdomLvl);
                     if (settings != null) {
@@ -123,10 +123,10 @@ public class DropManager {
             double totalXp = expToDrop;
             
             double sellMultiplier = 1.0;
-            boolean hasAutoSell = tool.hasModifier("auto_sell");
+            boolean hasAutoSell = tool.hasBehavior("AUTO_SELL");
             if (hasAutoSell) {
-                int autoSellLvl = tool.getModifierLevel("auto_sell");
-                CustomModifier autoSellConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("auto_sell");
+                int autoSellLvl = tool.getBehaviorLevel("AUTO_SELL");
+                CustomModifier autoSellConfig = getModifierByBehavior("AUTO_SELL");
                 if (autoSellConfig != null) {
                     CustomModifier.LevelSettings settings = autoSellConfig.getLevel(autoSellLvl);
                     if (settings != null) {
@@ -138,7 +138,7 @@ public class DropManager {
             for (ItemStack drop : drops) {
                 ItemStack finalDrop = drop;
                 
-                if (tool.hasModifier("auto_smelt")) {
+                if (tool.hasBehavior("AUTO_SMELT")) {
                     SmeltResult smelt = getSmeltResult(drop.getType());
                     if (smelt != null) {
                         double smeltingXp = drop.getAmount() * smelt.getXp();
@@ -242,8 +242,18 @@ public class DropManager {
         }
     }
 
+    public static CustomModifier getModifierByBehavior(String behaviorType) {
+        for (CustomModifier modifier : DanaTools.getInstance().getModifierConfigManager().getModifiers()) {
+            CustomModifier.LevelSettings settings = modifier.getLevel(1);
+            if (settings != null && behaviorType.equalsIgnoreCase(settings.getBehaviorType())) {
+                return modifier;
+            }
+        }
+        return null;
+    }
+
     public static boolean isReplantableCrop(Material blockType) {
-        CustomModifier modifier = DanaTools.getInstance().getModifierConfigManager().getModifier("auto_replant");
+        CustomModifier modifier = getModifierByBehavior("AUTO_REPLANT");
         if (modifier == null) return false;
         CustomModifier.LevelSettings settings = modifier.getLevel(1);
         if (settings == null) return false;
@@ -258,7 +268,7 @@ public class DropManager {
     }
 
     public static Material getRequiredSeed(Material blockType) {
-        CustomModifier modifier = DanaTools.getInstance().getModifierConfigManager().getModifier("auto_replant");
+        CustomModifier modifier = getModifierByBehavior("AUTO_REPLANT");
         if (modifier == null) return null;
         CustomModifier.LevelSettings settings = modifier.getLevel(1);
         if (settings == null) return null;

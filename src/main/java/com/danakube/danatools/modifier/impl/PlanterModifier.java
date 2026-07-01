@@ -1,6 +1,5 @@
 package com.danakube.danatools.modifier.impl;
 
-import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
@@ -37,8 +36,6 @@ public class PlanterModifier extends DanaModifier {
         if (event.getHand() != EquipmentSlot.HAND) return;
 
         Player player = event.getPlayer();
-        if (!isEquipped(player)) return;
-
         Block clickedBlock = event.getClickedBlock();
         if (clickedBlock == null) return;
 
@@ -46,9 +43,11 @@ public class PlanterModifier extends DanaModifier {
         if (hoe == null) return;
 
         DanaItemInstance tool = DanaItemInstance.fromItemStack(hoe);
-        int level = tool != null ? tool.getModifierLevel("planter") : 1;
+        if (tool == null || !tool.hasBehavior("PLANTER")) return;
 
-        CustomModifier modifier = DanaTools.getInstance().getModifierConfigManager().getModifier("planter");
+        int level = tool.getBehaviorLevel("PLANTER");
+
+        CustomModifier modifier = tool.getBehaviorModifier("PLANTER");
         if (modifier == null) return;
         CustomModifier.LevelSettings settings = modifier.getLevel(level);
         if (settings == null) return;

@@ -1,6 +1,5 @@
 package com.danakube.danatools.modifier.impl;
 
-import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
@@ -56,25 +55,24 @@ public class TrenchModifier extends DanaModifier {
         }
 
         Player player = event.getPlayer();
-        if (!isEquipped(player)) {
+        ItemStack handItem = player.getInventory().getItemInMainHand();
+        DanaItemInstance toolInstance = DanaItemInstance.fromItemStack(handItem);
+        if (toolInstance == null || !toolInstance.hasBehavior("TRENCH")) {
             return;
         }
 
         Block startBlock = event.getBlock();
-        ItemStack handItem = player.getInventory().getItemInMainHand();
-
         BlockFace face = playerLastBlockFace.getOrDefault(player.getUniqueId(), BlockFace.UP);
 
-        triggerTrenchMining(player, startBlock, face, handItem);
+        triggerTrenchMining(player, startBlock, face, handItem, toolInstance);
     }
 
-    private void triggerTrenchMining(Player player, Block startBlock, BlockFace face, ItemStack toolItem) {
+    private void triggerTrenchMining(Player player, Block startBlock, BlockFace face, ItemStack toolItem, DanaItemInstance toolInstance) {
         processingCustomBreak.set(true);
 
-        DanaItemInstance toolInstance = DanaItemInstance.fromItemStack(toolItem);
-        int currentLvl = toolInstance != null ? toolInstance.getModifierLevel("trench") : 1;
+        int currentLvl = toolInstance.getBehaviorLevel("TRENCH");
 
-        CustomModifier modConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("trench");
+        CustomModifier modConfig = toolInstance.getBehaviorModifier("TRENCH");
         int range = 1;
         if (modConfig != null) {
             CustomModifier.LevelSettings settings = modConfig.getLevel(currentLvl);
