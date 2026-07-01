@@ -31,6 +31,7 @@ public class TillerModifier extends DanaModifier {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
+        if (processingCustomBreak.get()) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (event.getBlockFace() != BlockFace.UP) return;
         if (event.getHand() != EquipmentSlot.HAND) return;

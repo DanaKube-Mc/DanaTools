@@ -298,10 +298,16 @@ public class DanaItemInstance {
             for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
                 Enchantment ench = entry.getKey();
                 int level = entry.getValue();
-                Component lineComp = Component.translatable(ench)
-                        .append(Component.text(" " + toRoman(level)))
-                        .color(ench.isCursed() ? NamedTextColor.RED : NamedTextColor.GRAY)
-                        .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+                Component lineComp;
+                if (ench.getKey().getNamespace().equals("minecraft")) {
+                    lineComp = Component.translatable(ench)
+                            .append(Component.text(" " + toRoman(level)))
+                            .color(ench.isCursed() ? NamedTextColor.RED : NamedTextColor.GRAY)
+                            .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+                } else {
+                    lineComp = ench.displayName(level)
+                            .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+                }
                 formattedLore.add(lineComp);
             }
         } else {
