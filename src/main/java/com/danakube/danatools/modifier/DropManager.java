@@ -3,6 +3,8 @@ package com.danakube.danatools.modifier;
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
 import com.danakube.danatools.model.DanaItemInstance;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -10,11 +12,15 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import java.util.Collection;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 public class DropManager {
 
@@ -28,7 +34,7 @@ public class DropManager {
                     if (ageable.getAge() == ageable.getMaximumAge()) {
                         Material seedMaterial = getRequiredSeed(block.getType());
                         if (seedMaterial != null) {
-                            Collection<ItemStack> drops = block.getDrops(toolItem);
+                            Collection<ItemStack> drops = getModifiedDrops(player, block, toolItem);
                             boolean seedConsumed = false;
                             for (ItemStack drop : drops) {
                                 if (drop.getType() == seedMaterial) {
@@ -103,7 +109,7 @@ public class DropManager {
                 }
             }
 
-            Collection<ItemStack> drops = block.getDrops(toolItem);
+            Collection<ItemStack> drops = getModifiedDrops(player, block, toolItem);
             
             double wisdomBoost = 0.0;
             if (tool.hasBehavior("WISDOM")) {
@@ -168,6 +174,33 @@ public class DropManager {
         if (expToDrop > 0) {
             spawnXP(block.getLocation(), expToDrop);
         }
+    }
+
+    private static Collection<ItemStack> getModifiedDrops(Player player, Block block, ItemStack toolItem) {
+        Collection<ItemStack> vanillaDrops = block.getDrops(toolItem);
+        List<Item> spawnedItems = new ArrayList<>();
+        for (ItemStack drop : vanillaDrops) {
+            if (drop != null && drop.getAmount() > 0) {
+                Item itemEntity = block.getWorld().dropItem(block.getLocation(), drop);
+                spawnedItems.add(itemEntity);
+            }
+        }
+
+        BlockDropItemEvent dropEvent = new BlockDropItemEvent(block, block.getState(), player, spawnedItems);
+        Bukkit.getPluginManager().callEvent(dropEvent);
+
+        List<ItemStack> finalDrops = new ArrayList<>();
+        if (!dropEvent.isCancelled()) {
+            for (Item itemEntity : dropEvent.getItems()) {
+                finalDrops.add(itemEntity.getItemStack());
+            }
+        }
+
+        for (Item itemEntity : spawnedItems) {
+            itemEntity.remove();
+        }
+
+        return finalDrops;
     }
 
     public static class SmeltResult {

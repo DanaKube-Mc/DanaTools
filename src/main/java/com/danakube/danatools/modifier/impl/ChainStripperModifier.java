@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Orientable;
 import org.bukkit.configuration.ConfigurationSection;
@@ -121,6 +122,17 @@ public class ChainStripperModifier extends DanaModifier {
 
                 if (!virtualEvent.isCancelled()) {
                     BlockData blockData = current.getBlockData();
+
+                    PlayerInteractEvent virtualInteract = new PlayerInteractEvent(
+                        player,
+                        Action.RIGHT_CLICK_BLOCK,
+                        tool,
+                        current,
+                        BlockFace.UP,
+                        EquipmentSlot.HAND
+                    );
+                    Bukkit.getPluginManager().callEvent(virtualInteract);
+
                     current.setType(strippedType);
 
                     DanaItemInstance toolInstance = DanaItemInstance.fromItemStack(tool);
