@@ -10,8 +10,10 @@ import com.danakube.danatools.forge.ForgeRecipeRegistry;
 import com.danakube.danatools.forge.SmithingListener;
 import com.danakube.danatools.modifier.ModifierRegistry;
 import com.danakube.danatools.modifier.CompactorManager;
+import com.danakube.danatools.modifier.DanaModifier;
 import com.danakube.danatools.modifier.AutoSellManager;
 import com.danakube.danatools.modifier.PotionModifierManager;
+import com.danakube.danatools.modifier.impl.BeheadingModifier;
 import com.danakube.danatools.modifier.PotionModifierListener;
 import com.danakube.danatools.modifier.MagnetTask;
 import com.danakube.danatools.progression.ToolXPListener;
@@ -183,6 +185,12 @@ public final class DanaTools extends JavaPlugin {
             }
             if (this.forgeRecipeRegistry != null) {
                 this.forgeRecipeRegistry.registerRecipes();
+            }
+            if (this.modifierRegistry != null) {
+                DanaModifier beheading = this.modifierRegistry.getModifier("beheading");
+                if (beheading instanceof BeheadingModifier) {
+                    ((BeheadingModifier) beheading).loadConfig();
+                }
             }
             getLogger().info("Configuration de DanaTools rechargee avec succes !");
         } catch (Exception e) {

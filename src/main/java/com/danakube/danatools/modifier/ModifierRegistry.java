@@ -15,6 +15,7 @@ import com.danakube.danatools.modifier.impl.HarvesterModifier;
 import com.danakube.danatools.modifier.impl.LearningModifier;
 import com.danakube.danatools.modifier.impl.PurifyModifier;
 import com.danakube.danatools.modifier.impl.FeatherStepModifier;
+import com.danakube.danatools.modifier.impl.BeheadingModifier;
 import com.danakube.danatools.modifier.impl.TrenchModifier;
 import com.danakube.danatools.modifier.impl.UnbreakableModifier;
 import com.danakube.danatools.modifier.impl.VeinMinerModifier;
@@ -52,6 +53,7 @@ public class ModifierRegistry {
         register(new BouncyModifier());
         register(new PurifyModifier());
         register(new FeatherStepModifier());
+        register(new BeheadingModifier());
     }
 
     private void register(DanaModifier modifier) {

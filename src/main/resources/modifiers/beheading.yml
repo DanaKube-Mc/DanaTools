@@ -1,0 +1,84 @@
+id: "beheading"
+incompatible-modifiers: []
+allow-spawner-mobs: false
+
+
+# Recette de forge
+template-item:
+  material: "NETHERITE_UPGRADE_SMITHING_TEMPLATE"
+  custom-model-data: 5021
+  display-name: "&6Placard de Forge : Décapitation"
+
+ingredient-item:
+  material: "WITHER_SKELETON_SKULL"
+  display-name: "&eNoyau de Décapitation"
+
+# Configuration globale des créatures (chargée par le développeur dans le constructeur)
+mobs:
+  CREEPER:
+    material: "CREEPER_HEAD"
+    chance-percent: 5.0
+  ZOMBIE:
+    material: "ZOMBIE_HEAD"
+    chance-percent: 5.0
+  SKELETON:
+    material: "SKELETON_SKULL"
+    chance-percent: 5.0
+  WITHER_SKELETON:
+    material: "WITHER_SKELETON_SKULL"
+    chance-percent: 2.5
+  PIGLIN:
+    material: "PIGLIN_HEAD"
+    chance-percent: 5.0
+  PLAYER:
+    material: "PLAYER_HEAD"
+    chance-percent: 10.0
+  COW:
+    material: "PLAYER_HEAD"
+    texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWQyODExMTkyZjM0ZjQ5ZGUzMThjOWRiYjhjNzg2MTEwNWRlMjkyZmQxOGRlNDlhNDQ1YjVjNGVkMDQ1MjE5MSJ9fX0="
+    display-name: "&fTête de Vache"
+    chance-percent: 2.0
+  CHICKEN:
+    material: "PLAYER_HEAD"
+    texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTYyZWYwOTNjMTk5YTdkODk1Y2Y3MDM4YWYyM2Q3YjJjZjRlNDQ2ZjFhZDcxMmU2ZGMwY2NlYTlhM2RjOGY5In19fQ=="
+    display-name: "&fTête de Poulet"
+    chance-percent: 2.0
+
+# Niveaux de progression (Multiplicateurs de chance)
+levels:
+  1:
+    display-name: "&aModificateur : Décapitation I"
+    lore:
+      - "&7Donne une chance de récupérer la tête"
+      - "&7des créatures éliminées."
+      - "&dChance : &fNormale (x1.0)"
+      - "&dSlots requis : &f1"
+    slot-cost: 1
+    min-tool-level: 5
+    behavior:
+      type: "BEHEADING"
+      chance-multiplier: 1.0
+  2:
+    display-name: "&aModificateur : Décapitation II"
+    lore:
+      - "&7Donne une chance de récupérer la tête"
+      - "&7des créatures éliminées."
+      - "&dChance : &fAccrue (x1.5)"
+      - "&dSlots requis : &f2"
+    slot-cost: 2
+    min-tool-level: 10
+    behavior:
+      type: "BEHEADING"
+      chance-multiplier: 1.5
+  3:
+    display-name: "&aModificateur : Décapitation III"
+    lore:
+      - "&7Donne une chance de récupérer la tête"
+      - "&7des créatures éliminées."
+      - "&dChance : &fMaximale (x2.0)"
+      - "&dSlots requis : &f3"
+    slot-cost: 3
+    min-tool-level: 15
+    behavior:
+      type: "BEHEADING"
+      chance-multiplier: 2.0
