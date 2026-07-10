@@ -1,6 +1,7 @@
 package com.danakube.danatools.model;
 
 import com.danakube.danatools.DanaTools;
+import com.danakube.danatools.event.ToolXpGainEvent;
 import com.danakube.danatools.storage.ToolDataStorage;
 import com.danakube.danatools.utils.ProgressBarUtils;
 
@@ -12,6 +13,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -166,6 +168,10 @@ public class DanaItemInstance {
 
         if (player != null && !isEquippedArmor(player) && isHeldInMainHand(player)) {
             shareResonanceXP(amount, player);
+        }
+
+        if (player != null && amount > 0) {
+            Bukkit.getPluginManager().callEvent(new ToolXpGainEvent(player, amount));
         }
     }
 

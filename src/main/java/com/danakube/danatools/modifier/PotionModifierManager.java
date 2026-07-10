@@ -68,6 +68,15 @@ public class PotionModifierManager {
         if (type == null) return;
 
         int amplifier = settings.getBehaviorInt("amplifier", 0);
+        PotionEffect activeEffect = player.getPotionEffect(type);
+        String metadataKey = POTION_METADATA_PREFIX + modifierId;
+
+        if (activeEffect != null && activeEffect.getAmplifier() == amplifier && player.hasMetadata(metadataKey)) {
+            if (activeEffect.getDuration() > 260) {
+                return;
+            }
+        }
+
         boolean ambient = true;
         Object ambientObj = settings.getBehaviorSettings().get("ambient");
         if (ambientObj instanceof Boolean) {
@@ -80,11 +89,15 @@ public class PotionModifierManager {
             particles = (Boolean) particlesObj;
         }
 
-        int duration = settings.getBehaviorInt("duration", 320);
+        int duration = settings.getBehaviorInt("duration", 400);
         PotionEffect effect = new PotionEffect(type, duration, amplifier, ambient, particles, true);
-        player.addPotionEffect(effect);
 
-        player.setMetadata(POTION_METADATA_PREFIX + modifierId, new FixedMetadataValue(plugin, true));
+        if (activeEffect != null && activeEffect.getAmplifier() != amplifier) {
+            player.removePotionEffect(type);
+        }
+
+        player.addPotionEffect(effect);
+        player.setMetadata(metadataKey, new FixedMetadataValue(plugin, true));
     }
 
     public void removeAllPluginEffects(Player player) {

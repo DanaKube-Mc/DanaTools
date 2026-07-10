@@ -21,8 +21,6 @@ public class PotionModifierListener implements Listener {
     @EventHandler
     public void onItemHeldChange(PlayerItemHeldEvent event) {
         Player player = event.getPlayer();
-        plugin.getPotionModifierManager().removeAllPluginEffects(player);
-
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             plugin.getPotionModifierManager().checkAndApply(player);
         }, 1L);
@@ -31,8 +29,6 @@ public class PotionModifierListener implements Listener {
     @EventHandler
     public void onSwapHandItems(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
-        plugin.getPotionModifierManager().removeAllPluginEffects(player);
-
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             plugin.getPotionModifierManager().checkAndApply(player);
         }, 1L);
@@ -42,8 +38,6 @@ public class PotionModifierListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         
-        plugin.getPotionModifierManager().removeAllPluginEffects(player);
-
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             plugin.getPotionModifierManager().checkAndApply(player);
         }, 1L);
@@ -52,8 +46,6 @@ public class PotionModifierListener implements Listener {
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        plugin.getPotionModifierManager().removeAllPluginEffects(player);
-
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             plugin.getPotionModifierManager().checkAndApply(player);
         }, 1L);
@@ -67,13 +59,20 @@ public class PotionModifierListener implements Listener {
                 String typeName = item.getType().name();
                 if (typeName.endsWith("_HELMET") || typeName.endsWith("_CHESTPLATE") || typeName.endsWith("_LEGGINGS") || typeName.endsWith("_BOOTS")) {
                     Player player = event.getPlayer();
-                    plugin.getPotionModifierManager().removeAllPluginEffects(player);
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         plugin.getPotionModifierManager().checkAndApply(player);
                     }, 1L);
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void onItemBreak(PlayerItemBreakEvent event) {
+        Player player = event.getPlayer();
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            plugin.getPotionModifierManager().checkAndApply(player);
+        }, 1L);
     }
 
     @EventHandler
