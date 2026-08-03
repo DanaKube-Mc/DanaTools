@@ -22,6 +22,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -139,7 +140,8 @@ public class BeheadingModifier extends DanaModifier {
                 if (entity instanceof Player deadPlayer) {
                     skullMeta.setOwningPlayer(deadPlayer);
                 } else if (setting.texture != null && !setting.texture.isEmpty()) {
-                    PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
+                    UUID fixedUuid = UUID.nameUUIDFromBytes(setting.texture.getBytes(StandardCharsets.UTF_8));
+                    PlayerProfile profile = Bukkit.createProfile(fixedUuid);
                     profile.getProperties().add(new ProfileProperty("textures", setting.texture));
                     skullMeta.setPlayerProfile(profile);
                 }

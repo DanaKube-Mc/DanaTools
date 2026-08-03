@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -148,7 +149,8 @@ public class ModifierConfigManager {
             ingredient = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta sMeta = (SkullMeta) ingredient.getItemMeta();
             if (sMeta != null) {
-                PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
+                UUID fixedUuid = UUID.nameUUIDFromBytes(modifier.getIngredientTexture().getBytes(StandardCharsets.UTF_8));
+                PlayerProfile profile = Bukkit.createProfile(fixedUuid);
                 profile.getProperties().add(new ProfileProperty("textures", modifier.getIngredientTexture()));
                 sMeta.setPlayerProfile(profile);
                 ingredient.setItemMeta(sMeta);
