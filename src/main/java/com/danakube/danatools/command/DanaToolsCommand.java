@@ -54,6 +54,9 @@ public class DanaToolsCommand implements CommandExecutor, TabCompleter {
             case "givemodifier":
                 handleGiveModifier(sender, args);
                 break;
+            case "giveingredient":
+                handleGiveIngredient(sender, args);
+                break;
             case "addxp":
                 handleXP(sender, args);
                 break;
@@ -72,6 +75,7 @@ public class DanaToolsCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(plugin.getLangManager().getMessage("help.header"));
         sender.sendMessage(plugin.getLangManager().getMessage("help.give"));
         sender.sendMessage(plugin.getLangManager().getMessage("help.givemodifier"));
+        sender.sendMessage(plugin.getLangManager().getMessage("help.giveingredient"));
         sender.sendMessage(plugin.getLangManager().getMessage("help.addxp"));
         sender.sendMessage(plugin.getLangManager().getMessage("help.setlevel"));
         sender.sendMessage(plugin.getLangManager().getMessage("help.reload"));
@@ -167,6 +171,55 @@ public class DanaToolsCommand implements CommandExecutor, TabCompleter {
 
         target.getInventory().addItem(template, ingredient);
         sender.sendMessage(plugin.getLangManager().getMessage("givemodifier.success", "{modifier}", modId, "{player}", target.getName()));
+    }
+
+    private void handleGiveIngredient(CommandSender sender, String[] args) {
+        if (args.length < 2) {
+            sender.sendMessage(plugin.getLangManager().getMessage("help.giveingredient"));
+            return;
+        }
+
+        String modId = args[1];
+        CustomModifier modifier = plugin.getModifierConfigManager().getModifier(modId);
+        if (modifier == null) {
+            sender.sendMessage(plugin.getLangManager().getMessage("giveingredient.modifier_not_found", "{modifier}", modId));
+            return;
+        }
+
+        int amount = 1;
+        int nextArgIndex = 2;
+
+        if (args.length >= 3) {
+            try {
+                int parsedAmount = Integer.parseInt(args[2]);
+                if (parsedAmount > 0) {
+                    amount = parsedAmount;
+                    nextArgIndex = 3;
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        Player target = null;
+        if (args.length > nextArgIndex) {
+            target = Bukkit.getPlayer(args[nextArgIndex]);
+            if (target == null) {
+                sender.sendMessage(plugin.getLangManager().getMessage("player_not_found", "{player}", args[nextArgIndex]));
+                return;
+            }
+        } else if (sender instanceof Player) {
+            target = (Player) sender;
+        } else {
+            sender.sendMessage(plugin.getLangManager().getMessage("specify_player"));
+            return;
+        }
+
+        ItemStack ingredient = plugin.getModifierConfigManager().buildIngredientItem(modifier);
+        if (ingredient != null) {
+            ingredient.setAmount(amount);
+            target.getInventory().addItem(ingredient);
+            sender.sendMessage(plugin.getLangManager().getMessage("giveingredient.success", "{modifier}", modId, "{amount}", amount, "{player}", target.getName()));
+        }
     }
 
     private void handleXP(CommandSender sender, String[] args) {
@@ -266,7 +319,7 @@ public class DanaToolsCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 1) {
-            return filterList(Arrays.asList("reload", "give", "givemodifier", "addxp", "setlevel"), args[0]);
+            return filterList(Arrays.asList("reload", "give", "givemodifier", "giveingredient", "addxp", "setlevel"), args[0]);
         }
 
         if (args.length == 2) {
@@ -274,7 +327,7 @@ public class DanaToolsCommand implements CommandExecutor, TabCompleter {
             if (sub.equals("give")) {
                 return filterList(new ArrayList<>(plugin.getToolConfigManager().getTools().stream().map(CustomTool::getId).collect(Collectors.toList())), args[1]);
             }
-            if (sub.equals("givemodifier")) {
+            if (sub.equals("givemodifier") || sub.equals("giveingredient")) {
                 return filterList(new ArrayList<>(plugin.getModifierConfigManager().getModifiers().stream().map(CustomModifier::getId).collect(Collectors.toList())), args[1]);
             }
             if (sub.equals("addxp") || sub.equals("setlevel")) {
@@ -286,6 +339,18 @@ public class DanaToolsCommand implements CommandExecutor, TabCompleter {
             String sub = args[0].toLowerCase();
             if (sub.equals("give") || sub.equals("givemodifier") || sub.equals("addxp") || sub.equals("setlevel")) {
                 return filterList(Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()), args[2]);
+            }
+            if (sub.equals("giveingredient")) {
+                List<String> options = new ArrayList<>(Arrays.asList("1", "16", "64"));
+                options.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()));
+                return filterList(options, args[2]);
+            }
+        }
+
+        if (args.length == 4) {
+            String sub = args[0].toLowerCase();
+            if (sub.equals("giveingredient")) {
+                return filterList(Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()), args[3]);
             }
         }
 
