@@ -32,13 +32,13 @@ public class ForgeRecipeRegistry {
 
             if (toolIds == null || toolIds.isEmpty()) {
                 for (CustomTool t : plugin.getToolConfigManager().getTools()) {
-                    compatibleMaterials.add(t.getMaterial());
+                    addMaterialAndVariants(compatibleMaterials, t.getMaterial());
                 }
             } else {
                 for (String toolId : toolIds) {
                     CustomTool tool = plugin.getToolConfigManager().getTool(toolId);
                     if (tool != null) {
-                        compatibleMaterials.add(tool.getMaterial());
+                        addMaterialAndVariants(compatibleMaterials, tool.getMaterial());
                     }
                 }
             }
@@ -80,5 +80,24 @@ public class ForgeRecipeRegistry {
             Bukkit.removeRecipe(key);
         }
         registeredKeys.clear();
+    }
+
+    private void addMaterialAndVariants(List<Material> list, Material mat) {
+        if (mat == null) return;
+        if (!list.contains(mat)) {
+            list.add(mat);
+        }
+
+        String name = mat.name();
+        for (String prefix : List.of("DIAMOND_", "IRON_", "GOLDEN_", "STONE_", "WOODEN_", "CHAINMAIL_")) {
+            if (name.startsWith(prefix)) {
+                String suffix = name.substring(prefix.length());
+                Material netherite = Material.matchMaterial("NETHERITE_" + suffix);
+                if (netherite != null && !list.contains(netherite)) {
+                    list.add(netherite);
+                }
+                break;
+            }
+        }
     }
 }
