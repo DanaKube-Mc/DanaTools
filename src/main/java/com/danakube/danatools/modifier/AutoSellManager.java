@@ -7,6 +7,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.danakube.danatools.integration.EconomyShopHook;
+import me.gypopo.economyshopgui.api.EconomyShopGUIHook;
+import me.gypopo.economyshopgui.objects.ShopItem;
 import net.kyori.adventure.text.Component;
 import net.milkbowl.vault.economy.Economy;
 
@@ -21,6 +24,8 @@ public class AutoSellManager {
     private final DanaTools plugin;
     private final Map<Material, Double> prices = new HashMap<>();
     private final Map<UUID, Double> tickEarnings = new HashMap<>();
+    private boolean hookEconomyShopGui = true;
+    private boolean fallbackToInternalPrices = true;
 
     public AutoSellManager(DanaTools plugin) {
         this.plugin = plugin;
@@ -35,6 +40,9 @@ public class AutoSellManager {
         }
 
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        this.hookEconomyShopGui = config.getBoolean("hook-economyshopgui", true);
+        this.fallbackToInternalPrices = config.getBoolean("fallback-to-internal-prices", true);
+
         ConfigurationSection pricesSection = config.getConfigurationSection("prices");
         if (pricesSection != null) {
             for (String key : pricesSection.getKeys(false)) {
@@ -47,7 +55,7 @@ public class AutoSellManager {
                 }
             }
         }
-        plugin.getLogger().info("Charge " + prices.size() + " prix de vente pour l'auto-vente.");
+        plugin.getLogger().info("Charge " + prices.size() + " prix de vente de secours pour l'auto-vente (Hook ESG: " + hookEconomyShopGui + ", Fallback: " + fallbackToInternalPrices + ").");
     }
 
     public double getPrice(Material material) {
@@ -62,6 +70,29 @@ public class AutoSellManager {
 
         if (item == null || item.getType().isAir() || item.getAmount() <= 0) {
             return false;
+        }
+
+        EconomyShopHook esgHook = plugin.getEconomyShopHook();
+        if (hookEconomyShopGui && esgHook != null && esgHook.isEnabled()) {
+            ShopItem shopItem = esgHook.getShopItem(player, item);
+            if (shopItem != null && esgHook.isSellable(shopItem)) {
+                double esgPrice = esgHook.getSellPrice(shopItem, item, player);
+                if (esgPrice > 0) {
+                    if (shopItem.getLimitedSellMode() == 0 || EconomyShopGUIHook.getSellLimit(shopItem, player.getUniqueId()) > 0) {
+                        double totalValue = esgPrice * multiplier;
+                        if (totalValue > 0) {
+                            econ.depositPlayer(player, totalValue);
+                            esgHook.processSale(shopItem, player, item.getAmount());
+                            addEarning(player, totalValue);
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            if (!fallbackToInternalPrices) {
+                return false;
+            }
         }
 
         double price = getPrice(item.getType());

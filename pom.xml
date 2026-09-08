@@ -34,6 +34,11 @@
             <id>jitpack</id>
             <url>https://jitpack.io</url>
         </repository>
+        <!-- BG-Software Repository for WildStacker -->
+        <repository>
+            <id>bg-repo</id>
+            <url>https://repo.bg-software.com/repository/api/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -49,6 +54,20 @@
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.7.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- EconomyShopGUI API -->
+        <dependency>
+            <groupId>com.github.Gypopo</groupId>
+            <artifactId>EconomyShopGUI-API</artifactId>
+            <version>1.10.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- WildStacker API -->
+        <dependency>
+            <groupId>com.bgsoftware</groupId>
+            <artifactId>WildStackerAPI</artifactId>
+            <version>2026.2</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

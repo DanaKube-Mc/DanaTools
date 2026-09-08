@@ -49,12 +49,9 @@ public class MagnetTask implements Runnable {
 
         for (Entity entity : nearbyEntities) {
             if (entity instanceof Item itemEntity) {
-                if (itemEntity.getPickupDelay() > 0) {
+                if (itemEntity.isDead() || !itemEntity.isValid() || itemEntity.getPickupDelay() > 0) {
                     continue;
                 }
-
-                ItemStack itemStack = itemEntity.getItemStack();
-                int originalAmount = itemStack.getAmount();
 
                 EntityPickupItemEvent pickupEvent = new EntityPickupItemEvent(player, itemEntity, 0);
                 Bukkit.getPluginManager().callEvent(pickupEvent);
@@ -62,17 +59,9 @@ public class MagnetTask implements Runnable {
                     continue;
                 }
 
-                HashMap<Integer, ItemStack> remaining = player.getInventory().addItem(itemStack);
-
-                if (remaining.isEmpty()) {
-                    itemEntity.remove();
+                int picked = DanaTools.getInstance().getWildStackerHook().pickupItem(player, itemEntity);
+                if (picked > 0) {
                     itemPickedUp = true;
-                } else {
-                    ItemStack leftOver = remaining.get(0);
-                    if (leftOver.getAmount() < originalAmount) {
-                        itemEntity.setItemStack(leftOver);
-                        itemPickedUp = true;
-                    }
                 }
             }
         }

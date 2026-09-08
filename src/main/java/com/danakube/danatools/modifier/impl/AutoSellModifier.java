@@ -26,36 +26,49 @@ public class AutoSellModifier extends DanaModifier {
         super("auto_sell");
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onBlockDropItem(BlockDropItemEvent event) {
         Player player = event.getPlayer();
         ItemStack toolItem = player.getInventory().getItemInMainHand();
         DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
 
-        if (tool != null && tool.hasBehavior("AUTO_SELL")) {
+        if (tool != null && (tool.hasBehavior("AUTO_SELL") || tool.hasModifier("auto_sell"))) {
             int level = tool.getBehaviorLevel("AUTO_SELL");
+            if (level <= 0) {
+                level = tool.getModifierLevel("auto_sell");
+            }
             CustomModifier config = tool.getBehaviorModifier("AUTO_SELL");
+            if (config == null) {
+                config = DanaTools.getInstance().getModifierConfigManager().getModifier("auto_sell");
+            }
+            double multiplier = 1.0;
             if (config != null) {
                 CustomModifier.LevelSettings settings = config.getLevel(level);
                 if (settings != null) {
-                    double multiplier = settings.getBehaviorDouble("multiplier", 1.0);
-                    AutoSellManager asm = DanaTools.getInstance().getAutoSellManager();
+                    multiplier = settings.getBehaviorDouble("multiplier", 1.0);
+                }
+            }
+            AutoSellManager asm = DanaTools.getInstance().getAutoSellManager();
 
-                    Iterator<Item> iterator = event.getItems().iterator();
-                    while (iterator.hasNext()) {
-                        Item itemEntity = iterator.next();
-                        ItemStack drop = itemEntity.getItemStack();
-                        if (asm.sellItem(player, drop, multiplier)) {
-                            itemEntity.remove();
-                            iterator.remove();
-                        }
-                    }
+            Iterator<Item> iterator = event.getItems().iterator();
+            while (iterator.hasNext()) {
+                Item itemEntity = iterator.next();
+                if (itemEntity == null) {
+                    continue;
+                }
+                ItemStack drop = itemEntity.getItemStack();
+                if (drop == null || drop.getAmount() <= 0) {
+                    continue;
+                }
+                if (asm.sellItem(player, drop, multiplier)) {
+                    itemEntity.remove();
+                    iterator.remove();
                 }
             }
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.LOW)
     public void onEntityDeath(EntityDeathEvent event) {
         Player killer = event.getEntity().getKiller();
         if (killer == null) return;
@@ -63,51 +76,68 @@ public class AutoSellModifier extends DanaModifier {
         ItemStack toolItem = killer.getInventory().getItemInMainHand();
         DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
 
-        if (tool != null && tool.hasBehavior("AUTO_SELL")) {
+        if (tool != null && (tool.hasBehavior("AUTO_SELL") || tool.hasModifier("auto_sell"))) {
             int level = tool.getBehaviorLevel("AUTO_SELL");
+            if (level <= 0) {
+                level = tool.getModifierLevel("auto_sell");
+            }
             CustomModifier config = tool.getBehaviorModifier("AUTO_SELL");
+            if (config == null) {
+                config = DanaTools.getInstance().getModifierConfigManager().getModifier("auto_sell");
+            }
+            double multiplier = 1.0;
             if (config != null) {
                 CustomModifier.LevelSettings settings = config.getLevel(level);
                 if (settings != null) {
-                    double multiplier = settings.getBehaviorDouble("multiplier", 1.0);
-                    AutoSellManager asm = DanaTools.getInstance().getAutoSellManager();
+                    multiplier = settings.getBehaviorDouble("multiplier", 1.0);
+                }
+            }
+            AutoSellManager asm = DanaTools.getInstance().getAutoSellManager();
 
-                    List<ItemStack> drops = event.getDrops();
-                    Iterator<ItemStack> iterator = drops.iterator();
-                    while (iterator.hasNext()) {
-                        ItemStack drop = iterator.next();
-                        if (asm.sellItem(killer, drop, multiplier)) {
-                            iterator.remove();
-                        }
-                    }
+            List<ItemStack> drops = event.getDrops();
+            Iterator<ItemStack> iterator = drops.iterator();
+            while (iterator.hasNext()) {
+                ItemStack drop = iterator.next();
+                if (drop == null || drop.getAmount() <= 0) {
+                    continue;
+                }
+                if (asm.sellItem(killer, drop, multiplier)) {
+                    iterator.remove();
                 }
             }
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerFish(PlayerFishEvent event) {
         if (event.getState() != PlayerFishEvent.State.CAUGHT_FISH) return;
-        if (!(event.getCaught() instanceof Item caughtItem)) return;
+        if (!(event.getCaught() instanceof Item caughtItem) || caughtItem.isDead() || !caughtItem.isValid()) return;
 
         Player player = event.getPlayer();
         ItemStack toolItem = player.getInventory().getItemInMainHand();
         DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
 
-        if (tool != null && tool.hasBehavior("AUTO_SELL")) {
+        if (tool != null && (tool.hasBehavior("AUTO_SELL") || tool.hasModifier("auto_sell"))) {
             int level = tool.getBehaviorLevel("AUTO_SELL");
+            if (level <= 0) {
+                level = tool.getModifierLevel("auto_sell");
+            }
             CustomModifier config = tool.getBehaviorModifier("AUTO_SELL");
+            if (config == null) {
+                config = DanaTools.getInstance().getModifierConfigManager().getModifier("auto_sell");
+            }
+            double multiplier = 1.0;
             if (config != null) {
                 CustomModifier.LevelSettings settings = config.getLevel(level);
                 if (settings != null) {
-                    double multiplier = settings.getBehaviorDouble("multiplier", 1.0);
-                    AutoSellManager asm = DanaTools.getInstance().getAutoSellManager();
-
-                    ItemStack fishStack = caughtItem.getItemStack();
-                    if (asm.sellItem(player, fishStack, multiplier)) {
-                        caughtItem.remove();
-                    }
+                    multiplier = settings.getBehaviorDouble("multiplier", 1.0);
                 }
+            }
+            AutoSellManager asm = DanaTools.getInstance().getAutoSellManager();
+
+            ItemStack fishStack = caughtItem.getItemStack();
+            if (fishStack != null && fishStack.getAmount() > 0 && asm.sellItem(player, fishStack, multiplier)) {
+                caughtItem.remove();
             }
         }
     }

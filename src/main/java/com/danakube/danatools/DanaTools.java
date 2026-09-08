@@ -45,6 +45,8 @@ public final class DanaTools extends JavaPlugin {
     private PotionModifierManager potionModifierManager;
     private ArmorExplorationTask armorExplorationTask;
     private Economy economy;
+    private com.danakube.danatools.integration.EconomyShopHook economyShopHook;
+    private com.danakube.danatools.integration.WildStackerHook wildStackerHook;
 
     @Override
     public void onEnable() {
@@ -73,6 +75,8 @@ public final class DanaTools extends JavaPlugin {
         this.compactorManager.loadRecipes();
 
         setupEconomy();
+        this.economyShopHook = new com.danakube.danatools.integration.EconomyShopHook();
+        this.wildStackerHook = new com.danakube.danatools.integration.WildStackerHook();
         this.autoSellManager = new AutoSellManager(this);
         this.autoSellManager.loadPrices();
 
@@ -152,6 +156,14 @@ public final class DanaTools extends JavaPlugin {
 
     public AutoSellManager getAutoSellManager() {
         return autoSellManager;
+    }
+
+    public com.danakube.danatools.integration.EconomyShopHook getEconomyShopHook() {
+        return economyShopHook;
+    }
+
+    public com.danakube.danatools.integration.WildStackerHook getWildStackerHook() {
+        return wildStackerHook;
     }
 
     public Economy getEconomy() {

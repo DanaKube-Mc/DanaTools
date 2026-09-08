@@ -23,7 +23,7 @@ public class AutoSmeltModifier extends DanaModifier {
         super("auto_smelt");
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockDropItem(BlockDropItemEvent event) {
         Player player = event.getPlayer();
         ItemStack toolItem = player.getInventory().getItemInMainHand();
@@ -47,7 +47,10 @@ public class AutoSmeltModifier extends DanaModifier {
 
             double totalXp = 0.0;
             for (Item itemEntity : event.getItems()) {
+                if (itemEntity == null) continue;
                 ItemStack drop = itemEntity.getItemStack();
+                if (drop == null || drop.getAmount() <= 0) continue;
+
                 DropManager.SmeltResult smelt = DropManager.getSmeltResult(drop.getType());
                 if (smelt != null) {
                     totalXp += drop.getAmount() * smelt.getXp() * (1.0 + wisdomBoost);
@@ -61,7 +64,7 @@ public class AutoSmeltModifier extends DanaModifier {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityDeath(EntityDeathEvent event) {
         Player killer = event.getEntity().getKiller();
         if (killer == null) return;
@@ -101,7 +104,7 @@ public class AutoSmeltModifier extends DanaModifier {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerFish(PlayerFishEvent event) {
         if (event.getState() != PlayerFishEvent.State.CAUGHT_FISH) return;
         if (!(event.getCaught() instanceof Item caughtItem)) return;

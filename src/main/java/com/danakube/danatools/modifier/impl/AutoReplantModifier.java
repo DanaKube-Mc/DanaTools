@@ -56,7 +56,7 @@ public class AutoReplantModifier extends DanaModifier {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockDropItem(BlockDropItemEvent event) {
         Location loc = event.getBlock().getLocation();
         BlockData originalData = matureCropsBroken.remove(loc);
@@ -74,7 +74,13 @@ public class AutoReplantModifier extends DanaModifier {
         Iterator<Item> iterator = event.getItems().iterator();
         while (iterator.hasNext()) {
             Item itemEntity = iterator.next();
+            if (itemEntity == null) {
+                continue;
+            }
             ItemStack stack = itemEntity.getItemStack();
+            if (stack == null || stack.getAmount() <= 0) {
+                continue;
+            }
             if (stack.getType() == seedMaterial) {
                 stack.setAmount(stack.getAmount() - 1);
                 if (stack.getAmount() <= 0) {

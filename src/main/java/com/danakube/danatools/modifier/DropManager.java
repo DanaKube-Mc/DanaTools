@@ -177,30 +177,8 @@ public class DropManager {
     }
 
     private static Collection<ItemStack> getModifiedDrops(Player player, Block block, ItemStack toolItem) {
-        Collection<ItemStack> vanillaDrops = block.getDrops(toolItem);
-        List<Item> spawnedItems = new ArrayList<>();
-        for (ItemStack drop : vanillaDrops) {
-            if (drop != null && drop.getAmount() > 0) {
-                Item itemEntity = block.getWorld().dropItem(block.getLocation(), drop);
-                spawnedItems.add(itemEntity);
-            }
-        }
-
-        BlockDropItemEvent dropEvent = new BlockDropItemEvent(block, block.getState(), player, spawnedItems);
-        Bukkit.getPluginManager().callEvent(dropEvent);
-
-        List<ItemStack> finalDrops = new ArrayList<>();
-        if (!dropEvent.isCancelled()) {
-            for (Item itemEntity : dropEvent.getItems()) {
-                finalDrops.add(itemEntity.getItemStack());
-            }
-        }
-
-        for (Item itemEntity : spawnedItems) {
-            itemEntity.remove();
-        }
-
-        return finalDrops;
+        Collection<ItemStack> drops = block.getDrops(toolItem, player);
+        return drops != null ? new ArrayList<>(drops) : new ArrayList<>();
     }
 
     public static class SmeltResult {

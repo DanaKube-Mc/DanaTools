@@ -4,6 +4,11 @@ main: com.danakube.danatools.DanaTools
 api-version: '1.21'
 author: BaByCrash & DanaKube
 description: Plugin de progression d'outils évolutifs et modificateurs de forge.
+softdepend:
+  - Vault
+  - EconomyShopGUI
+  - EconomyShopGUI-Premium
+  - WildStacker
 commands:
   danatools:
     description: Commande principale d'administration de DanaTools.

@@ -50,7 +50,16 @@ levels:
       type: "AUTO_SELL"
       multiplier: 1.20
 
-# Prix de vente par défaut des ressources (racine)
+# Liaison avec EconomyShopGUI / EconomyShopGUI-Premium
+# Si active, le modifieur utilise les prix dynamiques du shop et fait varier le cours (Offre & Demande).
+hook-economyshopgui: true
+
+# Si l'item n'est pas dans le shop ou non vendable :
+# - true : vend l'item avec les prix de secours ci-dessous (prices).
+# - false : ne vend pas l'item (il reste dans l'inventaire ou au sol).
+fallback-to-internal-prices: true
+
+# Prix de vente par défaut des ressources (de secours si EconomyShopGUI n'est pas actif)
 prices:
   # Minerais bruts / blocs
   COAL: 2.0
