@@ -20,6 +20,7 @@ public class ToolDataStorage {
     private static final NamespacedKey KEY_SLOTS_USED = new NamespacedKey(DanaTools.getInstance(), "slots_used");
     private static final NamespacedKey KEY_MODIFIERS = new NamespacedKey(DanaTools.getInstance(), "modifiers");
     private static final NamespacedKey KEY_CUSTOM_NAME = new NamespacedKey(DanaTools.getInstance(), "custom_name");
+    private static final NamespacedKey KEY_XP_FRACTION = new NamespacedKey(DanaTools.getInstance(), "xp_fraction");
 
     public static boolean isDanaTool(ItemStack item) {
         if (item == null || !item.hasItemMeta()) {
@@ -44,6 +45,23 @@ public class ToolDataStorage {
         if (!isDanaTool(item)) return;
         ItemMeta meta = item.getItemMeta();
         meta.getPersistentDataContainer().set(KEY_XP, PersistentDataType.INTEGER, xp);
+        item.setItemMeta(meta);
+    }
+
+    public static double getXpFraction(ItemStack item) {
+        if (!isDanaTool(item)) return 0.0;
+        Double fraction = item.getItemMeta().getPersistentDataContainer().get(KEY_XP_FRACTION, PersistentDataType.DOUBLE);
+        return fraction != null ? fraction : 0.0;
+    }
+
+    public static void setXpFraction(ItemStack item, double fraction) {
+        if (!isDanaTool(item)) return;
+        ItemMeta meta = item.getItemMeta();
+        if (fraction <= 0.00001) {
+            meta.getPersistentDataContainer().remove(KEY_XP_FRACTION);
+        } else {
+            meta.getPersistentDataContainer().set(KEY_XP_FRACTION, PersistentDataType.DOUBLE, fraction);
+        }
         item.setItemMeta(meta);
     }
 

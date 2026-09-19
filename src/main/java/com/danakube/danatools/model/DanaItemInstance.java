@@ -124,13 +124,35 @@ public class DanaItemInstance {
         return null;
     }
 
-    public void addXP(int amount, Player player) {
+    public void addXP(double amount, Player player) {
+        if (amount <= 0) return;
+
         int maxLevel = config.getMaxLevel();
         int currentLevel = getLevel();
 
         if (currentLevel >= maxLevel) {
-            return; 
+            return;
         }
+
+        double currentFraction = ToolDataStorage.getXpFraction(item);
+        double total = currentFraction + amount;
+        int wholePoints = (int) Math.floor(total);
+        double remainingFraction = total - wholePoints;
+
+        ToolDataStorage.setXpFraction(item, remainingFraction);
+
+        if (wholePoints > 0) {
+            applyWholeXpGain(wholePoints, player);
+        }
+    }
+
+    public void addXP(int amount, Player player) {
+        addXP((double) amount, player);
+    }
+
+    private void applyWholeXpGain(int amount, Player player) {
+        int maxLevel = config.getMaxLevel();
+        int currentLevel = getLevel();
 
         int currentXp = getXp() + amount;
         int xpNeeded = DanaTools.getInstance().getXpManager().getXpRequiredFor(config, currentLevel);
@@ -145,6 +167,7 @@ public class DanaItemInstance {
 
         if (currentLevel >= maxLevel) {
             currentXp = 0;
+            ToolDataStorage.setXpFraction(item, 0.0);
         }
 
         ToolDataStorage.setXp(item, currentXp);
