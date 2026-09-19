@@ -91,6 +91,7 @@ public class VeinMinerModifier extends DanaModifier {
                                 visited.add(neighbor);
 
                                 BlockBreakEvent virtualEvent = new BlockBreakEvent(neighbor, player);
+                                virtualEvent.setExpToDrop(DropManager.calculateBlockExp(neighbor, toolItem));
                                 Bukkit.getPluginManager().callEvent(virtualEvent);
 
                                 if (!virtualEvent.isCancelled()) {

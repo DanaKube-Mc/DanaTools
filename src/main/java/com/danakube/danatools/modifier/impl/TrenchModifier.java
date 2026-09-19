@@ -116,6 +116,7 @@ public class TrenchModifier extends DanaModifier {
                     }
 
                     BlockBreakEvent virtualEvent = new BlockBreakEvent(targetBlock, player);
+                    virtualEvent.setExpToDrop(DropManager.calculateBlockExp(targetBlock, toolItem));
                     Bukkit.getPluginManager().callEvent(virtualEvent);
 
                     if (!virtualEvent.isCancelled()) {
