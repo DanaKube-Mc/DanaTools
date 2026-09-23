@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 public class DanaItemInstance {
+    private static final ThreadLocal<Boolean> sharingResonance = ThreadLocal.withInitial(() -> false);
+
     private final ItemStack item;
     private final CustomTool config;
 
@@ -212,28 +214,59 @@ public class DanaItemInstance {
         return player.getInventory().getItemInMainHand().equals(this.item);
     }
 
-    private void shareResonanceXP(int amount, Player player) {
-        ItemStack[] armor = player.getInventory().getArmorContents();
-        for (ItemStack armorPiece : armor) {
-            if (armorPiece != null) {
-                DanaItemInstance armorInstance = DanaItemInstance.fromItemStack(armorPiece);
-                if (armorInstance != null && armorInstance.hasModifier("resonance")) {
-                    int lvl = armorInstance.getModifierLevel("resonance");
-                    CustomModifier modConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("resonance");
+    private void shareResonanceXP(double amount, Player player) {
+        if (player == null || amount <= 0) return;
+        if (sharingResonance.get()) return;
+
+        sharingResonance.set(true);
+        try {
+            List<ItemStack> candidates = new ArrayList<>();
+
+            // 1. Armures équipées
+            ItemStack[] armor = player.getInventory().getArmorContents();
+            for (ItemStack piece : armor) {
+                if (piece != null && !piece.getType().isAir()) {
+                    candidates.add(piece);
+                }
+            }
+
+            // 2. Seconde main (Off-hand), si elle n'est pas l'item source
+            ItemStack offHand = player.getInventory().getItemInOffHand();
+            if (offHand != null && !offHand.getType().isAir() && !offHand.equals(this.item)) {
+                candidates.add(offHand);
+            }
+
+            // 3. Main principale, si elle n'est pas l'item source (sécurité si l'XP venait de l'off-hand ou d'une armure)
+            ItemStack mainHand = player.getInventory().getItemInMainHand();
+            if (mainHand != null && !mainHand.getType().isAir() && !mainHand.equals(this.item)) {
+                candidates.add(mainHand);
+            }
+
+            CustomModifier modConfig = DanaTools.getInstance().getModifierConfigManager().getModifier("resonance");
+
+            for (ItemStack candidate : candidates) {
+                DanaItemInstance candidateInstance = DanaItemInstance.fromItemStack(candidate);
+                if (candidateInstance != null && candidateInstance.hasModifier("resonance")) {
+                    int lvl = candidateInstance.getModifierLevel("resonance");
                     if (modConfig != null) {
                         CustomModifier.LevelSettings settings = modConfig.getLevel(lvl);
                         if (settings != null) {
-                            int sharePercent = settings.getBehaviorInt("xp-share-percent", 0);
+                            double sharePercent = settings.getBehaviorDouble("xp-share-percent", 0.0);
+                            if (sharePercent <= 0) {
+                                sharePercent = settings.getBehaviorInt("xp-share-percent", 0);
+                            }
                             if (sharePercent > 0) {
-                                int sharedXp = (int) Math.round(amount * (sharePercent / 100.0));
+                                double sharedXp = amount * (sharePercent / 100.0);
                                 if (sharedXp > 0) {
-                                    armorInstance.addXP(sharedXp, player);
+                                    candidateInstance.addXP(sharedXp, player);
                                 }
                             }
                         }
                     }
                 }
             }
+        } finally {
+            sharingResonance.set(false);
         }
     }
 
