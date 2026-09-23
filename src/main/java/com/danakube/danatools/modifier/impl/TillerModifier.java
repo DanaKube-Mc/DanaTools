@@ -6,6 +6,7 @@ import com.danakube.danatools.model.CustomTool.BlockActivity;
 import com.danakube.danatools.model.DanaItemInstance;
 import com.danakube.danatools.modifier.DanaModifier;
 import com.danakube.danatools.progression.CoreDropManager;
+import com.danakube.danatools.progression.ToolXPListener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -93,16 +94,28 @@ public class TillerModifier extends DanaModifier {
                         Material originalType = targetBlock.getType();
                         targetBlock.setType(Material.FARMLAND);
 
-                        DanaItemInstance toolInstance = DanaItemInstance.fromItemStack(tool);
-                        if (toolInstance != null) {
-                            BlockActivity activity = toolInstance.getConfig().getBlockActivity(originalType);
-                            if (activity != null) {
-                                int xpGain = activity.getXp();
-                                if (xpGain > 0) {
-                                    xpGain = DanaTools.getInstance().getXpManager().applyLearningBoost(player, xpGain);
-                                    toolInstance.addXP(xpGain, player);
+                        ToolXPListener.BlockPosition pos = ToolXPListener.BlockPosition.of(targetBlock);
+                        if (!ToolXPListener.isRecentlyTilled(pos)) {
+                            ToolXPListener.markTilled(pos);
+
+                            DanaItemInstance toolInstance = DanaItemInstance.fromItemStack(tool);
+                            if (toolInstance != null) {
+                                BlockActivity activity = toolInstance.getConfig().getBlockActivity(originalType);
+                                if (activity == null) {
+                                    activity = toolInstance.getConfig().getBlockActivity(Material.FARMLAND);
                                 }
-                                CoreDropManager.checkAndDropCore(player, targetBlock.getLocation().add(0.5, 0.5, 0.5), toolInstance, activity);
+                                if (activity == null && toolInstance.getConfig().hasDefaultBlockActivity()) {
+                                    activity = toolInstance.getConfig().getDefaultBlockActivity();
+                                }
+
+                                if (activity != null) {
+                                    int xpGain = activity.getXp();
+                                    if (xpGain > 0) {
+                                        xpGain = DanaTools.getInstance().getXpManager().applyLearningBoost(player, xpGain);
+                                        toolInstance.addXP(xpGain, player);
+                                    }
+                                    CoreDropManager.checkAndDropCore(player, targetBlock.getLocation().add(0.5, 0.5, 0.5), toolInstance, activity);
+                                }
                             }
                         }
                         

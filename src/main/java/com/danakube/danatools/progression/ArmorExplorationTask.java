@@ -27,7 +27,7 @@ public class ArmorExplorationTask implements Runnable {
 
             if (prev != null && prev.getWorld() == current.getWorld()) {
                 double distance = current.distance(prev);
-                if (distance > 2.0 && distance < 50.0) {
+                if (distance > 1.0 && distance < 50.0) {
                     ItemStack[] armor = player.getInventory().getArmorContents();
                     for (ItemStack piece : armor) {
                         if (piece != null) {
@@ -35,9 +35,9 @@ public class ArmorExplorationTask implements Runnable {
                             if (itemInstance != null) {
                                 double mult = itemInstance.getConfig().getXpGainMovementMultiplier();
                                 if (mult > 0) {
-                                    int xp = (int) Math.round(distance * mult);
-                                    if (xp > 0) {
-                                        itemInstance.addXP(xp, player);
+                                    double gain = distance * mult;
+                                    if (gain > 0) {
+                                        itemInstance.addXP(gain, player);
                                     }
                                 }
                             }

@@ -60,9 +60,9 @@ public class ArmorXPListener implements Listener {
                 if (itemInstance != null) {
                     double mult = itemInstance.getConfig().getXpGainDamageMultiplier();
                     if (mult > 0) {
-                        int xp = (int) Math.round(damage * mult);
-                        if (xp > 0) {
-                            itemInstance.addXP(xp, player);
+                        double gain = damage * mult;
+                        if (gain > 0) {
+                            itemInstance.addXP(gain, player);
                         }
                     }
                 }

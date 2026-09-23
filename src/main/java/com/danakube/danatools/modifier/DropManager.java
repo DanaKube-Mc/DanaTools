@@ -2,183 +2,98 @@ package com.danakube.danatools.modifier;
 
 import com.danakube.danatools.DanaTools;
 import com.danakube.danatools.model.CustomModifier;
-import com.danakube.danatools.model.DanaItemInstance;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.Ageable;
-import org.bukkit.block.data.BlockData;
+import org.bukkit.block.BlockState;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.ExperienceOrb;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
-import java.util.Collection;
-import java.util.Map;
-import java.util.List;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class DropManager {
 
-    public static void breakBlock(Player player, Block block, ItemStack toolItem, int expToDrop) {
-        DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
-        
-        if (tool != null && (tool.hasBehavior("AUTO_SMELT") || tool.hasBehavior("AUTO_SELL") || tool.hasBehavior("AUTO_REPLANT"))) {
-            if (tool.hasBehavior("AUTO_REPLANT") && isReplantableCrop(block.getType())) {
-                BlockData blockData = block.getBlockData();
-                if (blockData instanceof Ageable ageable) {
-                    if (ageable.getAge() == ageable.getMaximumAge()) {
-                        Material seedMaterial = getRequiredSeed(block.getType());
-                        if (seedMaterial != null) {
-                            Collection<ItemStack> drops = getModifiedDrops(player, block, toolItem);
-                            boolean seedConsumed = false;
-                            for (ItemStack drop : drops) {
-                                if (drop.getType() == seedMaterial) {
-                                    drop.setAmount(drop.getAmount() - 1);
-                                    seedConsumed = true;
-                                    break;
-                                }
-                            }
-                            if (seedConsumed) {
-                                drops.removeIf(item -> item.getAmount() <= 0);
-                                
-                                double wisdomBoost = 0.0;
-                                if (tool.hasBehavior("WISDOM")) {
-                                    int wisdomLvl = tool.getBehaviorLevel("WISDOM");
-                                    CustomModifier wisdomConfig = getModifierByBehavior("WISDOM");
-                                    if (wisdomConfig != null) {
-                                        CustomModifier.LevelSettings settings = wisdomConfig.getLevel(wisdomLvl);
-                                        if (settings != null) {
-                                            Object boostObj = settings.getBehaviorSettings().get("xp-boost");
-                                            if (boostObj instanceof Number num) {
-                                                wisdomBoost = num.doubleValue();
-                                            }
-                                        }
-                                    }
-                                }
-
-                                double totalXp = expToDrop;
-                                double sellMultiplier = 1.0;
-                                boolean hasAutoSell = tool.hasBehavior("AUTO_SELL");
-                                if (hasAutoSell) {
-                                    int autoSellLvl = tool.getBehaviorLevel("AUTO_SELL");
-                                    CustomModifier autoSellConfig = getModifierByBehavior("AUTO_SELL");
-                                    if (autoSellConfig != null) {
-                                        CustomModifier.LevelSettings settings = autoSellConfig.getLevel(autoSellLvl);
-                                        if (settings != null) {
-                                            sellMultiplier = settings.getBehaviorDouble("multiplier", 1.0);
-                                        }
-                                    }
-                                }
-
-                                for (ItemStack drop : drops) {
-                                    ItemStack finalDrop = drop;
-                                    if (tool.hasBehavior("AUTO_SMELT")) {
-                                        SmeltResult smelt = getSmeltResult(drop.getType());
-                                        if (smelt != null) {
-                                            double smeltingXp = drop.getAmount() * smelt.getXp();
-                                            totalXp += smeltingXp * (1.0 + wisdomBoost);
-                                            finalDrop = new ItemStack(smelt.getResult(), drop.getAmount());
-                                        }
-                                    }
-
-                                    boolean sold = false;
-                                    if (hasAutoSell) {
-                                        sold = DanaTools.getInstance().getAutoSellManager().sellItem(player, finalDrop, sellMultiplier);
-                                    }
-
-                                    if (!sold) {
-                                        block.getWorld().dropItemNaturally(block.getLocation(), finalDrop);
-                                    }
-                                }
-
-                                ageable.setAge(0);
-                                block.setBlockData(ageable, true);
-                                block.getWorld().playSound(block.getLocation(), Sound.ITEM_CROP_PLANT, 1.0f, 1.0f);
-                                if (totalXp > 0) {
-                                    spawnXP(block.getLocation(), totalXp);
-                                }
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-
-            Collection<ItemStack> drops = getModifiedDrops(player, block, toolItem);
-            
-            double wisdomBoost = 0.0;
-            if (tool.hasBehavior("WISDOM")) {
-                int wisdomLvl = tool.getBehaviorLevel("WISDOM");
-                CustomModifier wisdomConfig = getModifierByBehavior("WISDOM");
-                if (wisdomConfig != null) {
-                    CustomModifier.LevelSettings settings = wisdomConfig.getLevel(wisdomLvl);
-                    if (settings != null) {
-                        Object boostObj = settings.getBehaviorSettings().get("xp-boost");
-                        if (boostObj instanceof Number num) {
-                            wisdomBoost = num.doubleValue();
-                        }
-                    }
-                }
-            }
-
-            double totalXp = expToDrop;
-            
-            double sellMultiplier = 1.0;
-            boolean hasAutoSell = tool.hasBehavior("AUTO_SELL");
-            if (hasAutoSell) {
-                int autoSellLvl = tool.getBehaviorLevel("AUTO_SELL");
-                CustomModifier autoSellConfig = getModifierByBehavior("AUTO_SELL");
-                if (autoSellConfig != null) {
-                    CustomModifier.LevelSettings settings = autoSellConfig.getLevel(autoSellLvl);
-                    if (settings != null) {
-                        sellMultiplier = settings.getBehaviorDouble("multiplier", 1.0);
-                    }
-                }
-            }
-
-            for (ItemStack drop : drops) {
-                ItemStack finalDrop = drop;
-                
-                if (tool.hasBehavior("AUTO_SMELT")) {
-                    SmeltResult smelt = getSmeltResult(drop.getType());
-                    if (smelt != null) {
-                        double smeltingXp = drop.getAmount() * smelt.getXp();
-                        totalXp += smeltingXp * (1.0 + wisdomBoost);
-                        finalDrop = new ItemStack(smelt.getResult(), drop.getAmount());
-                    }
-                }
-
-                boolean sold = false;
-                if (hasAutoSell) {
-                    sold = DanaTools.getInstance().getAutoSellManager().sellItem(player, finalDrop, sellMultiplier);
-                }
-
-                if (!sold) {
-                    block.getWorld().dropItemNaturally(block.getLocation(), finalDrop);
-                }
-            }
-            
-            block.setType(Material.AIR);
-            if (totalXp > 0) {
-                spawnXP(block.getLocation(), totalXp);
-            }
-            return;
+    public static int calculateBlockExp(Block block, ItemStack tool) {
+        if (tool != null && tool.containsEnchantment(org.bukkit.enchantments.Enchantment.SILK_TOUCH)) {
+            return 0;
         }
-        
-        block.breakNaturally(toolItem);
-        if (expToDrop > 0) {
-            spawnXP(block.getLocation(), expToDrop);
-        }
+        Material type = block.getType();
+        return switch (type) {
+            case COAL_ORE, DEEPSLATE_COAL_ORE -> randomBetween(0, 2);
+            case NETHER_GOLD_ORE -> randomBetween(0, 1);
+            case DIAMOND_ORE, DEEPSLATE_DIAMOND_ORE, EMERALD_ORE, DEEPSLATE_EMERALD_ORE -> randomBetween(3, 7);
+            case LAPIS_ORE, DEEPSLATE_LAPIS_ORE, NETHER_QUARTZ_ORE -> randomBetween(2, 5);
+            case REDSTONE_ORE, DEEPSLATE_REDSTONE_ORE -> randomBetween(1, 5);
+            case SPAWNER -> randomBetween(15, 43);
+            case SCULK -> 1;
+            case SCULK_CATALYST, SCULK_SHRIEKER, SCULK_SENSOR -> 5;
+            default -> 0;
+        };
     }
 
-    private static Collection<ItemStack> getModifiedDrops(Player player, Block block, ItemStack toolItem) {
+    private static int randomBetween(int min, int max) {
+        return java.util.concurrent.ThreadLocalRandom.current().nextInt(min, max + 1);
+    }
+
+    public static void breakBlock(Player player, Block block, ItemStack toolItem, int expToDrop) {
+        // 1. Si le joueur est en créatif : aucun drop ni XP, suppression du bloc
+        if (player.getGameMode() == org.bukkit.GameMode.CREATIVE) {
+            block.setType(Material.AIR);
+            return;
+        }
+
+        // 2. Récupération de l'état initial avant destruction (crucial pour Lumberjack qui vérifie state.getType())
+        BlockState state = block.getState();
+        Location dropLoc = block.getLocation().add(0.5, 0.5, 0.5);
+        World world = block.getWorld();
+
+        // 3. Calcul des drops en tenant compte des enchantements vanilla de l'outil (Fortune, Silk Touch, etc.)
         Collection<ItemStack> drops = block.getDrops(toolItem, player);
-        return drops != null ? new ArrayList<>(drops) : new ArrayList<>();
+
+        // 4. Instanciation des entités Item en mémoire via world.createEntity (non ajoutées au monde)
+        List<Item> itemEntities = new ArrayList<>();
+        if (drops != null) {
+            for (ItemStack drop : drops) {
+                if (drop == null || drop.getType().isAir() || drop.getAmount() <= 0) continue;
+                Item item = world.createEntity(dropLoc, Item.class);
+                item.setItemStack(drop);
+                itemEntities.add(item);
+            }
+        }
+
+        // 5. Déclenchement de l'événement officiel Paper BlockDropItemEvent
+        BlockDropItemEvent dropEvent = new BlockDropItemEvent(block, state, player, itemEntities);
+        Bukkit.getPluginManager().callEvent(dropEvent);
+
+        // 6. Si l'événement n'est pas annulé, faire spawner dans le monde les entités restantes
+        if (!dropEvent.isCancelled()) {
+            for (Item item : dropEvent.getItems()) {
+                if (item != null && !item.isDead() && item.getItemStack() != null 
+                        && !item.getItemStack().getType().isAir() 
+                        && item.getItemStack().getAmount() > 0) {
+                    world.addEntity(item);
+                }
+            }
+        }
+
+        // 7. Suppression du bloc d'origine (ou gestion du replantage)
+        // Si AutoReplant a replanté, sa tâche asynchrone/synchrone remettra le jeune plant.
+        block.setType(Material.AIR);
+
+        // 8. Spawn de l'orbe d'expérience (incluant le multiplicateur Sagesse)
+        if (expToDrop > 0) {
+            spawnXP(dropLoc, expToDrop);
+        }
     }
 
     public static class SmeltResult {

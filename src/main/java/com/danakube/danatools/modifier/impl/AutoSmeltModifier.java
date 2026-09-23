@@ -29,7 +29,7 @@ public class AutoSmeltModifier extends DanaModifier {
         ItemStack toolItem = player.getInventory().getItemInMainHand();
         DanaItemInstance tool = DanaItemInstance.fromItemStack(toolItem);
         
-        if (tool != null && tool.hasModifier("auto_smelt")) {
+        if (tool != null && (tool.hasBehavior("AUTO_SMELT") || tool.hasModifier("auto_smelt"))) {
             double wisdomBoost = 0.0;
             if (tool.hasModifier("wisdom")) {
                 int wisdomLvl = tool.getModifierLevel("wisdom");
@@ -72,7 +72,7 @@ public class AutoSmeltModifier extends DanaModifier {
         ItemStack item = killer.getInventory().getItemInMainHand();
         DanaItemInstance tool = DanaItemInstance.fromItemStack(item);
         
-        if (tool != null && tool.hasModifier("auto_smelt")) {
+        if (tool != null && (tool.hasBehavior("AUTO_SMELT") || tool.hasModifier("auto_smelt"))) {
             double wisdomBoost = 0.0;
             if (tool.hasModifier("wisdom")) {
                 int wisdomLvl = tool.getModifierLevel("wisdom");
@@ -113,7 +113,7 @@ public class AutoSmeltModifier extends DanaModifier {
         ItemStack item = player.getInventory().getItemInMainHand();
         DanaItemInstance tool = DanaItemInstance.fromItemStack(item);
         
-        if (tool != null && tool.hasModifier("auto_smelt")) {
+        if (tool != null && (tool.hasBehavior("AUTO_SMELT") || tool.hasModifier("auto_smelt"))) {
             ItemStack fishStack = caughtItem.getItemStack();
             DropManager.SmeltResult smelt = DropManager.getSmeltResult(fishStack.getType());
             
@@ -146,7 +146,7 @@ public class AutoSmeltModifier extends DanaModifier {
     public void onEnchantItem(EnchantItemEvent event) {
         ItemStack item = event.getItem();
         DanaItemInstance tool = DanaItemInstance.fromItemStack(item);
-        if (tool != null && tool.hasModifier("auto_smelt")) {
+        if (tool != null && (tool.hasBehavior("AUTO_SMELT") || tool.hasModifier("auto_smelt"))) {
             if (event.getEnchantsToAdd().containsKey(Enchantment.SILK_TOUCH)) {
                 event.getEnchantsToAdd().remove(Enchantment.SILK_TOUCH);
             }

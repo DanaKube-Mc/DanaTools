@@ -8,6 +8,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
+import org.bukkit.Keyed;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.Material;
@@ -18,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.event.inventory.SmithItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -31,16 +33,43 @@ public class SmithingListener implements Listener {
         this.plugin = plugin;
     }
 
+    private boolean isAnyModifierTemplate(ItemStack item) {
+        if (item == null || item.getType().isAir()) return false;
+        for (CustomModifier modifier : plugin.getModifierConfigManager().getModifiers()) {
+            if (matchesTemplate(item, modifier)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @EventHandler
     public void onPrepareSmithing(PrepareSmithingEvent event) {
         SmithingInventory inv = event.getInventory();
+        Recipe recipe = inv.getRecipe();
+        boolean isDanaRecipe = (recipe instanceof Keyed keyed
+                && keyed.getKey().getNamespace().equalsIgnoreCase(plugin.getName()));
+
         ItemStack template = inv.getItem(0);
         ItemStack base = inv.getItem(1);
         ItemStack addition = inv.getItem(2);
 
-        if (template == null || base == null || addition == null) {
+        if (template == null || template.getType().isAir()
+                || base == null || base.getType().isAir()
+                || addition == null || addition.getType().isAir()) {
+            if (isDanaRecipe) {
+                event.setResult(null);
+            }
             return;
         }
+
+        // Si ce n'est ni une recette DanaTools ni un patron de modificateur DanaTools, laisser Minecraft vanilla gérer
+        if (!isDanaRecipe && !isAnyModifierTemplate(template)) {
+            return;
+        }
+
+        // Si c'est une recette ou un patron DanaTools : bloquer le résultat par défaut
+        event.setResult(null);
 
         DanaItemInstance tool = DanaItemInstance.fromItemStack(base);
         if (tool == null) {
@@ -48,35 +77,49 @@ public class SmithingListener implements Listener {
         }
 
         for (CustomModifier modifier : plugin.getModifierConfigManager().getModifiers()) {
-            if (matchesTemplate(template, modifier)) {
-                if (matchesIngredient(addition, modifier)) {
-                    if (tool.canApplyOrUpgradeModifier(modifier)) {
-                        ItemStack result = base.clone();
-                        DanaItemInstance resultTool = DanaItemInstance.fromItemStack(result);
-                        if (resultTool != null) {
-                            resultTool.applyOrUpgradeModifier(modifier);
-                            event.setResult(resultTool.getItemStack());
-                            return;
-                        }
+            if (matchesTemplate(template, modifier) && matchesIngredient(addition, modifier)) {
+                if (tool.canApplyOrUpgradeModifier(modifier)) {
+                    ItemStack result = base.clone();
+                    DanaItemInstance resultTool = DanaItemInstance.fromItemStack(result);
+                    if (resultTool != null) {
+                        resultTool.applyOrUpgradeModifier(modifier);
+                        event.setResult(resultTool.getItemStack());
+                        return;
                     }
                 }
                 event.setResult(null);
                 return;
             }
         }
+
+        event.setResult(null);
     }
 
     @EventHandler
     public void onSmithItem(SmithItemEvent event) {
+        SmithingInventory inv = event.getInventory();
+        Recipe recipe = inv.getRecipe();
+        boolean isDanaRecipe = (recipe instanceof Keyed keyed
+                && keyed.getKey().getNamespace().equalsIgnoreCase(plugin.getName()));
+
         ItemStack result = event.getCurrentItem();
-        if (result == null) return;
+        if (result == null || result.getType().isAir()) return;
+
+        if (isDanaRecipe) {
+            DanaItemInstance tool = DanaItemInstance.fromItemStack(result);
+            if (tool == null) {
+                // Blocage absolu : tentative de récupérer le dummyResult d'une recette DanaTools !
+                event.setCancelled(true);
+                return;
+            }
+        }
 
         DanaItemInstance tool = DanaItemInstance.fromItemStack(result);
         if (tool == null) return;
 
         if (event.getWhoClicked() instanceof Player player) {
             player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 1.0f);
-            
+
             Block block = event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null;
             if (block != null) {
                 player.spawnParticle(Particle.LAVA, block.getLocation().add(0.5, 1.0, 0.5), 10, 0.2, 0.2, 0.2, 0.1);
