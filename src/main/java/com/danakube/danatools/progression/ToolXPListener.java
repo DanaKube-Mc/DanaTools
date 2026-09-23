@@ -26,6 +26,28 @@ public class ToolXPListener implements Listener {
         this.plugin = plugin;
     }
 
+    public record BlockPosition(String world, int x, int y, int z) {
+        public static BlockPosition of(Block block) {
+            return new BlockPosition(block.getWorld().getName(), block.getX(), block.getY(), block.getZ());
+        }
+    }
+
+    private static final java.util.Map<BlockPosition, Long> recentlyTilledBlocks = new java.util.concurrent.ConcurrentHashMap<>();
+
+    public static boolean isRecentlyTilled(BlockPosition pos) {
+        Long time = recentlyTilledBlocks.get(pos);
+        if (time == null) return false;
+        if (System.currentTimeMillis() - time > 600_000L) {
+            recentlyTilledBlocks.remove(pos);
+            return false;
+        }
+        return true;
+    }
+
+    public static void markTilled(BlockPosition pos) {
+        recentlyTilledBlocks.put(pos, System.currentTimeMillis());
+    }
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
@@ -36,11 +58,22 @@ public class ToolXPListener implements Listener {
             return;
         }
 
-        Material blockType = event.getBlock().getType();
+        Block block = event.getBlock();
+        org.bukkit.block.data.BlockData blockData = block.getBlockData();
+
+        // 1. Contrôle Anti-Exploit sur les cultures
+        if (blockData instanceof org.bukkit.block.data.Ageable ageable) {
+            if (ageable.getAge() < ageable.getMaximumAge()) {
+                return; // Culture non mature -> Strictement 0 XP et aucun drop de noyau
+            }
+        }
+
+        Material blockType = block.getType();
         CustomTool.BlockActivity activity = tool.getConfig().getBlockActivity(blockType);
 
+        // 2. Repli DEFAULT : autorisé si dureté > 0 OU si c'est une culture mature vérifiée
         if (activity == null && tool.getConfig().hasDefaultBlockActivity()) {
-            if (blockType.getHardness() > 0.0f) {
+            if (blockType.getHardness() > 0.0f || blockData instanceof org.bukkit.block.data.Ageable) {
                 activity = tool.getConfig().getDefaultBlockActivity();
             }
         }
@@ -128,7 +161,20 @@ public class ToolXPListener implements Listener {
     }
 
     private void awardInteractXP(Player player, Block block, DanaItemInstance tool, Material originalType) {
+        BlockPosition pos = BlockPosition.of(block);
+        if (isRecentlyTilled(pos)) {
+            return; // Ce bloc a déjà donné de l'XP récemment -> 0 XP
+        }
+        markTilled(pos);
+
         CustomTool.BlockActivity activity = tool.getConfig().getBlockActivity(originalType);
+        if (activity == null) {
+            activity = tool.getConfig().getBlockActivity(Material.FARMLAND);
+        }
+        if (activity == null && tool.getConfig().hasDefaultBlockActivity()) {
+            activity = tool.getConfig().getDefaultBlockActivity();
+        }
+
         if (activity != null) {
             int xpGain = activity.getXp();
             if (xpGain > 0) {
